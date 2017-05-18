@@ -7,7 +7,7 @@
     <ProjectGuid>{278E784C-7150-499B-B77E-B7A5ABEF383F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BattleFieldMonitor</RootNamespace>
+    <RootNamespace>Swsu.BattleFieldMonitor</RootNamespace>
     <AssemblyName>BattleFieldMonitor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -34,6 +34,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DevExpress.Mvvm.v15.2, Version=15.2.10.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="Swsu.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Common.1.0.0-alpha\lib\net45\Swsu.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Geo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Geo.1.0.0-alpha\lib\net45\Swsu.Geo.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Geo.Epsg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Geo.Epsg.1.0.0-alpha\lib\net45\Swsu.Geo.Epsg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Maps.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Maps.Windows.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Maps.Windows.Epsg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Maps.Windows.Epsg.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.Epsg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Maps.Windows.Maps.Wmts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Maps.Windows.Maps.Wmts.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.Maps.Wmts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.OpenGis.Schemas, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.OpenGis.Schemas.1.0.0-alpha\lib\net45\Swsu.OpenGis.Schemas.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -54,7 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -62,8 +91,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -85,6 +114,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

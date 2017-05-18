@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Swsu.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Swsu.Common.DefaultHelpers">
+            <summary>
+            Содержит вспомогательные методы для работы со значениями по умолчанию.
+            </summary>
+        </member>
+        <member name="T:Swsu.Common.MathHelpers">
+            <summary>
+            Содержит методы, имеющие отношение к математике.
+            </summary>
+        </member>
+        <member name="M:Swsu.Common.MathHelpers.DegreesToRadians(System.Double)">
+            <summary>
+            Преобразует градусы в радианы.
+            </summary>
+            <param name="degrees">Значение в градусах.</param>
+            <returns>Значение в радианах.</returns>
+        </member>
+        <member name="M:Swsu.Common.MathHelpers.RadiansToDegrees(System.Double)">
+            <summary>
+            Преобразует радианы в градусы.
+            </summary>
+            <param name="radians">Значение в радианах.</param>
+            <returns>Значение в градусах.</returns>
+        </member>
+        <member name="T:Swsu.Common.ObjectHelpers">
+            <summary>
+            Содержит вспомогательные методы для реализации методов <see cref="M:System.Object.Equals(System.Object)"/> и <see cref="M:System.Object.GetHashCode"/>.
+            </summary>
+        </member>
+        <member name="M:Swsu.Common.ObjectHelpers.EqualsForReferences``1(``0,System.Object)">
+            <summary>
+            Может использоваться при реализации метода <see cref="M:System.Object.Equals(System.Object)"/> для ссылочных типов.
+            </summary>
+            <typeparam name="T">Тип объекта, для которого вызван метод <see cref="M:System.Object.Equals(System.Object)"/>.</typeparam>
+            <param name="self">Объект, для которого вызван метод <see cref="M:System.Object.Equals(System.Object)"/></param>
+            <param name="obj">Параметр, переданный в метод <see cref="M:System.Object.Equals(System.Object)"/>.</param>
+            <returns>Возвращаемое значение метода <see cref="M:System.Object.Equals(System.Object)"/>.</returns>
+        </member>
+        <member name="M:Swsu.Common.ObjectHelpers.EqualsForValues``1(``0,System.Object)">
+            <summary>
+            Может использоваться при реализации метода <see cref="M:System.Object.Equals(System.Object)"/> для типов-значений.
+            </summary>
+            <typeparam name="T">Тип значения, для которого вызван метод <see cref="M:System.Object.Equals(System.Object)"/>.</typeparam>
+            <param name="self">Значение, для которого вызван метод <see cref="M:System.Object.Equals(System.Object)"/>.</param>
+            <param name="obj">Параметр, переданный в метод <see cref="M:System.Object.Equals(System.Object)"/>.</param>
+            <returns>Возвращаемое значение метода <see cref="M:System.Object.Equals(System.Object)"/>.</returns>
+        </member>
+        <member name="T:Swsu.Common.PropertyHelpers">
+            <summary>
+            Содержит вспомогательные методы для реализации свойств.
+            </summary>
+        </member>
+        <member name="M:Swsu.Common.PropertyHelpers.Set``1(``0@,``0,Swsu.Common.PropertyChangedCallback{``0})">
+            <summary>
+            Может вызываться из установщика свойства.
+            </summary>
+            <typeparam name="T">Тип свойства.</typeparam>
+            <param name="field">Поле, в котором хранится значение свойства.</param>
+            <param name="value">Новое значение свойства.</param>
+            <param name="changedCallback">Делегат, вызываемый изменения значения свойства.</param>
+        </member>
+        <member name="M:Swsu.Common.PropertyHelpers.Set``1(``0@,``0,Swsu.Common.PropertyChangedCallback{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Может вызываться из установщика свойства.
+            </summary>
+            <typeparam name="T">Тип свойства.</typeparam>
+            <param name="field">Поле, в котором хранится значение свойства.</param>
+            <param name="value">Новое значение свойства.</param>
+            <param name="changedCallback">Делегат, вызываемый изменения значения свойства.</param>
+            <param name="equalityComparer">Объект используемый для сравнения нового значения свойства с текущим.</param>
+        </member>
+    </members>
+</doc>

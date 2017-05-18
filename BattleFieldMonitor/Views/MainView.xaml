@@ -1,0 +1,33 @@
+﻿<Window x:Class="Swsu.BattleFieldMonitor.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:maps="http://www.swsu.ru/schemas/Maps"
+        mc:Ignorable="d"
+        Title="MainView" Height="350" Width="525">
+	<Window.Resources>
+		<maps:MicrosoftAccessEpsgDataProvider x:Key="EpsgDataProvider" DatabaseFileName="C:\EPSG\EPSG_v8_9.mdb" />
+	</Window.Resources>
+
+	<Grid>
+		<maps:MapViewer ScaleDenominator="5E7">
+			<maps:MapViewer.MapDefinition>
+				<maps:WmtsMapDefinition
+                    Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
+                    LayerIdentifier="world_web_merkator"
+                    StyleIdentifier="DefaultStyle"
+                    TileMatrixSetIdentifier="world_web_merkator_set"
+                    EpsgDataProvider="{StaticResource EpsgDataProvider}" />
+			</maps:MapViewer.MapDefinition>
+
+			<maps:MapLayer>
+				<maps:GeographicPointShape2 Latitude="0" Longitude="0">
+					<maps:GeometryPointSymbol2 Brush="Red">
+						<EllipseGeometry Center="0 0" RadiusX="20" RadiusY="20" />
+					</maps:GeometryPointSymbol2>
+				</maps:GeographicPointShape2>
+			</maps:MapLayer>
+		</maps:MapViewer>
+	</Grid>
+</Window>
