@@ -8,9 +8,9 @@ using System.Windows;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("BattleFieldMonitor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("SWSU Kursk")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("НИИ РЭС")]
 [assembly: AssemblyProduct("BattleFieldMonitor")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
