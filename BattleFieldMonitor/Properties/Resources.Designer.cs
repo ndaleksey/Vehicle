@@ -59,5 +59,14 @@ namespace Swsu.BattleFieldMonitor.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Монитор марштура РТК.
+        /// </summary>
+        internal static string ApplicationTitle {
+            get {
+                return ResourceManager.GetString("ApplicationTitle", resourceCulture);
+            }
+        }
     }
 }

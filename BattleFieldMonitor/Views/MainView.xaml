@@ -3,31 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:maps="http://www.swsu.ru/schemas/Maps"
+        xmlns:views="clr-namespace:Swsu.BattleFieldMonitor.Views"
+        xmlns:viewModels="clr-namespace:Swsu.BattleFieldMonitor.ViewModels"
         mc:Ignorable="d"
-        Title="MainView" Height="350" Width="525">
+		Height="600" Width="800"
+		WindowStartupLocation="CenterScreen"
+		WindowState="Maximized"
+		Title="Монитор">
+	<!--	Title="{x:Static properties:Resources.ApplicationTitle}"-->
+
+	<Window.DataContext>
+		<viewModels:MainViewModel />
+	</Window.DataContext>
+	
 	<Window.Resources>
-		<maps:MicrosoftAccessEpsgDataProvider x:Key="EpsgDataProvider" DatabaseFileName="C:\EPSG\EPSG_v8_9.mdb" />
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="../Resources/CommonResources.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Window.Resources>
 
-	<Grid>
-		<maps:MapViewer ScaleDenominator="5E7">
-			<maps:MapViewer.MapDefinition>
-				<maps:WmtsMapDefinition
-                    Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
-                    LayerIdentifier="world_web_merkator"
-                    StyleIdentifier="DefaultStyle"
-                    TileMatrixSetIdentifier="world_web_merkator_set"
-                    EpsgDataProvider="{StaticResource EpsgDataProvider}" />
-			</maps:MapViewer.MapDefinition>
+	<Grid Margin="5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto" MinHeight="50"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="Auto" MinWidth="100"/>
+		</Grid.ColumnDefinitions>
 
-			<maps:MapLayer>
-				<maps:GeographicPointShape2 Latitude="0" Longitude="0">
-					<maps:GeometryPointSymbol2 Brush="Red">
-						<EllipseGeometry Center="0 0" RadiusX="20" RadiusY="20" />
-					</maps:GeometryPointSymbol2>
-				</maps:GeographicPointShape2>
-			</maps:MapLayer>
-		</maps:MapViewer>
+		<views:MapContainerView Grid.Row="0" Grid.Column="0" MinWidth="500" MinHeight="400" Background="LightGray"/>
+
+		<DockPanel VerticalAlignment="Bottom" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+			<GroupBox DockPanel.Dock="Bottom" Header="Инструменты" Margin="5">
+				<StackPanel>
+					<!--<Button Content="Увеличть" Margin="5" Command="{Binding Path=MapScaleInCommand}"/>
+					<Button Content="Уменьшить" Margin="5" Command="{Binding Path=MapScaleOutCommand}"/>-->
+					<Slider Orientation="Vertical" Height="200" HorizontalAlignment="Center" 
+							Value="{Binding Path=ScaleDenominator, UpdateSourceTrigger=PropertyChanged}"
+							Minimum="0.5e4" Maximum="1e9" TickFrequency="5e1" TickPlacement="BottomRight"/>
+				</StackPanel>
+			</GroupBox>
+		</DockPanel>
 	</Grid>
 </Window>
