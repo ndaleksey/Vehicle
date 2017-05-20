@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleFieldMonitor", "BattleFieldMonitor\BattleFieldMonitor.csproj", "{278E784C-7150-499B-B77E-B7A5ABEF383F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2C5C68E-AAE0-40F4-97B6-A35E17CB3E43}"
+	ProjectSection(SolutionItems) = preProject
+		Schema.sql = Schema.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
