@@ -196,3 +196,5 @@ ALTER TABLE unmanned_vehicle_messages
 
 ALTER TABLE user_windows_principals
   ADD FOREIGN KEY (id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+CREATE INDEX unmanned_vehicle_messages_received_at ON unmanned_vehicle_messages (id, received_at);
