@@ -8,9 +8,9 @@ CREATE TABLE beacons -- точки возврата
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_used_id uuid NOT NULL, -- кем создано
+  created_by_user_id uuid NOT NULL, -- кем создано
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
   last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
@@ -30,9 +30,9 @@ CREATE TABLE obstacles -- препятствия
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_used_id uuid NOT NULL, -- кем создано
+  created_by_user_id uuid NOT NULL, -- кем создано
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
   last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   geometry XML NOT NULL,
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
@@ -48,9 +48,9 @@ CREATE TABLE remote_control_vehicles -- пункты дистанционног�
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_used_id uuid NOT NULL, -- кем создано
+  created_by_user_id uuid NOT NULL, -- кем создано
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
   last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   address TEXT NOT NULL, -- номер, используемый для установки связи
   x DOUBLE PRECISION NOT NULL, -- долгота
@@ -67,9 +67,9 @@ CREATE TABLE routes -- маршруты
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_used_id uuid NOT NULL, -- кем создано
+  created_by_user_id uuid NOT NULL, -- кем создано
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
   last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   segments XML NOT NULL,
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
@@ -152,9 +152,9 @@ CREATE TABLE unmanned_vehicles -- робототехнические компл�
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_used_id uuid NOT NULL, -- кем создано
+  created_by_user_id uuid NOT NULL, -- кем создано
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
   last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   address TEXT NOT NULL, -- номер, используемый для установки связи
   x DOUBLE PRECISION NOT NULL, -- долгота
