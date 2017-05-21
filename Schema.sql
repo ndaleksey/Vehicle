@@ -8,6 +8,10 @@ CREATE TABLE beacons -- точки возврата
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
+  created_by_used_id uuid NOT NULL, -- кем создано
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
+  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
 
@@ -26,6 +30,10 @@ CREATE TABLE obstacles -- препятствия
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
+  created_by_used_id uuid NOT NULL, -- кем создано
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
+  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   geometry XML NOT NULL,
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
   y_min DOUBLE PRECISION NOT NULL, -- южная широта
@@ -40,6 +48,10 @@ CREATE TABLE remote_control_vehicles -- пункты дистанционног�
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
+  created_by_used_id uuid NOT NULL, -- кем создано
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
+  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   address TEXT NOT NULL, -- номер, используемый для установки связи
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
@@ -55,6 +67,10 @@ CREATE TABLE routes -- маршруты
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
+  created_by_used_id uuid NOT NULL, -- кем создано
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
+  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   segments XML NOT NULL,
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
   y_min DOUBLE PRECISION NOT NULL, -- южная широта
@@ -123,17 +139,23 @@ CREATE TABLE sessions -- сеансы редактирования
 CREATE TABLE unmanned_vehicle_messages -- сообщения, полученные от робототехнических комплексов
 (
   id uuid NOT NULL,
+  unmanned_vehicle_id uuid NOT NULL,
   ordinal BIGINT NOT NULL, -- порядковый номер
   received_at TIMESTAMP NOT NULL, -- время получения
   payload XML NOT NULL, -- содержание полученного сообщения
 
-  PRIMARY KEY (id, ordinal)
+  PRIMARY KEY (id),
+  UNIQUE (unmanned_vehicle_id, ordinal)
 );
 
 CREATE TABLE unmanned_vehicles -- робототехнические комплексы
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
+  created_by_used_id uuid NOT NULL, -- кем создано
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
+  last_modified_by_used_id uuid NOT NULL, -- кем последний раз редактировалось
+  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   address TEXT NOT NULL, -- номер, используемый для установки связи
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
@@ -192,9 +214,9 @@ ALTER TABLE session_unmanned_vehicles
   ADD FOREIGN KEY (unmanned_vehicle_id) REFERENCES unmanned_vehicles(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 ALTER TABLE unmanned_vehicle_messages
-  ADD FOREIGN KEY (id) REFERENCES unmanned_vehicles(id) ON UPDATE CASCADE ON DELETE CASCADE;
+  ADD FOREIGN KEY (unmanned_vehicle_id) REFERENCES unmanned_vehicles(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE user_windows_principals
   ADD FOREIGN KEY (id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-CREATE INDEX unmanned_vehicle_messages_received_at ON unmanned_vehicle_messages (id, received_at);
+CREATE INDEX unmanned_vehicle_messages_received_at ON unmanned_vehicle_messages (unmanned_vehicle_id, received_at);
