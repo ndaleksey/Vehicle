@@ -114,6 +114,7 @@
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
     <Compile Include="Services\IDatabase.cs" />
     <Compile Include="Services\Implementations\Database.cs" />
+    <Compile Include="Models\MapObject.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModelParent.cs" />
@@ -176,6 +177,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Infrastructure\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

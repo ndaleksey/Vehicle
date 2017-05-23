@@ -1,4 +1,6 @@
-﻿using Swsu.BattleFieldMonitor.ViewModelInterfaces;
+﻿using System.Collections.ObjectModel;
+using Swsu.BattleFieldMonitor.Models;
+using Swsu.BattleFieldMonitor.ViewModelInterfaces;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 {
@@ -11,14 +13,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private double _scaleDenominator;
         #endregion
 
-        #region Constructors
-        public ViewModel()
-        {
-            MapToolMode = MapToolMode.Pan;
-        }
-        #endregion
-
         #region Properties
+
+        /// <summary>
+        /// Коллекция танков, отображаемых на карте
+        /// </summary>
+	    public ObservableCollection<MapObject> MapObjects { get; }
+
         public MapToolMode MapToolMode
         {
             get { return _mapToolMode; }
@@ -30,8 +31,23 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             get { return _scaleDenominator; }
             set { SetProperty(ref _scaleDenominator, value, nameof(ScaleDenominator), OnScaleDenominatorChanged); }
         }
+
         #endregion
 
+        #region Constructors
+
+        public ViewModel()
+        {
+            MapObjects = new ObservableCollection<MapObject>
+            {
+                new MapObject(0.123456789, 55.123456789, 45.123456789)
+            };
+
+            MapToolMode = MapToolMode.Pan;
+        }
+
+        #endregion
+        
         #region Methods
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
         {

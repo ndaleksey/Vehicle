@@ -42,14 +42,115 @@
                     TileMatrixSetIdentifier="world_web_merkator_set"
                     EpsgDataProvider="{StaticResource EpsgDataProvider}" />
 		</map:MapViewer.MapDefinition>
-		
 
-		<!--<map:MapLayer>
-			<map:GeographicPointShape2 Latitude="0" Longitude="0">
-				<map:GeometryPointSymbol2 Brush="Red">
-					<EllipseGeometry Center="0 0" RadiusX="20" RadiusY="20" />
-				</map:GeometryPointSymbol2>
-			</map:GeographicPointShape2>
-		</map:MapLayer>-->
-	</map:MapViewer>
+
+        <map:MapLayer ItemsSource="{Binding MapObjects}">
+            <map:MapLayer.ItemShapeTemplate>
+                <map:ShapeTemplate>
+                    <map:CompositeShape >
+                        <!--Объект-->
+                        <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                            <!--<map:GeographicPointShape2.Transform>
+                                <RotateTransform Angle="{Binding Azimuth}"/>
+                            </map:GeographicPointShape2.Transform>-->
+
+                            <map:GeometryPointSymbol2 Brush="DarkRed">
+                                <map:GeometryPointSymbol2.Pen>
+                                    <Pen Brush="DarkRed" Thickness="2"/>
+                                </map:GeometryPointSymbol2.Pen>
+
+                                <GeometryGroup>
+                                    <GeometryGroup.Transform>
+                                        <RotateTransform Angle="{Binding Azimuth}"/>
+                                    </GeometryGroup.Transform>
+
+                                    <PathGeometry>
+                                        <PathFigure IsClosed="True" IsFilled="False" StartPoint="0, -20">
+                                            <LineSegment Point="10, -10"/>
+                                            <LineSegment Point="10, 20"/>
+                                            <LineSegment Point="-10, 20"/>
+                                            <LineSegment Point="-10, -10"/>
+                                        </PathFigure>
+                                    </PathGeometry>
+
+                                    <RectangleGeometry>
+                                        <RectangleGeometry.Rect>
+                                            <Rect X="-10" Y="12" Width="20" Height="8"/>
+                                        </RectangleGeometry.Rect>
+                                    </RectangleGeometry>
+                                </GeometryGroup>
+                            </map:GeometryPointSymbol2>
+                        </map:GeographicPointShape2>
+
+                        <!--Выноска-->
+                        <map:CompositeShape>
+                            <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                <map:GeometryPointSymbol2 Brush="Black" Opacity="0.5">
+                                    <RectangleGeometry>
+                                        <RectangleGeometry.Rect>
+                                            <Rect X="50" Y="-60" Height="120" Width="160"/>
+                                        </RectangleGeometry.Rect>
+                                    </RectangleGeometry>
+                                </map:GeometryPointSymbol2>
+                            </map:GeographicPointShape2>
+
+                            <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                <map:GeometryPointSymbol2>
+                                    <map:GeometryPointSymbol2.Pen>
+                                        <Pen Brush="LawnGreen" Thickness="2"/>
+                                    </map:GeometryPointSymbol2.Pen>
+
+                                    <PathGeometry>
+                                        <PathFigure IsClosed="False" IsFilled="False" StartPoint="30, 0">
+                                            <LineSegment Point="50, 0"/>
+                                        </PathFigure>
+
+                                        <PathFigure IsClosed="False" IsFilled="False" StartPoint="70, -60">
+                                            <LineSegment Point="50, -60"/>
+                                            <LineSegment Point="50, 60"/>
+                                            <LineSegment Point="70, 60"/>
+                                        </PathFigure>
+
+                                        <PathFigure IsClosed="False" IsFilled="False" StartPoint="190, -60">
+                                            <LineSegment Point="210, -60"/>
+                                            <LineSegment Point="210, 60"/>
+                                            <LineSegment Point="190, 60"/>
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </map:GeometryPointSymbol2>
+                            </map:GeographicPointShape2>
+
+                            <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                <map:GeometryPointSymbol2>
+                                    <map:GeometryPointSymbol2.Pen>
+                                        <Pen Brush="LawnGreen" Thickness="1"/>
+                                    </map:GeometryPointSymbol2.Pen>
+
+                                    <PathGeometry>
+                                        <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 10">
+                                            <LineSegment Point="200, 10"/>
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </map:GeometryPointSymbol2>
+                            </map:GeographicPointShape2>
+
+                            <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                <map:GeographicPointShape2.Transform>
+                                    <TranslateTransform X="60" Y="-50"/>
+                                </map:GeographicPointShape2.Transform>
+
+                                <map:TextPointSymbol2 
+                                    Text="{Binding CalloutText}" 
+                                    Foreground="White" 
+                                    FontWeight="Bold"
+                                    FontFamily="Arial">
+
+                                </map:TextPointSymbol2>
+                            </map:GeographicPointShape2>
+                        </map:CompositeShape>
+                    </map:CompositeShape>
+                </map:ShapeTemplate>
+            </map:MapLayer.ItemShapeTemplate>
+        </map:MapLayer>
+    </map:MapViewer>
 </UserControl>
