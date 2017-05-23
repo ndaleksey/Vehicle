@@ -26,6 +26,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             private set { SetProperty(ref _mapToolMode, value, nameof(MapToolMode)); }
         }
 
+        /// <summary>
+        /// Коллекция препятствий, отображаемых на карте
+        /// </summary>
+	    public ObservableCollection<Obstacle> Obstacles { get; }
+
         public double ScaleDenominator
         {
             get { return _scaleDenominator; }
@@ -38,12 +43,17 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         public ViewModel()
         {
+            MapToolMode = MapToolMode.Pan;
+
             MapObjects = new ObservableCollection<MapObject>
             {
                 new MapObject(0.123456789, 55.123456789, 45.123456789)
             };
 
-            MapToolMode = MapToolMode.Pan;
+            Obstacles = new ObservableCollection<Obstacle>
+            {
+                new Obstacle()
+            };
         }
 
         #endregion
