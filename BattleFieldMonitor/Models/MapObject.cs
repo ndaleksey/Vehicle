@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using DevExpress.Mvvm;
 
 namespace Swsu.BattleFieldMonitor.Models
@@ -37,6 +38,11 @@ namespace Swsu.BattleFieldMonitor.Models
             get { return _calloutText; }
             set { SetProperty(ref _calloutText, value, nameof(CalloutText)); }
         }
+
+        /// <summary>
+        /// Коллекция координат трассы объекта
+        /// </summary>
+        public ObservableCollection<Coord> Coords { get; }
 
         /// <summary>
         /// Широта
@@ -88,6 +94,14 @@ namespace Swsu.BattleFieldMonitor.Models
             Azimuth = azimuth;
             Latitude = latitude;
             Longitude = longitude;
+
+            //TODO: Убрать лишнее
+            Coords = new ObservableCollection<Coord>()
+            {
+                new Coord(0.123456789, 55.123456789),
+                new Coord(-10, 51.0),
+                new Coord(-20, 50.0)
+            };
         }
 
         #endregion

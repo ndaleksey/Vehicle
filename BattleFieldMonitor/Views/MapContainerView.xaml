@@ -48,39 +48,56 @@
                 <map:ShapeTemplate>
                     <map:CompositeShape >
                         <!--Объект-->
-                        <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                            <!--<map:GeographicPointShape2.Transform>
-                                <RotateTransform Angle="{Binding Azimuth}"/>
-                            </map:GeographicPointShape2.Transform>-->
+                        <map:CompositeShape>
+                            <map:GeographicLineStringShape2 PointsSource="{Binding Coords}">
+                                <map:GeographicLineStringShape2.PointContainerStyle>
+                                    <Style TargetType="map:GeographicLineStringShapePoint2">
+                                        <Setter Property="Latitude" Value="{Binding Latitude}"/>
+                                        <Setter Property="Longitude" Value="{Binding Longitude}"/>
+                                    </Style>
+                                </map:GeographicLineStringShape2.PointContainerStyle>
 
-                            <map:GeometryPointSymbol2 Brush="DarkRed">
-                                <map:GeometryPointSymbol2.Pen>
-                                    <Pen Brush="DarkRed" Thickness="2"/>
-                                </map:GeometryPointSymbol2.Pen>
+                                <map:PenCurveSymbol2>
+                                    <map:PenCurveSymbol2.Pen>
+                                        <Pen Brush="Red" Thickness="1"/>
+                                    </map:PenCurveSymbol2.Pen>
+                                </map:PenCurveSymbol2>
+                            </map:GeographicLineStringShape2>
 
-                                <GeometryGroup>
-                                    <GeometryGroup.Transform>
-                                        <RotateTransform Angle="{Binding Azimuth}"/>
-                                    </GeometryGroup.Transform>
+                            <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                <!--<map:GeographicPointShape2.Transform>
+                                    <RotateTransform Angle="{Binding Azimuth}"/>
+                                </map:GeographicPointShape2.Transform>-->
 
-                                    <PathGeometry>
-                                        <PathFigure IsClosed="True" IsFilled="False" StartPoint="0, -20">
-                                            <LineSegment Point="10, -10"/>
-                                            <LineSegment Point="10, 20"/>
-                                            <LineSegment Point="-10, 20"/>
-                                            <LineSegment Point="-10, -10"/>
-                                        </PathFigure>
-                                    </PathGeometry>
+                                <map:GeometryPointSymbol2 Brush="DarkRed">
+                                    <map:GeometryPointSymbol2.Pen>
+                                        <Pen Brush="DarkRed" Thickness="2"/>
+                                    </map:GeometryPointSymbol2.Pen>
 
-                                    <RectangleGeometry>
-                                        <RectangleGeometry.Rect>
-                                            <Rect X="-10" Y="12" Width="20" Height="8"/>
-                                        </RectangleGeometry.Rect>
-                                    </RectangleGeometry>
-                                </GeometryGroup>
-                            </map:GeometryPointSymbol2>
-                        </map:GeographicPointShape2>
+                                    <GeometryGroup>
+                                        <GeometryGroup.Transform>
+                                            <RotateTransform Angle="{Binding Azimuth}"/>
+                                        </GeometryGroup.Transform>
 
+                                        <PathGeometry>
+                                            <PathFigure IsClosed="True" IsFilled="False" StartPoint="0, -20">
+                                                <LineSegment Point="10, -10"/>
+                                                <LineSegment Point="10, 20"/>
+                                                <LineSegment Point="-10, 20"/>
+                                                <LineSegment Point="-10, -10"/>
+                                            </PathFigure>
+                                        </PathGeometry>
+
+                                        <RectangleGeometry>
+                                            <RectangleGeometry.Rect>
+                                                <Rect X="-10" Y="12" Width="20" Height="8"/>
+                                            </RectangleGeometry.Rect>
+                                        </RectangleGeometry>
+                                    </GeometryGroup>
+                                </map:GeometryPointSymbol2>
+                            </map:GeographicPointShape2>
+                        </map:CompositeShape>
+                        
                         <!--Выноска-->
                         <map:CompositeShape>
                             <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
@@ -96,7 +113,7 @@
                             <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                 <map:GeometryPointSymbol2>
                                     <map:GeometryPointSymbol2.Pen>
-                                        <Pen Brush="LawnGreen" Thickness="2"/>
+                                        <Pen Brush="White" Thickness="2"/>
                                     </map:GeometryPointSymbol2.Pen>
 
                                     <PathGeometry>
@@ -122,7 +139,7 @@
                             <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                 <map:GeometryPointSymbol2>
                                     <map:GeometryPointSymbol2.Pen>
-                                        <Pen Brush="LawnGreen" Thickness="1"/>
+                                        <Pen Brush="White" Thickness="1"/>
                                     </map:GeometryPointSymbol2.Pen>
 
                                     <PathGeometry>
