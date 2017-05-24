@@ -27,6 +27,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
 	    public ObservableCollection<MapObject> MapObjects { get; }
 
+        /// <summary>
+        /// Режим инструмента карты
+        /// </summary>
         public MapToolMode MapToolMode
         {
             get { return _mapToolMode; }
@@ -38,6 +41,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
 	    public ObservableCollection<Obstacle> Obstacles { get; }
 
+        /// <summary>
+        /// Знаменатель масштаба
+        /// </summary>
         public double ScaleDenominator
         {
             get { return _scaleDenominator; }
@@ -98,7 +104,10 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public DelegateCommand<PointDrawnParameter> OnPointDrawnCommand { get; }
 
-        public DelegateCommand<LineDrawnParameter> OnLinePointDrawnCommand { get; }
+        /// <summary>
+        /// Команда добавления линии (границы полигона)
+        /// </summary>
+        public DelegateCommand<LineDrawnParameter> OnLineDrawnCommand { get; }
 
         /// <summary>
         /// Команда переключения на режим добавления точек
@@ -123,30 +132,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         {
             MapToolMode = MapToolMode.Pan;
 
-            OnLinePointDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
+            OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
             SwitchToPointDtCommand = new DelegateCommand(SwitchToPointDt);
             SwitchToPreciseLsdtCommand = new DelegateCommand(SwitchToPreciseLsdt);
             SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
 
-            MapObjects = new ObservableCollection<MapObject>
-            {
-                new MapObject(0.123456789, 55.123456789, 45.123456789)
-            };
+            MapObjects = new ObservableCollection<MapObject>();
 
-            Obstacles = new ObservableCollection<Obstacle>
-            {
-                new Obstacle()
-                {
-                    Coords =
-                    {
-                        new Coord(0, 0),
-                        new Coord(-30, 0),
-                        new Coord(-30, -30),
-                        new Coord(0, -30)
-                    }
-                }
-            };
+            Obstacles = new ObservableCollection<Obstacle>();
         }
 
         #endregion
@@ -230,8 +224,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void SwitchToQuickLsdt()
         {
-            SwitchToPointDtButtonChecked = false;
-            SwitchToPreciseLsdtButtonChecked = false;
+            if (SwitchToQuickLsdtButtonChecked)
+            {
+                SwitchToPointDtButtonChecked = false;
+                SwitchToPreciseLsdtButtonChecked = false;
+                MapToolMode = MapToolMode.QuickLineStringDrawing;
+            }
+            else
+            {
+                MapToolMode = MapToolMode.Pan;
+            }
         }
         #endregion
     }

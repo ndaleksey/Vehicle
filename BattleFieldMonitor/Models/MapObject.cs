@@ -94,14 +94,8 @@ namespace Swsu.BattleFieldMonitor.Models
             Azimuth = azimuth;
             Latitude = latitude;
             Longitude = longitude;
-
-            //TODO: Убрать лишнее
-            Coords = new ObservableCollection<Coord>()
-            {
-                new Coord(0.123456789, 55.123456789),
-                new Coord(-10, 51.0),
-                new Coord(-20, 50.0)
-            };
+            
+            Coords = new ObservableCollection<Coord>();
         }
 
         #endregion

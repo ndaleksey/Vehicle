@@ -7,7 +7,7 @@ using Swsu.BattleFieldMonitor.Converters1.Parameters;
 
 namespace Swsu.BattleFieldMonitor.Converters1
 {
-    class PreciseLineStringDrawnEventArgsConverter : EventArgsConverterBase<LineStringDrawnEventArgs>
+    class LineStringDrawnEventArgsConverter : EventArgsConverterBase<LineStringDrawnEventArgs>
     {
         #region Properties
         public AngleUnit AngleUnit { get; set; } = AngleUnit.Degree;
@@ -16,7 +16,7 @@ namespace Swsu.BattleFieldMonitor.Converters1
 
         #region Constructors
 
-        public PreciseLineStringDrawnEventArgsConverter() { }
+        public LineStringDrawnEventArgsConverter() { }
         #endregion
         
         #region Methods

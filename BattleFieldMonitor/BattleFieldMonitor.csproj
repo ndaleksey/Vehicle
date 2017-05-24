@@ -118,7 +118,7 @@
     <Compile Include="Converters1\Parameters\LineDrawnParameter.cs" />
     <Compile Include="Converters1\Parameters\PointDrawnParameter.cs" />
     <Compile Include="Converters1\PointDrawnEventArgsConverter.cs" />
-    <Compile Include="Converters1\PreciseLineStringDrawnEventArgsConverter.cs" />
+    <Compile Include="Converters1\LineStringDrawnEventArgsConverter.cs" />
     <Compile Include="Models\Coord.cs" />
     <Compile Include="Models\MapObject.cs" />
     <Compile Include="Models\Obstacle.cs" />

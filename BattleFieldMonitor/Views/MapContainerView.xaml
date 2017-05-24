@@ -5,10 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:views="clr-namespace:Swsu.BattleFieldMonitor.Views"
 	xmlns:map="http://www.swsu.ru/schemas/Maps"
 	xmlns:viewModels="clr-namespace:Swsu.BattleFieldMonitor.ViewModels.MapContainer"
-    xmlns:infrastructure="clr-namespace:Swsu.BattleFieldMonitor.Infrastructure"
+	xmlns:infrastructure="clr-namespace:Swsu.BattleFieldMonitor.Infrastructure"
 	xmlns:system="clr-namespace:System;assembly=mscorlib"
 	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
 	xmlns:converters1="clr-namespace:Swsu.BattleFieldMonitor.Converters1"
@@ -23,15 +22,19 @@
 				<ResourceDictionary Source="../Resources/CommonResources.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
+            <Pen x:Key="PolygonBoundaryPen" Brush="Red" Thickness="2"/>
+            <Pen x:Key="RouteLinePen" Brush="Red" Thickness="2"/>
+            
             <converters1:PointDrawnEventArgsConverter x:Key="PointDrawnEventArgsConverter" />
-            <converters1:PreciseLineStringDrawnEventArgsConverter x:Key="PreciseLineStringDrawnEventArgsConverter" />
+            <converters1:LineStringDrawnEventArgsConverter x:Key="LineStringDrawnEventArgsConverter" />
             
             <map:ToolTemplate2 x:Key="{map:ToolTemplateKey2 DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.Pan}}">
                 <map:PanTool2/>
             </map:ToolTemplate2>
 
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.PointDrawing}}">
-                <map:PointDrawingTool d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}">
+                <map:PointDrawingTool 
+                    d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand 
                             Command="{Binding OnPointDrawnCommand}" 
@@ -42,18 +45,31 @@
             </map:ToolTemplate>
 
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.PreciseLineStringDrawing}}">
-                <map:PreciseLineStringDrawingTool d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}">
+                <map:PreciseLineStringDrawingTool 
+                    d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}" 
+                    Pen="{StaticResource PolygonBoundaryPen}">
+                    
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand
-                            Command="{Binding OnLinePointDrawnCommand}"
+                            Command="{Binding OnLineDrawnCommand}"
                             Event="{x:Static map:PreciseLineStringDrawingTool.DrawnEvent}"
-                            EventArgsConverter="{StaticResource ResourceKey=PreciseLineStringDrawnEventArgsConverter}"/>
+                            EventArgsConverter="{StaticResource ResourceKey=LineStringDrawnEventArgsConverter}"/>
                     </dxmvvm:Interaction.Behaviors>
                 </map:PreciseLineStringDrawingTool>
             </map:ToolTemplate>
 
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.QuickLineStringDrawing}}">
-                <map:QuickLineStringDrawingTool/>
+                <map:QuickLineStringDrawingTool 
+                    d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}"
+                    Pen="{StaticResource PolygonBoundaryPen}">
+                    
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand
+                            Command="{Binding OnLineDrawnCommand}"
+                            Event="{x:Static map:QuickLineStringDrawingTool.DrawnEvent}"
+                            EventArgsConverter="{StaticResource ResourceKey=LineStringDrawnEventArgsConverter}"/>
+                    </dxmvvm:Interaction.Behaviors>
+                </map:QuickLineStringDrawingTool>
             </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
@@ -75,6 +91,7 @@
                         EpsgDataProvider="{StaticResource EpsgDataProvider}" />
             </map:MapViewer.MapDefinition>
 
+            <!--Объекты-->
             <map:MapLayer ItemsSource="{Binding MapObjects}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
@@ -89,11 +106,7 @@
                                         </Style>
                                     </map:GeographicLineStringShape2.PointContainerStyle>
 
-                                    <map:PenCurveSymbol2>
-                                        <map:PenCurveSymbol2.Pen>
-                                            <Pen Brush="Red" Thickness="1"/>
-                                        </map:PenCurveSymbol2.Pen>
-                                    </map:PenCurveSymbol2>
+                                    <map:PenCurveSymbol2 Pen="{StaticResource RouteLinePen}"/>
                                 </map:GeographicLineStringShape2>
 
                                 <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
@@ -201,6 +214,7 @@
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
 
+            <!--Препятствия-->
             <map:MapLayer ItemsSource="{Binding Obstacles}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
@@ -224,9 +238,7 @@
                                             <SolidColorBrush Color="Red" Opacity="0.5"/>
                                         </map:BrushFill>
                                         <map:StrokeOutlineFill>
-                                            <map:PenStroke>
-                                                <Pen Brush="Red" Thickness="2"/>
-                                            </map:PenStroke>
+                                            <map:PenStroke Pen="{StaticResource PolygonBoundaryPen}"/>
                                         </map:StrokeOutlineFill>
                                     </map:FillGroup>
                                 </map:FillPolygonSymbol.Fill>
