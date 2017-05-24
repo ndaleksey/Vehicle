@@ -34,9 +34,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Mvvm.v15.2, Version=15.2.10.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Mvvm, Version=16.2.0.0, Culture=neutral, PublicKeyToken=382ad28f6ae31f30, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevExpressMvvm.16.2.3.0\lib\net40-client\DevExpress.Mvvm.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Mvvm.UI, Version=16.2.0.0, Culture=neutral, PublicKeyToken=382ad28f6ae31f30, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevExpressMvvm.16.2.3.0\lib\net40-client\DevExpress.Mvvm.UI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Swsu.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Common.1.0.0-alpha\lib\net45\Swsu.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Common.Windows.DevExpress, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Common.Windows.DevExpress.1.0.0-alpha\lib\net45\Swsu.Common.Windows.DevExpress.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Swsu.Geo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -83,9 +94,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Infrastructure\MapToolMode.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MapContainerViewModel.cs" />
+    <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
+    <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IMapContainerViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IViewModelParent.cs" />
+    <Compile Include="ViewModels\ChildViewModelBase.cs" />
+    <Compile Include="ViewModels\Main\ViewModel.cs" />
+    <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">
       <DependentUpon>MapContainerView.xaml</DependentUpon>
     </Compile>
@@ -139,6 +154,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Infrastructure\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

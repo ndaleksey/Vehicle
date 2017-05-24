@@ -1,15 +1,12 @@
-﻿using System.Windows;
-
-namespace Swsu.BattleFieldMonitor.Views
+﻿namespace Swsu.BattleFieldMonitor.Views
 {
-	/// <summary>
-	/// Логика взаимодействия для MainView.xaml
-	/// </summary>
-	public partial class MainView : Window
-	{
-		public MainView()
-		{
-			InitializeComponent();
-		}
-	}
+    partial class MainView
+    {
+        #region Methods
+        public MainView()
+        {
+            InitializeComponent();
+        }
+        #endregion
+    }
 }
