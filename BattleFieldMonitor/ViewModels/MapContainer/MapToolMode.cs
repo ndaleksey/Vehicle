@@ -2,7 +2,9 @@
 {
 	public enum MapToolMode
 	{
-		Pan,
-		PointDrawing
-	}
+        Pan,
+        PointDrawing,
+        PreciseLineStringDrawing,
+        QuickLineStringDrawing
+    }
 }

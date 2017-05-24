@@ -18,13 +18,7 @@ namespace Swsu.BattleFieldMonitor.Models
 
         public Obstacle()
         {
-            Coords = new ObservableCollection<Coord>
-            {
-                new Coord(0, 0),
-                new Coord(-30, 0),
-                new Coord(-30, -30),
-                new Coord(0, -30)
-            };
+            Coords = new ObservableCollection<Coord>();
         }
 
         #endregion
