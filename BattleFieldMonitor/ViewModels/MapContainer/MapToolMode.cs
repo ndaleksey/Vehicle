@@ -6,6 +6,7 @@
         PointDrawing,
         PreciseLineStringDrawing,
         QuickLineStringDrawing,
-	    SimpleSelection
+	    SimpleSelection,
+        Reshaping
 	}
 }

@@ -195,6 +195,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private void Edit()
         {
             _selectedObstacle.IsEditMode = !_selectedObstacle.IsEditMode;
+
+            MapToolMode = _selectedObstacle.IsEditMode ? MapToolMode.Reshaping : MapToolMode.SimpleSelection;
         }
 
         /// <summary>

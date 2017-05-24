@@ -75,6 +75,26 @@
                     </dxmvvm:Interaction.Behaviors>
                 </map:QuickLineStringDrawingTool>
             </map:ToolTemplate>
+
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.Reshaping}}">
+                <map:ReshapingTool>
+                    <map:ReshapingTool.PointHandleStyle>
+                        <Style TargetType="map:ReshapingToolPointHandle">
+                            <Setter Property="Marker">
+                                <Setter.Value>
+                                                                        <map:GeometryMarker Brush="White">
+                                        <map:GeometryMarker.Pen>
+                                            <Pen Brush="Red" Thickness="2"/>
+                                        </map:GeometryMarker.Pen>
+
+                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                    </map:GeometryMarker>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </map:ReshapingTool.PointHandleStyle>
+                </map:ReshapingTool>
+            </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
 
@@ -243,6 +263,8 @@
                                                             </ContextMenu>
                                                         </Setter.Value>
                                                     </Setter>
+                                                    
+                                                    <Setter Property="map:Reshaping.IsMutable" Value="False"/>
                                                 </DataTrigger.Setters>
                                             </DataTrigger>
 
@@ -255,6 +277,8 @@
                                                             </ContextMenu>
                                                         </Setter.Value>
                                                     </Setter>
+
+                                                    <Setter Property="map:Reshaping.IsMutable" Value="True"/>
                                                 </DataTrigger.Setters>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -273,7 +297,7 @@
                                     </map:RingSubshape>
                                 </map:PolygonShape.ExternalRing>
 
-                                <map:FillPolygonSymbol>
+                                <map:FillPolygonSymbol >
                                     <map:FillPolygonSymbol.Fill>
                                         <map:FillGroup>
                                             <map:BrushFill>
@@ -287,17 +311,52 @@
                                 </map:FillPolygonSymbol>
                             </map:PolygonShape>
                             
-                            <map:CompositeShape ItemsSource="{Binding Coords}">
+                            <!--Маркеры выделения-->
+                            <!--<map:CompositeShape ItemsSource="{Binding Coords}">
+                                <map:CompositeShape.ItemShapeTemplate>
+                                    <map:ShapeTemplate>
+                                        <map:GeographicPointShape2 
+                                            Latitude="{Binding Latitude}" 
+                                            Longitude="{Binding Longitude}">
+                                            
+                                            <map:GeometryPointSymbol2 
+                                                Brush="White">
+                                                <map:GeometryPointSymbol2.Style>
+                                                    <Style TargetType="map:GeometryPointSymbol2">
+                                                        
+                                                    </Style>
+                                                </map:GeometryPointSymbol2.Style>
+
+                                                <map:GeometryPointSymbol2.Pen>
+                                                    <Pen Brush="Red" Thickness="1"/>
+                                                </map:GeometryPointSymbol2.Pen>
+
+                                                <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                            </map:GeometryPointSymbol2>
+                                        </map:GeographicPointShape2>
+                                    </map:ShapeTemplate>
+                                </map:CompositeShape.ItemShapeTemplate>
+                                
                                 <map:CompositeShape.Style>
                                     <Style TargetType="map:CompositeShape">
+                                        
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsEditMode}" Value="True">
                                                 <DataTrigger.Setters>
                                                     <Setter Property="ItemShapeTemplate">
                                                         <Setter.Value>
                                                             <map:ShapeTemplate>
-                                                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                                                    <map:GeometryPointSymbol2 Brush="White">
+                                                                <map:GeographicPointShape2 
+                                                                    Latitude="{Binding Latitude}" 
+                                                                    Longitude="{Binding Longitude}">
+                                                                    <map:GeometryPointSymbol2 
+                                                                        Brush="White">
+                                                                        <map:GeometryPointSymbol2.Style>
+                                                                            <Style TargetType="map:GeometryPointSymbol2">
+                                                                                <EventSetter Event="MouseDown" Handler="EditMarker_OnMouseDown"/>
+                                                                            </Style>
+                                                                        </map:GeometryPointSymbol2.Style>
+                                                                        
                                                                         <map:GeometryPointSymbol2.Pen>
                                                                             <Pen Brush="Red" Thickness="1"/>
                                                                         </map:GeometryPointSymbol2.Pen>
@@ -313,7 +372,7 @@
                                         </Style.Triggers>
                                     </Style>
                                 </map:CompositeShape.Style>
-                            </map:CompositeShape>
+                            </map:CompositeShape>-->
                         </map:CompositeShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
