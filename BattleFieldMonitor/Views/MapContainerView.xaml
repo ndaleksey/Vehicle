@@ -82,9 +82,9 @@
                         <Style TargetType="map:ReshapingToolPointHandle">
                             <Setter Property="Marker">
                                 <Setter.Value>
-                                                                        <map:GeometryMarker Brush="White">
+                                    <map:GeometryMarker Brush="Red">
                                         <map:GeometryMarker.Pen>
-                                            <Pen Brush="Red" Thickness="2"/>
+                                            <Pen Brush="White" Thickness="2"/>
                                         </map:GeometryMarker.Pen>
 
                                         <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
