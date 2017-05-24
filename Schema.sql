@@ -20,6 +20,7 @@ CREATE TABLE mission -- маршрутное задание
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
   description XML NOT NULL,
+  state_flags INT DEFAULT 0 NOT NULL, -- состояние выполнения задания
 
   PRIMARY KEY (id),
   UNIQUE (display_name)
