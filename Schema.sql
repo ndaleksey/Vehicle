@@ -4,14 +4,10 @@ CREATE SCHEMA nkb_vs;
 
 SET search_path TO nkb_vs;
 
-CREATE TABLE beacons -- точки возврата
+CREATE TABLE beacon -- точки возврата
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_user_id uuid NOT NULL, -- кем создано
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
-  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
 
@@ -19,21 +15,20 @@ CREATE TABLE beacons -- точки возврата
   UNIQUE (display_name)
 );
 
-CREATE TABLE commanders -- пользователи, являющиеся командирами
-(
-  id uuid NOT NULL,
-
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE obstacles -- препятствия
+CREATE TABLE mission -- маршрутное задание
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_user_id uuid NOT NULL, -- кем создано
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
-  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
+  description XML NOT NULL,
+
+  PRIMARY KEY (id),
+  UNIQUE (display_name)
+);
+
+CREATE TABLE obstacle -- препятствия
+(
+  id uuid NOT NULL,
+  display_name TEXT NOT NULL,
   geometry XML NOT NULL,
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
   y_min DOUBLE PRECISION NOT NULL, -- южная широта
@@ -44,14 +39,10 @@ CREATE TABLE obstacles -- препятствия
   UNIQUE (display_name)
 );
 
-CREATE TABLE remote_control_vehicles -- пункты дистанционного управления
+CREATE TABLE remote_control_vehicle -- пункты дистанционного управления
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_user_id uuid NOT NULL, -- кем создано
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
-  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   address TEXT NOT NULL, -- номер, используемый для установки связи
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
@@ -63,14 +54,10 @@ CREATE TABLE remote_control_vehicles -- пункты дистанционног�
   UNIQUE (display_name)
 );
 
-CREATE TABLE routes -- маршруты
+CREATE TABLE route -- маршруты
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_user_id uuid NOT NULL, -- кем создано
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
-  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   segments XML NOT NULL,
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
   y_min DOUBLE PRECISION NOT NULL, -- южная широта
@@ -81,62 +68,22 @@ CREATE TABLE routes -- маршруты
   UNIQUE (display_name)
 );
 
-CREATE TABLE session_beacons -- редактируемые точки возврата
+CREATE TABLE symbol -- условно-графические обозначения
 (
   id uuid NOT NULL,
-  beacon_id uuid NOT NULL,
+  display_name TEXT NOT NULL,
+  geometry XML NOT NULL,
+  type_name TEXT NOT NULL, -- название типа символа в соответствии с классификатором
+  x_min DOUBLE PRECISION NOT NULL, -- западная долгота
+  y_min DOUBLE PRECISION NOT NULL, -- южная широта
+  x_max DOUBLE PRECISION NOT NULL, -- восточная долгота
+  y_max DOUBLE PRECISION NOT NULL, -- северная широта
 
-  PRIMARY KEY (id, beacon_id),
-  UNIQUE (beacon_id)
+  PRIMARY KEY (id),
+  UNIQUE (display_name)
 );
 
-CREATE TABLE session_obstacles -- редактируемые препятствия
-(
-  id uuid NOT NULL,
-  obstacle_id uuid NOT NULL,
-
-  PRIMARY KEY (id, obstacle_id),
-  UNIQUE (obstacle_id)
-);
-
-CREATE TABLE session_remote_control_vehicles -- редактируемые пункты дистанционного управления
-(
-  id uuid NOT NULL,
-  remote_control_vehicle_id uuid NOT NULL,
-
-  PRIMARY KEY (id, remote_control_vehicle_id),
-  UNIQUE (remote_control_vehicle_id)
-);
-
-CREATE TABLE session_routes -- редактируемые маршруты
-(
-  id uuid NOT NULL,
-  route_id uuid NOT NULL,
-
-  PRIMARY KEY (id, route_id),
-  UNIQUE (route_id)
-);
-
-CREATE TABLE session_unmanned_vehicles -- редактируемые робототехнические комплексы
-(
-  id uuid NOT NULL,
-  unmanned_vehicle_id uuid NOT NULL,
-
-  PRIMARY KEY (id, unmanned_vehicle_id),
-  UNIQUE (unmanned_vehicle_id)
-);
-
-CREATE TABLE sessions -- сеансы редактирования
-(
-  id uuid NOT NULL,
-  user_id uuid NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  valid_before TIMESTAMP NOT NULL, -- время, до которого сеанс должен быть завершен
-
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE unmanned_vehicle_messages -- сообщения, полученные от робототехнических комплексов
+CREATE TABLE unmanned_vehicle_message -- сообщения, полученные от робототехнических комплексов
 (
   id uuid NOT NULL,
   unmanned_vehicle_id uuid NOT NULL,
@@ -148,14 +95,10 @@ CREATE TABLE unmanned_vehicle_messages -- сообщения, полученны
   UNIQUE (unmanned_vehicle_id, ordinal)
 );
 
-CREATE TABLE unmanned_vehicles -- робототехнические комплексы
+CREATE TABLE unmanned_vehicle -- робототехнические комплексы
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  created_by_user_id uuid NOT NULL, -- кем создано
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время создания
-  last_modified_by_user_id uuid NOT NULL, -- кем последний раз редактировалось
-  last_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- время последнего редактирования
   address TEXT NOT NULL, -- номер, используемый для установки связи
   x DOUBLE PRECISION NOT NULL, -- долгота
   y DOUBLE PRECISION NOT NULL, -- широта
@@ -168,55 +111,7 @@ CREATE TABLE unmanned_vehicles -- робототехнические компл�
   UNIQUE (address)
 );
 
-CREATE TABLE user_windows_principals -- имена пользователей для автоматического входа в домен Windows
-(
-  id uuid NOT NULL,
-  principal_name TEXT NOT NULL,
+ALTER TABLE unmanned_vehicle_message
+  ADD FOREIGN KEY (unmanned_vehicle_id) REFERENCES unmanned_vehicle(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-  PRIMARY KEY (id, principal_name),
-  UNIQUE (principal_name)
-);
-
-CREATE TABLE users -- пользователи (все)
-(
-  id uuid NOT NULL,
-  display_name TEXT NOT NULL,
-  password_md5 TEXT NOT NULL,
-
-  PRIMARY KEY (id),
-  UNIQUE (display_name)
-);
-
-ALTER TABLE commanders
-  ADD FOREIGN KEY (id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE sessions
-  ADD FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-ALTER TABLE session_beacons
-  ADD FOREIGN KEY (id) REFERENCES sessions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  ADD FOREIGN KEY (beacon_id) REFERENCES beacons(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-ALTER TABLE session_obstacles
-  ADD FOREIGN KEY (id) REFERENCES sessions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  ADD FOREIGN KEY (obstacle_id) REFERENCES obstacles(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-ALTER TABLE session_remote_control_vehicles
-  ADD FOREIGN KEY (id) REFERENCES sessions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  ADD FOREIGN KEY (remote_control_vehicle_id) REFERENCES remote_control_vehicles(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-ALTER TABLE session_routes
-  ADD FOREIGN KEY (id) REFERENCES sessions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  ADD FOREIGN KEY (route_id) REFERENCES routes(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-ALTER TABLE session_unmanned_vehicles
-  ADD FOREIGN KEY (id) REFERENCES sessions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  ADD FOREIGN KEY (unmanned_vehicle_id) REFERENCES unmanned_vehicles(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-ALTER TABLE unmanned_vehicle_messages
-  ADD FOREIGN KEY (unmanned_vehicle_id) REFERENCES unmanned_vehicles(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE user_windows_principals
-  ADD FOREIGN KEY (id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-CREATE INDEX unmanned_vehicle_messages_received_at ON unmanned_vehicle_messages (unmanned_vehicle_id, received_at);
+CREATE INDEX unmanned_vehicle_message_received_at ON unmanned_vehicle_message (unmanned_vehicle_id, received_at);
