@@ -14,6 +14,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         private MapToolMode _mapToolMode;
         private double _scaleDenominator;
+        private Obstacle _selectedObstacle;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
         private bool _switchToQuickLsdtButtonChecked;
@@ -48,6 +49,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         {
             get { return _scaleDenominator; }
             set { SetProperty(ref _scaleDenominator, value, nameof(ScaleDenominator), OnScaleDenominatorChanged); }
+        }
+
+        /// <summary>
+        /// Выделенное препятствие (грубо говоря, не выделенное, а то, на котором щёлкнули мышкой, в частности, для вызова контекстного меню)
+        /// </summary>
+        public Obstacle SelectedObstacle
+        {
+            get { return _selectedObstacle; }
+            set { SetProperty(ref _selectedObstacle, value, nameof(SelectedObstacle)); }
         }
 
         /// <summary>
@@ -100,6 +110,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Delegate Commands
 
         /// <summary>
+        /// Команда удаления
+        /// </summary>
+        public DelegateCommand DeleteCommand { get; }
+
+        /// <summary>
+        /// Команда редактирования
+        /// </summary>
+        public DelegateCommand EditCommand { get; }
+
+        /// <summary>
         /// Команда добавления точки
         /// </summary>
         public DelegateCommand<PointDrawnParameter> OnPointDrawnCommand { get; }
@@ -130,8 +150,10 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         public ViewModel()
         {
-            MapToolMode = MapToolMode.Pan;
+            MapToolMode = MapToolMode.SimpleSelection;
 
+            EditCommand = new DelegateCommand(Edit);
+            DeleteCommand = new DelegateCommand(Delete);
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
             SwitchToPointDtCommand = new DelegateCommand(SwitchToPointDt);
@@ -140,12 +162,40 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
             MapObjects = new ObservableCollection<MapObject>();
 
-            Obstacles = new ObservableCollection<Obstacle>();
+            Obstacles = new ObservableCollection<Obstacle>
+            {
+                new Obstacle
+                {
+                    Coords =
+                    {
+                        new Coord(0, 0),
+                        new Coord(-30, 0),
+                        new Coord(-30, -30),
+                        new Coord(0, -30)
+                    }
+                }
+            };
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Удалить препятствие с карты
+        /// </summary>
+        private void Delete()
+        {
+            Obstacles.Remove(_selectedObstacle);
+        }
+
+        /// <summary>
+        /// Включить/выключить режим редактирования препятствия
+        /// </summary>
+        private void Edit()
+        {
+            _selectedObstacle.IsEditMode = !_selectedObstacle.IsEditMode;
+        }
 
         /// <summary>
         /// Метод, вызываемый при добавлении на карту полигона
@@ -198,7 +248,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             }
             else
             {
-                MapToolMode = MapToolMode.Pan;
+                MapToolMode = MapToolMode.SimpleSelection;
             }
         }
 
@@ -215,7 +265,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             }
             else
             {
-                MapToolMode = MapToolMode.Pan;
+                MapToolMode = MapToolMode.SimpleSelection;
             }
         }
 
@@ -232,7 +282,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             }
             else
             {
-                MapToolMode = MapToolMode.Pan;
+                MapToolMode = MapToolMode.SimpleSelection;
             }
         }
         #endregion

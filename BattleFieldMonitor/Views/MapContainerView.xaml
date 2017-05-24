@@ -32,6 +32,10 @@
                 <map:PanTool2/>
             </map:ToolTemplate2>
 
+            <map:ToolTemplate2 x:Key="{map:ToolTemplateKey2 DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.SimpleSelection}}">
+                <map:SimpleSelectionTool2/>
+            </map:ToolTemplate2>
+
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.PointDrawing}}">
                 <map:PointDrawingTool 
                     d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}">
@@ -216,34 +220,101 @@
 
             <!--Препятствия-->
             <map:MapLayer ItemsSource="{Binding Obstacles}">
+                <map:MapLayer.ItemContainerStyle>
+                    <Style TargetType="{x:Type map:MapLayerItem}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected12, Mode=TwoWay}"/>
+                    </Style>
+                </map:MapLayer.ItemContainerStyle>
+                
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
-                        <map:PolygonShape>
-                            <map:PolygonShape.ExternalRing>
-                                <map:RingSubshape PointsSource="{Binding Coords}">
-                                    <map:RingSubshape.PointSubshapeTemplate>
-                                        <map:PointSubshapeTemplate>
-                                            <map:GeographicPointSubshape 
-                                                Latitude="{Binding Latitude}"
-                                                Longitude="{Binding Longitude}"/>
-                                        </map:PointSubshapeTemplate>
-                                    </map:RingSubshape.PointSubshapeTemplate>
-                                </map:RingSubshape>
-                            </map:PolygonShape.ExternalRing>
+                        <map:CompositeShape>
+                            <map:PolygonShape MouseDown="ContentElement_OnMouseDown">
+                                <map:PolygonShape.Style>
+                                    <Style TargetType="map:PolygonShape">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="False">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="ContextMenu">
+                                                        <Setter.Value>
+                                                            <ContextMenu>
+                                                                <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
+                                                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                                                            </ContextMenu>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
 
-                            <map:FillPolygonSymbol>
-                                <map:FillPolygonSymbol.Fill>
-                                    <map:FillGroup>
-                                        <map:BrushFill>
-                                            <SolidColorBrush Color="Red" Opacity="0.5"/>
-                                        </map:BrushFill>
-                                        <map:StrokeOutlineFill>
-                                            <map:PenStroke Pen="{StaticResource PolygonBoundaryPen}"/>
-                                        </map:StrokeOutlineFill>
-                                    </map:FillGroup>
-                                </map:FillPolygonSymbol.Fill>
-                            </map:FillPolygonSymbol>
-                        </map:PolygonShape>
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="ContextMenu">
+                                                        <Setter.Value>
+                                                            <ContextMenu>
+                                                                <MenuItem Header="Завершить редактирование" Command="{Binding EditCommand}"/>
+                                                            </ContextMenu>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </map:PolygonShape.Style>
+
+                                <map:PolygonShape.ExternalRing>
+                                    <map:RingSubshape PointsSource="{Binding Coords}">
+                                        <map:RingSubshape.PointSubshapeTemplate>
+                                            <map:PointSubshapeTemplate>
+                                                <map:GeographicPointSubshape 
+                                                    Latitude="{Binding Latitude}"
+                                                    Longitude="{Binding Longitude}"/>
+                                            </map:PointSubshapeTemplate>
+                                        </map:RingSubshape.PointSubshapeTemplate>
+                                    </map:RingSubshape>
+                                </map:PolygonShape.ExternalRing>
+
+                                <map:FillPolygonSymbol>
+                                    <map:FillPolygonSymbol.Fill>
+                                        <map:FillGroup>
+                                            <map:BrushFill>
+                                                <SolidColorBrush Color="Red" Opacity="0.5"/>
+                                            </map:BrushFill>
+                                            <map:StrokeOutlineFill>
+                                                <map:PenStroke Pen="{StaticResource PolygonBoundaryPen}"/>
+                                            </map:StrokeOutlineFill>
+                                        </map:FillGroup>
+                                    </map:FillPolygonSymbol.Fill>
+                                </map:FillPolygonSymbol>
+                            </map:PolygonShape>
+                            
+                            <map:CompositeShape ItemsSource="{Binding Coords}">
+                                <map:CompositeShape.Style>
+                                    <Style TargetType="map:CompositeShape">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="ItemShapeTemplate">
+                                                        <Setter.Value>
+                                                            <map:ShapeTemplate>
+                                                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                                                    <map:GeometryPointSymbol2 Brush="White">
+                                                                        <map:GeometryPointSymbol2.Pen>
+                                                                            <Pen Brush="Red" Thickness="1"/>
+                                                                        </map:GeometryPointSymbol2.Pen>
+
+                                                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                                                    </map:GeometryPointSymbol2>
+                                                                </map:GeographicPointShape2>
+                                                            </map:ShapeTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </map:CompositeShape.Style>
+                            </map:CompositeShape>
+                        </map:CompositeShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>

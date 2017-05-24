@@ -5,6 +5,7 @@
         Pan,
         PointDrawing,
         PreciseLineStringDrawing,
-        QuickLineStringDrawing
-    }
+        QuickLineStringDrawing,
+	    SimpleSelection
+	}
 }
