@@ -8,13 +8,11 @@
     xmlns:views="clr-namespace:Swsu.BattleFieldMonitor.Views"
 	xmlns:map="http://www.swsu.ru/schemas/Maps"
 	xmlns:viewModels="clr-namespace:Swsu.BattleFieldMonitor.ViewModels.MapContainer"
+    xmlns:infrastructure="clr-namespace:Swsu.BattleFieldMonitor.Infrastructure"
 	mc:Ignorable="d" 
+    DataContext="{infrastructure:UnityResolution ObjectType=viewModels:ViewModel}"
     d:DesignHeight="400"
     d:DesignWidth="600">
-
-    <UserControl.DataContext>
-        <viewModels:ViewModel />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
 		<ResourceDictionary>
