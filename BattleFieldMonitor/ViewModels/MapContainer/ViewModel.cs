@@ -72,6 +72,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public DelegateCommand EditCommand { get; }
 
         /// <summary>
+        /// Команда завершения редактирования
+        /// </summary>
+        public DelegateCommand ExitEditModeCommand { get; }
+
+        /// <summary>
         /// Команда добавления точки
         /// </summary>
         public DelegateCommand<PointDrawnParameter> OnPointDrawnCommand { get; }
@@ -90,6 +95,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             MapToolMode = MapToolMode.SimpleSelection;
 
             EditCommand = new DelegateCommand(Edit);
+            ExitEditModeCommand = new DelegateCommand(ExitEditMode);
             DeleteCommand = new DelegateCommand(Delete);
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
@@ -124,13 +130,26 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
-        /// Включить/выключить режим редактирования препятствия
+        /// Включить режим редактирования препятствия
         /// </summary>
         private void Edit()
         {
-            _selectedObstacle.IsEditMode = !_selectedObstacle.IsEditMode;
+            _selectedObstacle.IsEditMode = true;
 
-            MapToolMode = _selectedObstacle.IsEditMode ? MapToolMode.Reshaping : MapToolMode.SimpleSelection;
+            MapToolMode = MapToolMode.Reshaping;
+        }
+
+        /// <summary>
+        /// Завершить режим редактирования препятствия
+        /// </summary>
+        private void ExitEditMode()
+        {
+            foreach (var obstacle in Obstacles)
+            {
+                obstacle.IsEditMode = false;
+            }
+
+            MapToolMode = MapToolMode.SimpleSelection;
         }
 
         /// <summary>
