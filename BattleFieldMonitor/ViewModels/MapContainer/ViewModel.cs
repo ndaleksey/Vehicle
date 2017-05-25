@@ -21,9 +21,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Properties
 
         /// <summary>
-        /// Коллекция танков, отображаемых на карте
+        /// Коллекция маяков, отображаемых на карте
         /// </summary>
-	    public ObservableCollection<MapObject> MapObjects { get; }
+	    public ObservableCollection<Beacon> Beacons { get; }
 
         /// <summary>
         /// Режим инструмента карты
@@ -56,6 +56,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             get { return _selectedObstacle; }
             set { SetProperty(ref _selectedObstacle, value, nameof(SelectedObstacle)); }
         }
+
+        /// <summary>
+        /// Коллекция танков, отображаемых на карте
+        /// </summary>
+	    public ObservableCollection<UnmannedVehicle> UnmannedVehicles { get; }
 
         #endregion
 
@@ -100,7 +105,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
 
-            MapObjects = new ObservableCollection<MapObject>();
+            UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
 
             Obstacles = new ObservableCollection<Obstacle>
             {
@@ -114,6 +119,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                         new Coord(0, -30)
                     }
                 }
+            };
+
+            Beacons = new ObservableCollection<Beacon>
+            {
+                new Beacon(10, 10)
             };
         }
 
@@ -175,24 +185,31 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private void OnPointDrawn(PointDrawnParameter parameter)
         {
             //TODO: Передать Сергею Мирошниченко
-            var random = new Random();
+            //var random = new Random();
+            //var latitude = parameter.Location.Latitude;
+            //var longitude = parameter.Location.Longitude;
+            //var azimuth = 360 * random.NextDouble() - 180;
+            //var speed = 100 * random.NextDouble();
+
+            //var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
+            //{
+            //    Speed = speed,
+            //    //Coords = 
+            //    //{
+            //    //    new Coord(latitude, longitude),
+            //    //    new Coord(latitude-10, longitude-10),
+            //    //    new Coord(latitude-20, longitude-10)
+            //    //}
+            //};
+
+            //UnmannedVehicles.Add(newVehicle);
+
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
-            var azimuth = 360 * random.NextDouble() - 180;
-            var speed = 100 * random.NextDouble();
 
-            var newMapObject = new MapObject(latitude, longitude, azimuth)
-            {
-                Speed = speed,
-                //Coords = 
-                //{
-                //    new Coord(latitude, longitude),
-                //    new Coord(latitude-10, longitude-10),
-                //    new Coord(latitude-20, longitude-10)
-                //}
-        };
+            var newBeacon = new Beacon(latitude, longitude);
 
-            MapObjects.Add(newMapObject);
+            Beacons.Add(newBeacon);
         }
 
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
@@ -289,16 +306,73 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     }
 
     /// <summary>
-    /// Объект, отображаемый на карте //TODO: Скорее всего, это будет танк
+    /// Объект, отображаемый на карте
     /// </summary>
     public class MapObject : BindableBase
     {
         #region Fields
 
-        private double _azimuth;
-        private string _calloutText;
         private double _latitude;
         private double _longitude;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Широта
+        /// </summary>
+        public double Latitude
+        {
+            get { return _latitude; }
+            set { SetProperty(ref _latitude, value, nameof(Latitude)); }
+        }
+
+        /// <summary>
+        /// Долгота
+        /// </summary>
+        public double Longitude
+        {
+            get { return _longitude; }
+            set { SetProperty(ref _longitude, value, nameof(Longitude)); }
+        }
+
+        #endregion
+
+        #region Constructors 
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        public MapObject()
+        {
+            
+        }
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        /// <param name="latitude">Широта</param>
+        /// <param name="longitude">Долдгота</param>
+        /// <param name="azimuth">Азимут</param>
+        public MapObject(double latitude, double longitude) : this()
+        {
+            Latitude = latitude;
+            Longitude = longitude;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Беспилотный автомобиль
+    /// </summary>
+    public class UnmannedVehicle : MapObject
+    {
+        #region Fields
+
+        private double _azimuth;
+        private string _calloutText;
         private double _speed;
 
         #endregion
@@ -329,24 +403,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         //public ObservableCollection<Coord> Coords { get; }
 
         /// <summary>
-        /// Широта
-        /// </summary>
-        public double Latitude
-        {
-            get { return _latitude; }
-            set { SetProperty(ref _latitude, value, nameof(Latitude), UpdateCalloutText); }
-        }
-
-        /// <summary>
-        /// Долгота
-        /// </summary>
-        public double Longitude
-        {
-            get { return _longitude; }
-            set { SetProperty(ref _longitude, value, nameof(Longitude), UpdateCalloutText); }
-        }
-
-        /// <summary>
         /// Скорость, км/ч
         /// </summary>
         public double Speed
@@ -362,7 +418,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Инициализирует экземпляр класса
         /// </summary>
-        public MapObject()
+        public UnmannedVehicle()
         {
             UpdateCalloutText();
         }
@@ -373,7 +429,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <param name="latitude">Широта</param>
         /// <param name="longitude">Долдгота</param>
         /// <param name="azimuth">Азимут</param>
-        public MapObject(double latitude, double longitude, double azimuth) : this()
+        public UnmannedVehicle(double latitude, double longitude, double azimuth) : this()
         {
             Azimuth = azimuth;
             Latitude = latitude;
@@ -395,7 +451,33 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         #endregion
+    }
 
+    /// <summary>
+    /// Маяк (точка возврата)
+    /// </summary>
+    public class Beacon : MapObject
+    {
+        #region Constructors 
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        public Beacon()
+        {
+
+        }
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        /// <param name="latitude">Широта</param>
+        /// <param name="longitude">Долгота</param>
+        public Beacon(double latitude, double longitude) : base(latitude, longitude)
+        {
+        }
+
+        #endregion
     }
 
     /// <summary>

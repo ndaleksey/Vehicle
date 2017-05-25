@@ -123,254 +123,6 @@
                 </ContextMenu>
             </map:MapViewer.ContextMenu>
             
-            <!--Объекты-->
-            <map:MapLayer ItemsSource="{Binding MapObjects}">
-                <map:MapLayer.ItemShapeTemplate>
-                    <map:ShapeTemplate>
-                        <map:CompositeShape >
-                            <!--Объект-->
-                            <map:CompositeShape>
-                                <!--Трасса-->
-                                <!--<map:LineStringShape PointsSource="{Binding Coords}">
-                                    <map:LineStringShape.PointSubshapeTemplate>
-                                        <map:PointSubshapeTemplate>
-                                            <map:GeographicPointSubshape 
-                                                Latitude="{Binding Latitude}" 
-                                                Longitude="{Binding Longitude}"/>
-                                        </map:PointSubshapeTemplate>
-                                    </map:LineStringShape.PointSubshapeTemplate>
-
-                                    <map:LineStringShape.LineStringSymbol>
-                                        <map:StrokeLineStringSymbol>
-                                            <map:StrokeLineStringSymbol.Stroke>
-                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                            </map:StrokeLineStringSymbol.Stroke>
-                                        </map:StrokeLineStringSymbol>
-                                    </map:LineStringShape.LineStringSymbol>
-                                    
-                                </map:LineStringShape>--><!--<map:LineStringShape PointsSource="{Binding Coords}">
-                                    <map:LineStringShape.PointSubshapeTemplate>
-                                        <map:PointSubshapeTemplate>
-                                            <map:GeographicPointSubshape 
-                                                Latitude="{Binding Latitude}" 
-                                                Longitude="{Binding Longitude}"/>
-                                        </map:PointSubshapeTemplate>
-                                    </map:LineStringShape.PointSubshapeTemplate>
-
-                                    <map:LineStringShape.LineStringSymbol>
-                                        <map:StrokeLineStringSymbol>
-                                            <map:StrokeLineStringSymbol.Stroke>
-                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                            </map:StrokeLineStringSymbol.Stroke>
-                                        </map:StrokeLineStringSymbol>
-                                    </map:LineStringShape.LineStringSymbol>
-                                    
-                                </map:LineStringShape>-->
-
-                                <!--Сам танк-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:GeometryMarker Brush="#FF92D050">
-                                            <map:GeometryMarker.Pen>
-                                                <Pen Brush="Black" Thickness="2"/>
-                                            </map:GeometryMarker.Pen>
-
-                                            <GeometryGroup>
-                                                <GeometryGroup.Transform>
-                                                    <RotateTransform Angle="{Binding Azimuth}"/>
-                                                </GeometryGroup.Transform>
-
-                                                <PathGeometry>
-                                                    <PathFigure IsClosed="True" IsFilled="True" StartPoint="0, -20">
-                                                        <LineSegment Point="10, -10"/>
-                                                        <LineSegment Point="10, 20"/>
-                                                        <LineSegment Point="-10, 20"/>
-                                                        <LineSegment Point="-10, -10"/>
-                                                    </PathFigure>
-                                                </PathGeometry>
-
-                                                <RectangleGeometry>
-                                                    <RectangleGeometry.Rect>
-                                                        <Rect X="-10" Y="12" Width="20" Height="8"/>
-                                                    </RectangleGeometry.Rect>
-                                                </RectangleGeometry>
-                                            </GeometryGroup>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:GeometryMarker Brush="Black">
-                                            <map:GeometryMarker.Pen>
-                                                <Pen Brush="Black" Thickness="2"/>
-                                            </map:GeometryMarker.Pen>
-
-                                            <RectangleGeometry>
-                                                <RectangleGeometry.Transform>
-                                                    <RotateTransform Angle="{Binding Azimuth}"/>
-                                                </RectangleGeometry.Transform>
-                                                
-                                                <RectangleGeometry.Rect>
-                                                    <Rect X="-10" Y="12" Width="20" Height="8"/>
-                                                </RectangleGeometry.Rect>
-                                            </RectangleGeometry>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-                            </map:CompositeShape>
-
-                            <!--Выноска-->
-                            <map:CompositeShape>
-                                <!--Чёрный прямоугольник-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:GeometryMarker>
-                                            <map:GeometryMarker.Brush>
-                                                <SolidColorBrush Color="Black" Opacity="0.5"/>
-                                            </map:GeometryMarker.Brush>
-
-                                            <RectangleGeometry>
-                                                <RectangleGeometry.Rect>
-                                                    <Rect X="50" Y="-60" Height="120" Width="160"/>
-                                                </RectangleGeometry.Rect>
-                                            </RectangleGeometry>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-
-                                <!--Квадратные скобки-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:GeometryMarker>
-                                            <map:GeometryMarker.Pen>
-                                                <Pen Brush="White" Thickness="2"/>
-                                            </map:GeometryMarker.Pen>
-
-                                            <PathGeometry>
-                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="30, 0">
-                                                    <LineSegment Point="50, 0"/>
-                                                </PathFigure>
-
-                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="70, -60">
-                                                    <LineSegment Point="50, -60"/>
-                                                    <LineSegment Point="50, 60"/>
-                                                    <LineSegment Point="70, 60"/>
-                                                </PathFigure>
-
-                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="190, -60">
-                                                    <LineSegment Point="210, -60"/>
-                                                    <LineSegment Point="210, 60"/>
-                                                    <LineSegment Point="190, 60"/>
-                                                </PathFigure>
-                                            </PathGeometry>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                   
-                                    <!--<map:GeometryPointSymbol2>
-                                        <map:GeometryPointSymbol2.Pen>
-                                            <Pen Brush="White" Thickness="2"/>
-                                        </map:GeometryPointSymbol2.Pen>
-
-                                        <PathGeometry>
-                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="30, 0">
-                                                <LineSegment Point="50, 0"/>
-                                            </PathFigure>
-
-                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="70, -60">
-                                                <LineSegment Point="50, -60"/>
-                                                <LineSegment Point="50, 60"/>
-                                                <LineSegment Point="70, 60"/>
-                                            </PathFigure>
-
-                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="190, -60">
-                                                <LineSegment Point="210, -60"/>
-                                                <LineSegment Point="210, 60"/>
-                                                <LineSegment Point="190, 60"/>
-                                            </PathFigure>
-                                        </PathGeometry>
-                                    </map:GeometryPointSymbol2>-->
-                                </map:GeographicPointShape>
-
-                                <!--Текст-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeographicPointShape.Transform>
-                                        <TranslateTransform X="60" Y="-50"/>
-                                    </map:GeographicPointShape.Transform>
-                                    
-                                    <map:MarkerPointSymbol>
-                                        <map:TextMarker
-                                            Text="{Binding CalloutText}" 
-                                            Foreground="White" 
-                                            FontWeight="Bold"
-                                            FontFamily="Arial"/>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-
-                                <!--Линия под текстом-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:GeometryMarker>
-                                            <map:GeometryMarker.Pen>
-                                                <Pen Brush="White" Thickness="1"/>
-                                            </map:GeometryMarker.Pen>
-
-                                            <PathGeometry>
-                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 15">
-                                                    <LineSegment Point="200, 15"/>
-                                                </PathFigure>
-                                            </PathGeometry>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-
-                                <!--Иконка шлобуса-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:MarkerPointSymbol.Transform>
-                                            <TranslateTransform X="60" Y="25"/>
-                                        </map:MarkerPointSymbol.Transform>
-                                        
-                                        <map:GeometryMarker>
-                                            <map:GeometryMarker.Brush>
-                                                <ImageBrush ImageSource="../Resources/Icons/Globe.png"/>
-                                            </map:GeometryMarker.Brush>
-
-                                            <RectangleGeometry>
-                                                <RectangleGeometry.Rect>
-                                                    <Rect X="0" Y="0" Height="24" Width="24"/>
-                                                </RectangleGeometry.Rect>
-                                            </RectangleGeometry>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-
-                                <!--Иконка двигателя-->
-                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:MarkerPointSymbol>
-                                        <map:MarkerPointSymbol.Transform>
-                                            <TranslateTransform X="94" Y="25"/>
-                                        </map:MarkerPointSymbol.Transform>
-                                        
-                                        <map:GeometryMarker>
-                                            <map:GeometryMarker.Brush>
-                                                <ImageBrush ImageSource="../Resources/Icons/Engine.png"/>
-                                            </map:GeometryMarker.Brush>
-
-                                            <RectangleGeometry>
-                                                <RectangleGeometry.Rect>
-                                                    <Rect X="0" Y="0" Height="24" Width="32"/>
-                                                </RectangleGeometry.Rect>
-                                            </RectangleGeometry>
-                                        </map:GeometryMarker>
-                                    </map:MarkerPointSymbol>
-                                </map:GeographicPointShape>
-                            </map:CompositeShape>
-                        </map:CompositeShape>
-                    </map:ShapeTemplate>
-                </map:MapLayer.ItemShapeTemplate>
-            </map:MapLayer>
-
             <!--Препятствия-->
             <map:MapLayer ItemsSource="{Binding Obstacles}">
                 <map:MapLayer.ItemContainerStyle>
@@ -444,6 +196,287 @@
                                 </map:FillPolygonSymbol>
                             </map:PolygonShape>
                         </map:CompositeShape>
+                    </map:ShapeTemplate>
+                </map:MapLayer.ItemShapeTemplate>
+            </map:MapLayer>
+
+            <!--Объекты-->
+            <map:MapLayer ItemsSource="{Binding UnmannedVehicles}">
+                <map:MapLayer.ItemShapeTemplate>
+                    <map:ShapeTemplate>
+                        <map:CompositeShape >
+                            <!--Объект-->
+                            <map:CompositeShape>
+                                <!--Трасса-->
+                                <!--<map:LineStringShape PointsSource="{Binding Coords}">
+                                    <map:LineStringShape.PointSubshapeTemplate>
+                                        <map:PointSubshapeTemplate>
+                                            <map:GeographicPointSubshape 
+                                                Latitude="{Binding Latitude}" 
+                                                Longitude="{Binding Longitude}"/>
+                                        </map:PointSubshapeTemplate>
+                                    </map:LineStringShape.PointSubshapeTemplate>
+
+                                    <map:LineStringShape.LineStringSymbol>
+                                        <map:StrokeLineStringSymbol>
+                                            <map:StrokeLineStringSymbol.Stroke>
+                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                            </map:StrokeLineStringSymbol.Stroke>
+                                        </map:StrokeLineStringSymbol>
+                                    </map:LineStringShape.LineStringSymbol>
+                                    
+                                </map:LineStringShape>-->
+                                <!--<map:LineStringShape PointsSource="{Binding Coords}">
+                                    <map:LineStringShape.PointSubshapeTemplate>
+                                        <map:PointSubshapeTemplate>
+                                            <map:GeographicPointSubshape 
+                                                Latitude="{Binding Latitude}" 
+                                                Longitude="{Binding Longitude}"/>
+                                        </map:PointSubshapeTemplate>
+                                    </map:LineStringShape.PointSubshapeTemplate>
+
+                                    <map:LineStringShape.LineStringSymbol>
+                                        <map:StrokeLineStringSymbol>
+                                            <map:StrokeLineStringSymbol.Stroke>
+                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                            </map:StrokeLineStringSymbol.Stroke>
+                                        </map:StrokeLineStringSymbol>
+                                    </map:LineStringShape.LineStringSymbol>
+                                    
+                                </map:LineStringShape>-->
+
+                                <!--Сам танк-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker Brush="#FF92D050">
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="Black" Thickness="2"/>
+                                            </map:GeometryMarker.Pen>
+
+                                            <GeometryGroup>
+                                                <GeometryGroup.Transform>
+                                                    <RotateTransform Angle="{Binding Azimuth}"/>
+                                                </GeometryGroup.Transform>
+
+                                                <PathGeometry>
+                                                    <PathFigure IsClosed="True" IsFilled="True" StartPoint="0, -20">
+                                                        <LineSegment Point="10, -10"/>
+                                                        <LineSegment Point="10, 20"/>
+                                                        <LineSegment Point="-10, 20"/>
+                                                        <LineSegment Point="-10, -10"/>
+                                                    </PathFigure>
+                                                </PathGeometry>
+
+                                                <RectangleGeometry>
+                                                    <RectangleGeometry.Rect>
+                                                        <Rect X="-10" Y="12" Width="20" Height="8"/>
+                                                    </RectangleGeometry.Rect>
+                                                </RectangleGeometry>
+                                            </GeometryGroup>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker Brush="Black">
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="Black" Thickness="2"/>
+                                            </map:GeometryMarker.Pen>
+
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Transform>
+                                                    <RotateTransform Angle="{Binding Azimuth}"/>
+                                                </RectangleGeometry.Transform>
+
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="-10" Y="12" Width="20" Height="8"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+                            </map:CompositeShape>
+
+                            <!--Выноска-->
+                            <map:CompositeShape>
+                                <!--Чёрный прямоугольник-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Brush>
+                                                <SolidColorBrush Color="Black" Opacity="0.5"/>
+                                            </map:GeometryMarker.Brush>
+
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="50" Y="-60" Height="120" Width="160"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+
+                                <!--Квадратные скобки-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="White" Thickness="2"/>
+                                            </map:GeometryMarker.Pen>
+
+                                            <PathGeometry>
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="30, 0">
+                                                    <LineSegment Point="50, 0"/>
+                                                </PathFigure>
+
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="70, -60">
+                                                    <LineSegment Point="50, -60"/>
+                                                    <LineSegment Point="50, 60"/>
+                                                    <LineSegment Point="70, 60"/>
+                                                </PathFigure>
+
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="190, -60">
+                                                    <LineSegment Point="210, -60"/>
+                                                    <LineSegment Point="210, 60"/>
+                                                    <LineSegment Point="190, 60"/>
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+
+                                    <!--<map:GeometryPointSymbol2>
+                                        <map:GeometryPointSymbol2.Pen>
+                                            <Pen Brush="White" Thickness="2"/>
+                                        </map:GeometryPointSymbol2.Pen>
+
+                                        <PathGeometry>
+                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="30, 0">
+                                                <LineSegment Point="50, 0"/>
+                                            </PathFigure>
+
+                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="70, -60">
+                                                <LineSegment Point="50, -60"/>
+                                                <LineSegment Point="50, 60"/>
+                                                <LineSegment Point="70, 60"/>
+                                            </PathFigure>
+
+                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="190, -60">
+                                                <LineSegment Point="210, -60"/>
+                                                <LineSegment Point="210, 60"/>
+                                                <LineSegment Point="190, 60"/>
+                                            </PathFigure>
+                                        </PathGeometry>
+                                    </map:GeometryPointSymbol2>-->
+                                </map:GeographicPointShape>
+
+                                <!--Текст-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:GeographicPointShape.Transform>
+                                        <TranslateTransform X="60" Y="-50"/>
+                                    </map:GeographicPointShape.Transform>
+
+                                    <map:MarkerPointSymbol>
+                                        <map:TextMarker
+                                            Text="{Binding CalloutText}" 
+                                            Foreground="White" 
+                                            FontWeight="Bold"
+                                            FontFamily="Arial"/>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+
+                                <!--Линия под текстом-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="White" Thickness="1"/>
+                                            </map:GeometryMarker.Pen>
+
+                                            <PathGeometry>
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 15">
+                                                    <LineSegment Point="200, 15"/>
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+
+                                <!--Иконка шлобуса-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:MarkerPointSymbol.Transform>
+                                            <TranslateTransform X="60" Y="25"/>
+                                        </map:MarkerPointSymbol.Transform>
+
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Brush>
+                                                <ImageBrush ImageSource="../Resources/Icons/Globe.png"/>
+                                            </map:GeometryMarker.Brush>
+
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="0" Y="0" Height="24" Width="24"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+
+                                <!--Иконка двигателя-->
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:MarkerPointSymbol.Transform>
+                                            <TranslateTransform X="94" Y="25"/>
+                                        </map:MarkerPointSymbol.Transform>
+
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Brush>
+                                                <ImageBrush ImageSource="../Resources/Icons/Engine.png"/>
+                                            </map:GeometryMarker.Brush>
+
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="0" Y="0" Height="24" Width="32"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+                            </map:CompositeShape>
+                        </map:CompositeShape>
+                    </map:ShapeTemplate>
+                </map:MapLayer.ItemShapeTemplate>
+            </map:MapLayer>
+
+            <!--Маяки-->
+            <map:MapLayer ItemsSource="{Binding Beacons}">
+                <map:MapLayer.ItemShapeTemplate>
+                    <map:ShapeTemplate>
+                        <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                            <map:MarkerPointSymbol>
+                                <map:GeometryMarker Brush="Red">
+                                    <map:GeometryMarker.Pen>
+                                        <Pen Brush="Black" Thickness="2"/>
+                                    </map:GeometryMarker.Pen>
+
+                                    <GeometryGroup>
+                                        <PathGeometry>
+                                            <PathFigure IsClosed="False" IsFilled="True" StartPoint="0, 0">
+                                                <LineSegment Point="0, -40"/>
+                                            </PathFigure>
+                                        </PathGeometry>
+                                        
+                                        <PathGeometry>
+                                            <PathFigure IsClosed="True" IsFilled="True" StartPoint="0, -40">
+                                                <LineSegment Point="20, -30"/>
+                                                <LineSegment Point="0, -20"/>
+                                            </PathFigure>
+                                        </PathGeometry>
+                                    </GeometryGroup>
+                                </map:GeometryMarker>
+                            </map:MarkerPointSymbol>
+                        </map:GeographicPointShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
