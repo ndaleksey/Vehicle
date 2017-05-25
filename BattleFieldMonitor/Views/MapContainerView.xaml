@@ -8,17 +8,12 @@
 	xmlns:map="http://www.swsu.ru/schemas/Maps"
 	xmlns:viewModels="clr-namespace:Swsu.BattleFieldMonitor.ViewModels.MapContainer"
 	xmlns:infrastructure="clr-namespace:Swsu.BattleFieldMonitor.Infrastructure"
-	xmlns:system="clr-namespace:System;assembly=mscorlib"
 	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
 	xmlns:converters1="clr-namespace:Swsu.BattleFieldMonitor.Converters1"
 	mc:Ignorable="d" 
     DataContext="{infrastructure:UnityResolution ObjectType=viewModels:ViewModel}"
     d:DesignHeight="400"
     d:DesignWidth="600">
-
-    <UserControl.DataContext>
-        <viewModels:ViewModel />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
 		<ResourceDictionary>
@@ -145,72 +140,106 @@
                                     
                                 </map:LineStringShape>
 
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeometryPointSymbol2 Brush="#FF92D050">
-                                        <map:GeometryPointSymbol2.Pen>
-                                            <Pen Brush="Black" Thickness="2"/>
-                                        </map:GeometryPointSymbol2.Pen>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker Brush="#FF92D050">
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="Black" Thickness="2"/>
+                                            </map:GeometryMarker.Pen>
 
-                                        <GeometryGroup>
-                                            <GeometryGroup.Transform>
-                                                <RotateTransform Angle="{Binding Azimuth}"/>
-                                            </GeometryGroup.Transform>
+                                            <GeometryGroup>
+                                                <GeometryGroup.Transform>
+                                                    <RotateTransform Angle="{Binding Azimuth}"/>
+                                                </GeometryGroup.Transform>
 
-                                            <PathGeometry>
-                                                <PathFigure IsClosed="True" IsFilled="True" StartPoint="0, -20">
-                                                    <LineSegment Point="10, -10"/>
-                                                    <LineSegment Point="10, 20"/>
-                                                    <LineSegment Point="-10, 20"/>
-                                                    <LineSegment Point="-10, -10"/>
-                                                </PathFigure>
-                                            </PathGeometry>
+                                                <PathGeometry>
+                                                    <PathFigure IsClosed="True" IsFilled="True" StartPoint="0, -20">
+                                                        <LineSegment Point="10, -10"/>
+                                                        <LineSegment Point="10, 20"/>
+                                                        <LineSegment Point="-10, 20"/>
+                                                        <LineSegment Point="-10, -10"/>
+                                                    </PathFigure>
+                                                </PathGeometry>
+
+                                                <RectangleGeometry>
+                                                    <RectangleGeometry.Rect>
+                                                        <Rect X="-10" Y="12" Width="20" Height="8"/>
+                                                    </RectangleGeometry.Rect>
+                                                </RectangleGeometry>
+                                            </GeometryGroup>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
+
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker Brush="Black">
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="Black" Thickness="2"/>
+                                            </map:GeometryMarker.Pen>
 
                                             <RectangleGeometry>
+                                                <RectangleGeometry.Transform>
+                                                    <RotateTransform Angle="{Binding Azimuth}"/>
+                                                </RectangleGeometry.Transform>
+                                                
                                                 <RectangleGeometry.Rect>
                                                     <Rect X="-10" Y="12" Width="20" Height="8"/>
                                                 </RectangleGeometry.Rect>
                                             </RectangleGeometry>
-                                        </GeometryGroup>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
-
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeometryPointSymbol2 Brush="Black">
-                                        <map:GeometryPointSymbol2.Pen>
-                                            <Pen Brush="Black" Thickness="2"/>
-                                        </map:GeometryPointSymbol2.Pen>
-
-                                        <GeometryGroup>
-                                            <GeometryGroup.Transform>
-                                                <RotateTransform Angle="{Binding Azimuth}"/>
-                                            </GeometryGroup.Transform>
-
-                                            <RectangleGeometry>
-                                                <RectangleGeometry.Rect>
-                                                    <Rect X="-10" Y="12" Width="20" Height="8"/>
-                                                </RectangleGeometry.Rect>
-                                            </RectangleGeometry>
-                                        </GeometryGroup>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
                             </map:CompositeShape>
 
                             <!--Выноска-->
                             <map:CompositeShape>
                                 <!--Чёрный прямоугольник-->
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeometryPointSymbol2 Brush="Black" Opacity="0.5">
-                                        <RectangleGeometry>
-                                            <RectangleGeometry.Rect>
-                                                <Rect X="50" Y="-60" Height="120" Width="160"/>
-                                            </RectangleGeometry.Rect>
-                                        </RectangleGeometry>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Brush>
+                                                <SolidColorBrush Color="Black" Opacity="0.5"/>
+                                            </map:GeometryMarker.Brush>
+
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="50" Y="-60" Height="120" Width="160"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
 
                                 <!--Квадратные скобки-->
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeometryPointSymbol2>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="White" Thickness="2"/>
+                                            </map:GeometryMarker.Pen>
+
+                                            <PathGeometry>
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="30, 0">
+                                                    <LineSegment Point="50, 0"/>
+                                                </PathFigure>
+
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="70, -60">
+                                                    <LineSegment Point="50, -60"/>
+                                                    <LineSegment Point="50, 60"/>
+                                                    <LineSegment Point="70, 60"/>
+                                                </PathFigure>
+
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="190, -60">
+                                                    <LineSegment Point="210, -60"/>
+                                                    <LineSegment Point="210, 60"/>
+                                                    <LineSegment Point="190, 60"/>
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                   
+                                    <!--<map:GeometryPointSymbol2>
                                         <map:GeometryPointSymbol2.Pen>
                                             <Pen Brush="White" Thickness="2"/>
                                         </map:GeometryPointSymbol2.Pen>
@@ -232,88 +261,82 @@
                                                 <LineSegment Point="190, 60"/>
                                             </PathFigure>
                                         </PathGeometry>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
+                                    </map:GeometryPointSymbol2>-->
+                                </map:GeographicPointShape>
 
                                 <!--Текст-->
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeographicPointShape2.Transform>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:GeographicPointShape.Transform>
                                         <TranslateTransform X="60" Y="-50"/>
-                                    </map:GeographicPointShape2.Transform>
-
-                                    <map:TextPointSymbol2 
-                                        Text="{Binding CalloutText}" 
-                                        Foreground="White" 
-                                        FontWeight="Bold"
-                                        FontFamily="Arial">
-
-                                    </map:TextPointSymbol2>
-                                </map:GeographicPointShape2>
+                                    </map:GeographicPointShape.Transform>
+                                    
+                                    <map:MarkerPointSymbol>
+                                        <map:TextMarker
+                                            Text="{Binding CalloutText}" 
+                                            Foreground="White" 
+                                            FontWeight="Bold"
+                                            FontFamily="Arial"/>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
 
                                 <!--Линия под текстом-->
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeometryPointSymbol2>
-                                        <map:GeometryPointSymbol2.Pen>
-                                            <Pen Brush="White" Thickness="1"/>
-                                        </map:GeometryPointSymbol2.Pen>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Pen>
+                                                <Pen Brush="White" Thickness="1"/>
+                                            </map:GeometryMarker.Pen>
 
-                                        <PathGeometry>
-                                            <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 10">
-                                                <LineSegment Point="200, 10"/>
-                                            </PathFigure>
-                                        </PathGeometry>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
+                                            <PathGeometry>
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 10">
+                                                    <LineSegment Point="200, 10"/>
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
 
                                 <!--Иконка шлобуса-->
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <!--<DrawingGroup>
-                                        <DrawingGroup.Transform>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:MarkerPointSymbol.Transform>
                                             <TranslateTransform X="60" Y="20"/>
-                                        </DrawingGroup.Transform>
+                                        </map:MarkerPointSymbol.Transform>
+                                        
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Brush>
+                                                <ImageBrush ImageSource="../Resources/Icons/Globe.png"/>
+                                            </map:GeometryMarker.Brush>
 
-                                        <ImageDrawing ImageSource="../Resources/Icons/Globe.png" >
-                                            <ImageDrawing.Rect>
-                                                <Rect X="0" Y="0" Height="24" Width="24"/>
-                                            </ImageDrawing.Rect>
-                                        </ImageDrawing>
-                                    </DrawingGroup>-->
-                                    
-                                    <map:GeometryPointSymbol2 >
-                                        <map:GeometryPointSymbol2.Transform>
-                                            <TranslateTransform X="60" Y="20"/>
-                                        </map:GeometryPointSymbol2.Transform>
-                                        
-                                        <map:GeometryPointSymbol2.Brush>
-                                            <ImageBrush ImageSource="../Resources/Icons/Globe.png"/>
-                                        </map:GeometryPointSymbol2.Brush>
-                                        
-                                        <RectangleGeometry>
-                                            <RectangleGeometry.Rect>
-                                                <Rect X="0" Y="0" Height="24" Width="24"/>
-                                            </RectangleGeometry.Rect>
-                                        </RectangleGeometry>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="0" Y="0" Height="24" Width="24"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
 
                                 <!--Иконка двигателя-->
-                                <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
-                                    <map:GeometryPointSymbol2 >
-                                        <map:GeometryPointSymbol2.Transform>
+                                <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                                    <map:MarkerPointSymbol>
+                                        <map:MarkerPointSymbol.Transform>
                                             <TranslateTransform X="94" Y="20"/>
-                                        </map:GeometryPointSymbol2.Transform>
+                                        </map:MarkerPointSymbol.Transform>
+                                        
+                                        <map:GeometryMarker>
+                                            <map:GeometryMarker.Brush>
+                                                <ImageBrush ImageSource="../Resources/Icons/Engine.png"/>
+                                            </map:GeometryMarker.Brush>
 
-                                        <map:GeometryPointSymbol2.Brush>
-                                            <ImageBrush ImageSource="../Resources/Icons/Engine.png"/>
-                                        </map:GeometryPointSymbol2.Brush>
-
-                                        <RectangleGeometry>
-                                            <RectangleGeometry.Rect>
-                                                <Rect X="0" Y="0" Height="24" Width="32"/>
-                                            </RectangleGeometry.Rect>
-                                        </RectangleGeometry>
-                                    </map:GeometryPointSymbol2>
-                                </map:GeographicPointShape2>
+                                            <RectangleGeometry>
+                                                <RectangleGeometry.Rect>
+                                                    <Rect X="0" Y="0" Height="24" Width="32"/>
+                                                </RectangleGeometry.Rect>
+                                            </RectangleGeometry>
+                                        </map:GeometryMarker>
+                                    </map:MarkerPointSymbol>
+                                </map:GeographicPointShape>
                             </map:CompositeShape>
                         </map:CompositeShape>
                     </map:ShapeTemplate>
@@ -392,90 +415,11 @@
                                     </map:FillPolygonSymbol.Fill>
                                 </map:FillPolygonSymbol>
                             </map:PolygonShape>
-                            
-                            <!--Маркеры выделения-->
-                            <!--<map:CompositeShape ItemsSource="{Binding Coords}">
-                                <map:CompositeShape.ItemShapeTemplate>
-                                    <map:ShapeTemplate>
-                                        <map:GeographicPointShape2 
-                                            Latitude="{Binding Latitude}" 
-                                            Longitude="{Binding Longitude}">
-                                            
-                                            <map:GeometryPointSymbol2 
-                                                Brush="White">
-                                                <map:GeometryPointSymbol2.Style>
-                                                    <Style TargetType="map:GeometryPointSymbol2">
-                                                        
-                                                    </Style>
-                                                </map:GeometryPointSymbol2.Style>
-
-                                                <map:GeometryPointSymbol2.Pen>
-                                                    <Pen Brush="Red" Thickness="1"/>
-                                                </map:GeometryPointSymbol2.Pen>
-
-                                                <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
-                                            </map:GeometryPointSymbol2>
-                                        </map:GeographicPointShape2>
-                                    </map:ShapeTemplate>
-                                </map:CompositeShape.ItemShapeTemplate>
-                                
-                                <map:CompositeShape.Style>
-                                    <Style TargetType="map:CompositeShape">
-                                        
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
-                                                <DataTrigger.Setters>
-                                                    <Setter Property="ItemShapeTemplate">
-                                                        <Setter.Value>
-                                                            <map:ShapeTemplate>
-                                                                <map:GeographicPointShape2 
-                                                                    Latitude="{Binding Latitude}" 
-                                                                    Longitude="{Binding Longitude}">
-                                                                    <map:GeometryPointSymbol2 
-                                                                        Brush="White">
-                                                                        <map:GeometryPointSymbol2.Style>
-                                                                            <Style TargetType="map:GeometryPointSymbol2">
-                                                                                <EventSetter Event="MouseDown" Handler="EditMarker_OnMouseDown"/>
-                                                                            </Style>
-                                                                        </map:GeometryPointSymbol2.Style>
-                                                                        
-                                                                        <map:GeometryPointSymbol2.Pen>
-                                                                            <Pen Brush="Red" Thickness="1"/>
-                                                                        </map:GeometryPointSymbol2.Pen>
-
-                                                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
-                                                                    </map:GeometryPointSymbol2>
-                                                                </map:GeographicPointShape2>
-                                                            </map:ShapeTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </DataTrigger.Setters>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </map:CompositeShape.Style>
-                            </map:CompositeShape>-->
                         </map:CompositeShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
         </map:MapViewer>
-
-        <!--<StackPanel Grid.Column="1" Orientation="Vertical">
-            <ToggleButton 
-                Content="Добавить точку" 
-                Command="{Binding SwitchToPointDtCommand}"
-                IsChecked="{Binding Path=SwitchToPointDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <ToggleButton 
-                Content="Рисование точками" 
-                Command="{Binding SwitchToPreciseLsdtCommand}"
-                IsChecked="{Binding Path=SwitchToPreciseLsdtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <ToggleButton 
-                Content="Лассо" 
-                Command="{Binding SwitchToQuickLsdtCommand}"
-                IsChecked="{Binding Path=SwitchToQuickLsdtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>-->
     </Grid>
 </UserControl>
+
