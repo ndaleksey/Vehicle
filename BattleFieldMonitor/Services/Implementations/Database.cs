@@ -41,7 +41,7 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
 
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM unmanned_vehicle";
+                command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle";
 
                 using (var reader = command.ExecuteReader())
                 {
