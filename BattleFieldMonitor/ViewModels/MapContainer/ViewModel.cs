@@ -184,12 +184,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var newMapObject = new MapObject(latitude, longitude, azimuth)
             {
                 Speed = speed,
-                Coords = 
-                {
-                    new Coord(latitude, longitude),
-                    new Coord(latitude-10, longitude-10),
-                    new Coord(latitude-20, longitude-10)
-                }
+                //Coords = 
+                //{
+                //    new Coord(latitude, longitude),
+                //    new Coord(latitude-10, longitude-10),
+                //    new Coord(latitude-20, longitude-10)
+                //}
         };
 
             MapObjects.Add(newMapObject);
@@ -326,7 +326,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Коллекция координат трассы объекта
         /// </summary>
-        public ObservableCollection<Coord> Coords { get; }
+        //public ObservableCollection<Coord> Coords { get; }
 
         /// <summary>
         /// Широта
@@ -379,7 +379,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Latitude = latitude;
             Longitude = longitude;
 
-            Coords = new ObservableCollection<Coord>();
+            //Coords = new ObservableCollection<Coord>();
         }
 
         #endregion

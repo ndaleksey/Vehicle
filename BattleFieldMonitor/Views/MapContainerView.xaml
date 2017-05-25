@@ -130,7 +130,8 @@
                         <map:CompositeShape >
                             <!--Объект-->
                             <map:CompositeShape>
-                                <map:LineStringShape PointsSource="{Binding Coords}">
+                                <!--Трасса-->
+                                <!--<map:LineStringShape PointsSource="{Binding Coords}">
                                     <map:LineStringShape.PointSubshapeTemplate>
                                         <map:PointSubshapeTemplate>
                                             <map:GeographicPointSubshape 
@@ -147,8 +148,26 @@
                                         </map:StrokeLineStringSymbol>
                                     </map:LineStringShape.LineStringSymbol>
                                     
-                                </map:LineStringShape>
+                                </map:LineStringShape>--><!--<map:LineStringShape PointsSource="{Binding Coords}">
+                                    <map:LineStringShape.PointSubshapeTemplate>
+                                        <map:PointSubshapeTemplate>
+                                            <map:GeographicPointSubshape 
+                                                Latitude="{Binding Latitude}" 
+                                                Longitude="{Binding Longitude}"/>
+                                        </map:PointSubshapeTemplate>
+                                    </map:LineStringShape.PointSubshapeTemplate>
 
+                                    <map:LineStringShape.LineStringSymbol>
+                                        <map:StrokeLineStringSymbol>
+                                            <map:StrokeLineStringSymbol.Stroke>
+                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                            </map:StrokeLineStringSymbol.Stroke>
+                                        </map:StrokeLineStringSymbol>
+                                    </map:LineStringShape.LineStringSymbol>
+                                    
+                                </map:LineStringShape>-->
+
+                                <!--Сам танк-->
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>
                                         <map:GeometryMarker Brush="#FF92D050">
@@ -297,8 +316,8 @@
                                             </map:GeometryMarker.Pen>
 
                                             <PathGeometry>
-                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 10">
-                                                    <LineSegment Point="200, 10"/>
+                                                <PathFigure IsClosed="False" IsFilled="False" StartPoint="60, 15">
+                                                    <LineSegment Point="200, 15"/>
                                                 </PathFigure>
                                             </PathGeometry>
                                         </map:GeometryMarker>
@@ -309,7 +328,7 @@
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>
                                         <map:MarkerPointSymbol.Transform>
-                                            <TranslateTransform X="60" Y="20"/>
+                                            <TranslateTransform X="60" Y="25"/>
                                         </map:MarkerPointSymbol.Transform>
                                         
                                         <map:GeometryMarker>
@@ -330,7 +349,7 @@
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>
                                         <map:MarkerPointSymbol.Transform>
-                                            <TranslateTransform X="94" Y="20"/>
+                                            <TranslateTransform X="94" Y="25"/>
                                         </map:MarkerPointSymbol.Transform>
                                         
                                         <map:GeometryMarker>
