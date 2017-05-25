@@ -4,6 +4,7 @@ using System.Globalization;
 using DevExpress.Mvvm;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
+using Swsu.Geo;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 {
@@ -205,24 +206,40 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private void OnPointDrawn(PointDrawnParameter parameter)
         {
             //TODO: Передать Сергею Мирошниченко
-            var random = new Random();
+            //var random = new Random();
+            //var latitude = parameter.Location.Latitude;
+            //var longitude = parameter.Location.Longitude;
+            //var azimuth = 360 * random.NextDouble() - 180;
+            //var speed = 100 * random.NextDouble();
+
+            //var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
+            //{
+            //    Speed = speed,
+            //    //Coords = 
+            //    //{
+            //    //    new Coord(latitude, longitude),
+            //    //    new Coord(latitude-10, longitude-10),
+            //    //    new Coord(latitude-20, longitude-10)
+            //    //}
+            //};
+
+            //UnmannedVehicles.Add(newVehicle);
+
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
-            var azimuth = 360 * random.NextDouble() - 180;
-            var speed = 100 * random.NextDouble();
 
-            var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
+            var obstacle = new Obstacle();
+
+            var sphere = new Sphere(6378136);
+
+            for (int angle = 0; angle < 360; angle++)
             {
-                Speed = speed,
-                //Coords = 
-                //{
-                //    new Coord(latitude, longitude),
-                //    new Coord(latitude-10, longitude-10),
-                //    new Coord(latitude-20, longitude-10)
-                //}
-            };
+                var solution = sphere.SolveDirectGeodeticProblem(latitude, longitude, angle, 1000000);
 
-            UnmannedVehicles.Add(newVehicle);
+                obstacle.Coords.Add(new Coord(solution.Latitude2, solution.Longitude2));
+            }
+
+            Obstacles.Add(obstacle);
         }
 
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
