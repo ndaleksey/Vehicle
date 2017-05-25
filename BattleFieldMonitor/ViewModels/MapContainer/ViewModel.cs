@@ -288,5 +288,41 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             }
         }
         #endregion
+
+        #region Methods From Interface
+
+        /// <summary>
+        /// Переключиться на инструмент добавления точек
+        /// </summary>
+        public void SwitchToPointDrawingTool()
+        {
+            MapToolMode = MapToolMode.PointDrawing;
+        }
+
+        /// <summary>
+        /// Переключиться на инструмент рисования объектов точками
+        /// </summary>
+        public void SwitchToPreciseLineStringDrawingTool()
+        {
+            MapToolMode = MapToolMode.PreciseLineStringDrawing;
+        }
+
+        /// <summary>
+        /// Переключиться на инструмент Лассо
+        /// </summary>
+        public void SwitchToQuickLineStringDrawingTool()
+        {
+            MapToolMode = MapToolMode.QuickLineStringDrawing;
+        }
+
+        /// <summary>
+        /// Переключиться на инструмент простого выделения
+        /// </summary>
+        public void SwitchToSimpleSelectionTool()
+        {
+            MapToolMode = MapToolMode.SimpleSelection;
+        }
+
+        #endregion
     }
 }
