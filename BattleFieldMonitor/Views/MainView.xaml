@@ -50,7 +50,23 @@
 				<StackPanel>
 					<!--<Button Content="Увеличть" Margin="5" Command="{Binding Path=MapScaleInCommand}"/>
 					<Button Content="Уменьшить" Margin="5" Command="{Binding Path=MapScaleOutCommand}"/>-->
-					<Slider Orientation="Vertical" Height="200" HorizontalAlignment="Center" 
+
+                    <ToggleButton 
+                        Content="Добавить точку" 
+                        Command="{Binding SwitchToPointDtCommand}"
+                        IsChecked="{Binding Path=SwitchToPointDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
+                        Content="Рисование точками" 
+                        Command="{Binding SwitchToPreciseLsdtCommand}"
+                        IsChecked="{Binding Path=SwitchToPreciseLsdtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
+                        Content="Лассо" 
+                        Command="{Binding SwitchToQuickLsdtCommand}"
+                        IsChecked="{Binding Path=SwitchToQuickLsdtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Slider Orientation="Vertical" Height="200" HorizontalAlignment="Center" 
 							Value="{Binding Path=ScaleDenominator, UpdateSourceTrigger=PropertyChanged}"
 							Minimum="0.5e4" Maximum="1e9" TickFrequency="5e1" TickPlacement="BottomRight"/>
 				</StackPanel>
