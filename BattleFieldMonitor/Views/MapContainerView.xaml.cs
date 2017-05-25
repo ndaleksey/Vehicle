@@ -8,7 +8,7 @@ namespace Swsu.BattleFieldMonitor.Views
     {
         #region Fields
 
-        private ViewModel _viewModel;
+        //private ViewModel _viewModel;
 
         #endregion
 
@@ -17,8 +17,8 @@ namespace Swsu.BattleFieldMonitor.Views
         public MapContainerView()
         {
             InitializeComponent();
-            _viewModel = new ViewModel();
-            DataContext = _viewModel;
+            //_viewModel = new ViewModel();
+            //DataContext = _viewModel;
         }
 
         #endregion
@@ -29,7 +29,8 @@ namespace Swsu.BattleFieldMonitor.Views
             {
                 var polygonShape = sender as PolygonShape;
                 var obstacle = polygonShape.DataContext as Obstacle;
-                _viewModel.SelectedObstacle = obstacle;
+                //_viewModel.SelectedObstacle = obstacle;
+                ((ViewModel) DataContext).SelectedObstacle = obstacle;
             }
         }
     }

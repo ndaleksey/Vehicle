@@ -160,9 +160,19 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
             var azimuth = 360 * random.NextDouble() - 180;
-            var speed = 10 * random.NextDouble();
+            var speed = 100 * random.NextDouble();
 
-            var newMapObject = new MapObject(latitude, longitude, azimuth) {Speed = speed};
+            var newMapObject = new MapObject(latitude, longitude, azimuth)
+            {
+                Speed = speed,
+                Coords = 
+                {
+                    new Coord(latitude, longitude),
+                    new Coord(latitude-10, longitude-10),
+                    new Coord(latitude-20, longitude-10)
+                }
+        };
+
             MapObjects.Add(newMapObject);
         }
 
