@@ -7,6 +7,7 @@
         PreciseLineStringDrawing,
         QuickLineStringDrawing,
 	    SimpleSelection,
-        Reshaping
+        Reshaping,
+	    BeaconDrawing
 	}
 }

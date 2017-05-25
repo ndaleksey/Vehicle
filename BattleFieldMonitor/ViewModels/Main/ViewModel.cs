@@ -17,6 +17,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         #region Fields
         private double _scaleDenominator;
         private IMapContainerViewModel _mapContainer;
+        private bool _switchToBeaconDtButtonChecked;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
         private bool _switchToQuickLsdtButtonChecked;
@@ -28,6 +29,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         {
             get { return _scaleDenominator; }
             set { SetProperty(ref _scaleDenominator, value, nameof(ScaleDenominator), OnScaleDenominatorChanged); }
+        }
+
+        /// <summary>
+        /// Зажата кнопка "Добавить маяк"
+        /// </summary>
+        public bool SwitchToBeaconDtButtonChecked
+        {
+            get { return _switchToBeaconDtButtonChecked; }
+            set
+            {
+                SetProperty(
+                    ref _switchToBeaconDtButtonChecked,
+                    value,
+                    nameof(SwitchToBeaconDtButtonChecked));
+            }
         }
 
         /// <summary>
@@ -96,6 +112,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         /// </summary>
         public DelegateCommand SwitchToQuickLsdtCommand { get; }
 
+        /// <summary>
+        /// Команда переключения на режим добавления маяков
+        /// </summary>
+        public DelegateCommand SwitchToBeaconDtCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -107,6 +128,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
             SwitchToPointDtCommand = new DelegateCommand(SwitchToPointDt);
             SwitchToPreciseLsdtCommand = new DelegateCommand(SwitchToPreciseLsdt);
             SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
+            SwitchToBeaconDtCommand = new DelegateCommand(SwitchToBeaconDt);
 
             //			ScaleDenominator = 1e7;
         }
@@ -164,12 +186,31 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         }
 
         /// <summary>
+        /// Переключиться на инструмент добавления маяков
+        /// </summary>
+        private void SwitchToBeaconDt()
+        {
+            if (SwitchToBeaconDtButtonChecked)
+            {
+                SwitchToPointDtButtonChecked = false;
+                SwitchToPreciseLsdtButtonChecked = false;
+                SwitchToQuickLsdtButtonChecked = false;
+                _mapContainer.SwitchToBeaconDrawingTool();
+            }
+            else
+            {
+                _mapContainer.SwitchToSimpleSelectionTool();
+            }
+        }
+
+        /// <summary>
         /// Переключиться на инструмент добавления точек
         /// </summary>
         private void SwitchToPointDt()
         {
             if (SwitchToPointDtButtonChecked)
             {
+                SwitchToBeaconDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
                 _mapContainer.SwitchToPointDrawingTool();
@@ -187,6 +228,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         {
             if (SwitchToPreciseLsdtButtonChecked)
             {
+                SwitchToBeaconDtButtonChecked = false;
                 SwitchToPointDtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
                 _mapContainer.SwitchToPreciseLineStringDrawingTool();
@@ -204,6 +246,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         {
             if (SwitchToQuickLsdtButtonChecked)
             {
+                SwitchToBeaconDtButtonChecked = false;
                 SwitchToPointDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
                 _mapContainer.SwitchToQuickLineStringDrawingTool();
