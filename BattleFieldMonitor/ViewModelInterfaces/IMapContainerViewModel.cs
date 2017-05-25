@@ -19,6 +19,12 @@
         #region Methods
 
         /// <summary>
+        /// Включить/отключить режим масштабирования (слежения за танком)
+        /// </summary>
+        /// <param name="value">Истина, если включить, иначе ложь</param>
+        void SetScalingMode(bool value);
+
+        /// <summary>
         /// Переключиться на инструмент добавления маяков
         /// </summary>
         void SwitchToBeaconDrawingTool();

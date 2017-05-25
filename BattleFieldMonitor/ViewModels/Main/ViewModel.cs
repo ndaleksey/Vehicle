@@ -17,6 +17,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         #region Fields
         private double _scaleDenominator;
         private IMapContainerViewModel _mapContainer;
+        private bool _isScalingModeEnabled;
         private bool _switchToBeaconDtButtonChecked;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
@@ -29,6 +30,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         {
             get { return _scaleDenominator; }
             set { SetProperty(ref _scaleDenominator, value, nameof(ScaleDenominator), OnScaleDenominatorChanged); }
+        }
+
+        /// <summary>
+        /// Включен режим масштабирования (слежения за танком)
+        /// </summary>
+        public bool IsScalingModeEnabled
+        {
+            get { return _isScalingModeEnabled; }
+            set { SetProperty(ref _isScalingModeEnabled, value, nameof(IsScalingModeEnabled), OnIsScalingModeEnabledChanged); }
         }
 
         /// <summary>
@@ -117,6 +127,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         /// </summary>
         public DelegateCommand SwitchToBeaconDtCommand { get; }
 
+        /// <summary>
+        /// Команда включения режима масштабирования (слежения за танком)
+        /// </summary>
+        public DelegateCommand EnableScalingModeCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -159,6 +174,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         #endregion
 
         #region Methods
+
+        
+        private void OnIsScalingModeEnabledChanged(bool oldValue, bool newValue)
+        {
+            if (_mapContainer != null)
+            {
+                _mapContainer.SetScalingMode(newValue);
+            }
+        }
 
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
         {

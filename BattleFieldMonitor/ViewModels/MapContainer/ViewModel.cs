@@ -12,6 +12,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Fields
 
         private MapToolMode _mapToolMode;
+        private bool _isScalingModeEnabled;
         private double _scaleDenominator;
         private Obstacle _selectedObstacle;
 
@@ -31,6 +32,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         {
             get { return _mapToolMode; }
             private set { SetProperty(ref _mapToolMode, value, nameof(MapToolMode)); }
+        }
+
+        /// <summary>
+        /// Признак, указывающий, включен ли режим масштабирования (слежения за танком)
+        /// </summary>
+        public bool IsScalingModeEnabled
+        {
+            get { return _isScalingModeEnabled; }
+            private set { SetProperty(ref _isScalingModeEnabled, value, nameof(IsScalingModeEnabled)); }
         }
 
         /// <summary>
@@ -248,7 +258,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #endregion
 
         #region Methods From Interface
-        
+
+        /// <summary>
+        /// Включить/отключить режим масштабирования (слежения за танком)
+        /// </summary>
+        /// <param name="value">Истина, если включить, иначе ложь</param>
+        public void SetScalingMode(bool value)
+        {
+            IsScalingModeEnabled = value;
+        }
+
         /// <summary>
         /// Переключиться на инструмент добавления маяков
         /// </summary>

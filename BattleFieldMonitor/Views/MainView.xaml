@@ -70,7 +70,11 @@
                         Content="Добавить маяк" 
                         Command="{Binding SwitchToBeaconDtCommand}"
                         IsChecked="{Binding Path=SwitchToBeaconDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    
+
+                    <ToggleButton 
+                        Content="Масштабирование" 
+                        IsChecked="{Binding Path=IsScalingModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                     <Slider Orientation="Vertical" Height="200" HorizontalAlignment="Center" 
 							Value="{Binding Path=ScaleDenominator, UpdateSourceTrigger=PropertyChanged}"
 							Minimum="0.5e4" Maximum="1e9" TickFrequency="5e1" TickPlacement="BottomRight"/>
