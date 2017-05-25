@@ -142,12 +142,17 @@
     <Compile Include="Services\ObjectsAddedEventArgs.cs" />
     <Compile Include="Services\ObjectsRemovalReason.cs" />
     <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
+    <Compile Include="ViewModels\MapContainer\Beacon.cs" />
+    <Compile Include="ViewModels\MapContainer\Coord.cs" />
+    <Compile Include="ViewModels\MapContainer\MapObject.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModelParent.cs" />
     <Compile Include="ViewModelInterfaces\IViewModelParent.cs" />
     <Compile Include="ViewModels\ChildViewModelBase.cs" />
     <Compile Include="ViewModels\Main\ViewModel.cs" />
+    <Compile Include="ViewModels\MapContainer\Obstacle.cs" />
+    <Compile Include="ViewModels\MapContainer\UnmannedVehicle.cs" />
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">
       <DependentUpon>MapContainerView.xaml</DependentUpon>
