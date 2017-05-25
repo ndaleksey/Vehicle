@@ -86,6 +86,10 @@
       <HintPath>..\packages\Swsu.Maps.Windows.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Swsu.Maps.Windows.DevExpress, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Maps.Windows.DevExpress.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.DevExpress.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Swsu.Maps.Windows.Epsg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Maps.Windows.Epsg.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.Epsg.dll</HintPath>
       <Private>True</Private>
@@ -144,6 +148,7 @@
     <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
     <Compile Include="ViewModels\MapContainer\Beacon.cs" />
     <Compile Include="ViewModels\MapContainer\Coord.cs" />
+    <Compile Include="ViewModels\MapContainer\IMapViewerService1.cs" />
     <Compile Include="ViewModels\MapContainer\MapObject.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
@@ -151,7 +156,10 @@
     <Compile Include="ViewModelInterfaces\IViewModelParent.cs" />
     <Compile Include="ViewModels\ChildViewModelBase.cs" />
     <Compile Include="ViewModels\Main\ViewModel.cs" />
+    <Compile Include="ViewModels\MapContainer\MapViewerService1.cs" />
     <Compile Include="ViewModels\MapContainer\Obstacle.cs" />
+    <Compile Include="ViewModels\MapContainer\RectangularEnvelope.cs" />
+    <Compile Include="ViewModels\MapContainer\RectangularRangeExtensions.cs" />
     <Compile Include="ViewModels\MapContainer\UnmannedVehicle.cs" />
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">

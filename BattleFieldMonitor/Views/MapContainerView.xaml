@@ -109,17 +109,25 @@
         </ResourceDictionary>
 	</UserControl.Resources>
 
+    <dxmvvm:Interaction.Behaviors>
+        
+        
+    </dxmvvm:Interaction.Behaviors>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
-        <map:MapViewer 
+        <map:MapViewer
+            Name="TheViewer"
             ScaleDenominator="{Binding Path=ScaleDenominator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
             Tool="{Binding}" 
             ToolTemplateQualifier="{Binding Path=MapToolMode}">
             <map:MapViewer.MapDefinition>
+
+                
                 <!-- Будет заменено привязкой с конвертером. -->
                 <map:WmtsMapDefinition
                         Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"

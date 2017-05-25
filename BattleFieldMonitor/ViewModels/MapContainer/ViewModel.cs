@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using DevExpress.Mvvm;
+using Swsu.BattleFieldMonitor.Common;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
 using Swsu.Geo;
+using Swsu.Maps.Windows.DevExpress;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 {
@@ -33,6 +35,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             get { return _mapToolMode; }
             private set { SetProperty(ref _mapToolMode, value, nameof(MapToolMode)); }
         }
+
+        private IMapViewerService MapViewerService => GetService<IMapViewerService>();
 
         /// <summary>
         /// Признак, указывающий, включен ли режим масштабирования (слежения за танком)
@@ -140,6 +144,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             {
                 new Beacon(10, 10)
             };
+
+            
         }
 
         #endregion
@@ -266,6 +272,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SetScalingMode(bool value)
         {
             IsScalingModeEnabled = value;
+            MapViewerService.Locate(new GeographicCoordinatesTuple(10, 10));
         }
 
         /// <summary>
