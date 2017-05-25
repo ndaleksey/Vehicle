@@ -379,7 +379,7 @@
             </map:MapLayer>
         </map:MapViewer>
 
-        <StackPanel Grid.Column="1" Orientation="Vertical">
+        <!--<StackPanel Grid.Column="1" Orientation="Vertical">
             <ToggleButton 
                 Content="Добавить точку" 
                 Command="{Binding SwitchToPointDtCommand}"
@@ -394,6 +394,6 @@
                 Content="Лассо" 
                 Command="{Binding SwitchToQuickLsdtCommand}"
                 IsChecked="{Binding Path=SwitchToQuickLsdtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>

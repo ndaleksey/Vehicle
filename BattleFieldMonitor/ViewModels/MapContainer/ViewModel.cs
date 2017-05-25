@@ -15,9 +15,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private MapToolMode _mapToolMode;
         private double _scaleDenominator;
         private Obstacle _selectedObstacle;
-        private bool _switchToPointDtButtonChecked;
-        private bool _switchToPreciseLsdtButtonChecked;
-        private bool _switchToQuickLsdtButtonChecked;
 
         #endregion
 
@@ -60,51 +57,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             set { SetProperty(ref _selectedObstacle, value, nameof(SelectedObstacle)); }
         }
 
-        /// <summary>
-        /// Зажата кнопка "Добавить точку"
-        /// </summary>
-        public bool SwitchToPointDtButtonChecked
-        {
-            get { return _switchToPointDtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToPointDtButtonChecked,
-                    value,
-                    nameof(SwitchToPointDtButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Рисование точками"
-        /// </summary>
-        public bool SwitchToPreciseLsdtButtonChecked
-        {
-            get { return _switchToPreciseLsdtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToPreciseLsdtButtonChecked,
-                    value,
-                    nameof(SwitchToPreciseLsdtButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Лассо"
-        /// </summary>
-        public bool SwitchToQuickLsdtButtonChecked
-        {
-            get { return _switchToQuickLsdtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToQuickLsdtButtonChecked,
-                    value,
-                    nameof(SwitchToQuickLsdtButtonChecked));
-            }
-        }
-
         #endregion
 
         #region Delegate Commands
@@ -129,21 +81,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public DelegateCommand<LineDrawnParameter> OnLineDrawnCommand { get; }
 
-        /// <summary>
-        /// Команда переключения на режим добавления точек
-        /// </summary>
-        public DelegateCommand SwitchToPointDtCommand { get; }
-
-        /// <summary>
-        /// Команда переключения на режим рисования объектов точками
-        /// </summary>
-        public DelegateCommand SwitchToPreciseLsdtCommand { get; }
-
-        /// <summary>
-        /// Команда переключенияы на режим рисования объектов лассо
-        /// </summary>
-        public DelegateCommand SwitchToQuickLsdtCommand { get; }
-
         #endregion
 
         #region Constructors
@@ -156,9 +93,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             DeleteCommand = new DelegateCommand(Delete);
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
-            SwitchToPointDtCommand = new DelegateCommand(SwitchToPointDt);
-            SwitchToPreciseLsdtCommand = new DelegateCommand(SwitchToPreciseLsdt);
-            SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
 
             MapObjects = new ObservableCollection<MapObject>();
 
@@ -237,56 +171,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Parent?.NotifyScaleDenominatorChanged(oldValue, newValue);
         }
 
-        /// <summary>
-        /// Переключиться на инструмент добавления точек
-        /// </summary>
-        private void SwitchToPointDt()
-        {
-            if (SwitchToPointDtButtonChecked)
-            {
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                MapToolMode = MapToolMode.PointDrawing;
-            }
-            else
-            {
-                MapToolMode = MapToolMode.SimpleSelection;
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент рисования объектов точками
-        /// </summary>
-        private void SwitchToPreciseLsdt()
-        {
-            if (SwitchToPreciseLsdtButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                MapToolMode = MapToolMode.PreciseLineStringDrawing;
-            }
-            else
-            {
-                MapToolMode = MapToolMode.SimpleSelection;
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент Лассо
-        /// </summary>
-        private void SwitchToQuickLsdt()
-        {
-            if (SwitchToQuickLsdtButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                MapToolMode = MapToolMode.QuickLineStringDrawing;
-            }
-            else
-            {
-                MapToolMode = MapToolMode.SimpleSelection;
-            }
-        }
         #endregion
 
         #region Methods From Interface
