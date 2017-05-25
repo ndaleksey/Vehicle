@@ -128,6 +128,11 @@
     <Compile Include="Services\Implementations\Database.cs" />
     <Compile Include="Services\Implementations\UnmannedVehicle.cs" />
     <Compile Include="Services\IUnmannedVehicle.cs" />
+    <Compile Include="Common\GeographicCoordinatesTuple.cs" />
+    <Compile Include="Converters1\Parameters\LineDrawnParameter.cs" />
+    <Compile Include="Converters1\Parameters\PointDrawnParameter.cs" />
+    <Compile Include="Converters1\PointDrawnEventArgsConverter.cs" />
+    <Compile Include="Converters1\LineStringDrawnEventArgsConverter.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModelParent.cs" />
@@ -196,7 +201,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Infrastructure\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Engine.png" />
+    <Resource Include="Resources\Icons\Globe.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
