@@ -82,6 +82,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public DelegateCommand ExitEditModeCommand { get; }
 
         /// <summary>
+        /// Команда добавления маяка
+        /// </summary>
+        public DelegateCommand<PointDrawnParameter> OnBeaconDrawnCommand { get; }
+
+        /// <summary>
         /// Команда добавления точки
         /// </summary>
         public DelegateCommand<PointDrawnParameter> OnPointDrawnCommand { get; }
@@ -103,6 +108,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             ExitEditModeCommand = new DelegateCommand(ExitEditMode);
             DeleteCommand = new DelegateCommand(Delete);
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
+            OnBeaconDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnBeaconDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
@@ -179,37 +185,44 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
-        /// Метод, вызываемый при добавлении на карту точки
+        /// Метод, вызываемый при добавлении на карту маяка
         /// </summary>
         /// <param name="parameter">Параметр, содержащий координаты точки</param>
-        private void OnPointDrawn(PointDrawnParameter parameter)
+        private void OnBeaconDrawn(PointDrawnParameter parameter)
         {
-            //TODO: Передать Сергею Мирошниченко
-            //var random = new Random();
-            //var latitude = parameter.Location.Latitude;
-            //var longitude = parameter.Location.Longitude;
-            //var azimuth = 360 * random.NextDouble() - 180;
-            //var speed = 100 * random.NextDouble();
-
-            //var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
-            //{
-            //    Speed = speed,
-            //    //Coords = 
-            //    //{
-            //    //    new Coord(latitude, longitude),
-            //    //    new Coord(latitude-10, longitude-10),
-            //    //    new Coord(latitude-20, longitude-10)
-            //    //}
-            //};
-
-            //UnmannedVehicles.Add(newVehicle);
-
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
 
             var newBeacon = new Beacon(latitude, longitude);
 
             Beacons.Add(newBeacon);
+        }
+
+        /// <summary>
+        /// Метод, вызываемый при добавлении на карту точки
+        /// </summary>
+        /// <param name="parameter">Параметр, содержащий координаты точки</param>
+        private void OnPointDrawn(PointDrawnParameter parameter)
+        {
+            //TODO: Передать Сергею Мирошниченко
+            var random = new Random();
+            var latitude = parameter.Location.Latitude;
+            var longitude = parameter.Location.Longitude;
+            var azimuth = 360 * random.NextDouble() - 180;
+            var speed = 100 * random.NextDouble();
+
+            var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
+            {
+                Speed = speed,
+                //Coords = 
+                //{
+                //    new Coord(latitude, longitude),
+                //    new Coord(latitude-10, longitude-10),
+                //    new Coord(latitude-20, longitude-10)
+                //}
+            };
+
+            UnmannedVehicles.Add(newVehicle);
         }
 
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
@@ -220,6 +233,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #endregion
 
         #region Methods From Interface
+        
+        /// <summary>
+        /// Переключиться на инструмент добавления маяков
+        /// </summary>
+        public void SwitchToBeaconDrawingTool()
+        {
+            MapToolMode = MapToolMode.BeaconDrawing;
+        }
 
         /// <summary>
         /// Переключиться на инструмент добавления точек

@@ -35,6 +35,18 @@
                 <map:SimpleSelectionTool2/>
             </map:ToolTemplate2>
 
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.BeaconDrawing}}">
+                <map:PointDrawingTool 
+                    d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}">
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand 
+                            Command="{Binding OnBeaconDrawnCommand}" 
+                            Event="{x:Static map:PointDrawingTool.DrawnEvent}" 
+                            EventArgsConverter="{StaticResource ResourceKey=PointDrawnEventArgsConverter}"/>
+                    </dxmvvm:Interaction.Behaviors>
+                </map:PointDrawingTool>
+            </map:ToolTemplate>
+            
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.PointDrawing}}">
                 <map:PointDrawingTool 
                     d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}">
@@ -250,7 +262,7 @@
                                     <map:MarkerPointSymbol>
                                         <map:GeometryMarker Brush="#FF92D050">
                                             <map:GeometryMarker.Pen>
-                                                <Pen Brush="Black" Thickness="2"/>
+                                                <Pen Brush="Black" Thickness="1"/>
                                             </map:GeometryMarker.Pen>
 
                                             <GeometryGroup>
@@ -280,10 +292,6 @@
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>
                                         <map:GeometryMarker Brush="Black">
-                                            <map:GeometryMarker.Pen>
-                                                <Pen Brush="Black" Thickness="2"/>
-                                            </map:GeometryMarker.Pen>
-
                                             <RectangleGeometry>
                                                 <RectangleGeometry.Transform>
                                                     <RotateTransform Angle="{Binding Azimuth}"/>
@@ -457,7 +465,7 @@
                             <map:MarkerPointSymbol>
                                 <map:GeometryMarker Brush="Red">
                                     <map:GeometryMarker.Pen>
-                                        <Pen Brush="Black" Thickness="2"/>
+                                        <Pen Brush="Black" Thickness="1"/>
                                     </map:GeometryMarker.Pen>
 
                                     <GeometryGroup>

@@ -19,6 +19,11 @@
         #region Methods
 
         /// <summary>
+        /// Переключиться на инструмент добавления маяков
+        /// </summary>
+        void SwitchToBeaconDrawingTool();
+
+        /// <summary>
         /// Переключиться на инструмент добавления точек
         /// </summary>
         void SwitchToPointDrawingTool();
