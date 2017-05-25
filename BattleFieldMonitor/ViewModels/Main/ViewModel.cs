@@ -3,7 +3,6 @@ using Swsu.BattleFieldMonitor.ViewModelInterfaces;
 using Swsu.Common.Windows.DevExpress;
 using System.Diagnostics;
 using System.Windows.Input;
-using Swsu.BattleFieldMonitor.ViewModels.MapContainer;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.Main
 {

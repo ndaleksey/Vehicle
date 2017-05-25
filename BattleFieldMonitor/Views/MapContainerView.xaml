@@ -122,16 +122,23 @@
                         <map:CompositeShape >
                             <!--Объект-->
                             <map:CompositeShape>
-                                <map:GeographicLineStringShape2 PointsSource="{Binding Coords}">
-                                    <map:GeographicLineStringShape2.PointContainerStyle>
+                                <map:LineStringShape PointsSource="{Binding Coords}">
+                                    <map:LineStringShape.PointContainerStyle>
                                         <Style TargetType="map:GeographicLineStringShapePoint2">
                                             <Setter Property="Latitude" Value="{Binding Latitude}"/>
                                             <Setter Property="Longitude" Value="{Binding Longitude}"/>
                                         </Style>
-                                    </map:GeographicLineStringShape2.PointContainerStyle>
+                                    </map:LineStringShape.PointContainerStyle>
 
-                                    <map:PenCurveSymbol2 Pen="{StaticResource RouteLinePen}"/>
-                                </map:GeographicLineStringShape2>
+                                    <map:LineStringShape.LineStringSymbol>
+                                        <map:StrokeLineStringSymbol>
+                                            <map:StrokeLineStringSymbol.Stroke>
+                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                            </map:StrokeLineStringSymbol.Stroke>
+                                        </map:StrokeLineStringSymbol>
+                                    </map:LineStringShape.LineStringSymbol>
+                                    
+                                </map:LineStringShape>
 
                                 <map:GeographicPointShape2 Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <!--<map:GeographicPointShape2.Transform>

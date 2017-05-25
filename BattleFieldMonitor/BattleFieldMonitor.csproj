@@ -119,9 +119,6 @@
     <Compile Include="Converters1\Parameters\PointDrawnParameter.cs" />
     <Compile Include="Converters1\PointDrawnEventArgsConverter.cs" />
     <Compile Include="Converters1\LineStringDrawnEventArgsConverter.cs" />
-    <Compile Include="Models\Coord.cs" />
-    <Compile Include="Models\MapObject.cs" />
-    <Compile Include="Models\Obstacle.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModelParent.cs" />

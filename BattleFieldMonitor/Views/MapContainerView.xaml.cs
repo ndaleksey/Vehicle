@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using Swsu.BattleFieldMonitor.Models;
 using Swsu.BattleFieldMonitor.ViewModels.MapContainer;
 using Swsu.Maps.Windows.Shapes;
 
