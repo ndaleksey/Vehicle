@@ -57,6 +57,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 {
                     unmannedVehicle.IsTracked = false;
                 }
+
+                foreach (var beacon in Beacons)
+                {
+                    beacon.IsTracked = false;
+                }
             }
 
             //TODO: Нужно ли сразу же следить за танком при включении режима масштабирования?
@@ -75,6 +80,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 	    public ObservableCollection<Obstacle> Obstacles { get; }
 
         /// <summary>
+        /// Коллекция трасс, отображаемых на карте
+        /// </summary>
+	    public ObservableCollection<RouteModel> Routes { get; }
+
+        /// <summary>
         /// Знаменатель масштаба
         /// </summary>
         public double ScaleDenominator
@@ -84,7 +94,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
-        /// Выделенное препятствие (грубо говоря, не выделенное, а то, на котором щёлкнули мышкой, в частности, для вызова контекстного меню)
+        /// Выделенный объект, линия или препятствие (грубо говоря, не выделенный, а тот, на котором щёлкнули мышкой, в частности, для вызова контекстного меню)
         /// </summary>
         public object SelectedObject
         {
@@ -134,7 +144,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Команда добавления отслеживаемого объекта
         /// </summary>
-        public DelegateCommand SetTrackedVehicleCommand { get; }
+        public DelegateCommand SetTrackedObjectCommand { get; }
+
+        /// <summary>
+        /// Команда добавления трассы
+        /// </summary>
+        public DelegateCommand<LineDrawnParameter> OnRouteDrawnCommand { get; }
 
         #endregion
 
@@ -150,7 +165,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnBeaconDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnBeaconDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
-            SetTrackedVehicleCommand = new DelegateCommand(SetTrackedVehicle);
+            SetTrackedObjectCommand = new DelegateCommand(SetTrackedObject);
+            OnRouteDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnRouteDrawn);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
 
@@ -164,22 +180,24 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
             Obstacles = new ObservableCollection<Obstacle>
             {
-                new Obstacle
-                {
-                    Coords =
-                    {
-                        new Coord(0, 0),
-                        new Coord(-30, 0),
-                        new Coord(-30, -30),
-                        new Coord(0, -30)
-                    }
-                }
+                //new Obstacle
+                //{
+                //    Coords =
+                //    {
+                //        new Coord(0, 0),
+                //        new Coord(-30, 0),
+                //        new Coord(-30, -30),
+                //        new Coord(0, -30)
+                //    }
+                //}
             };
 
             Beacons = new ObservableCollection<Beacon>
             {
-                new Beacon(10, 10)
+                //new Beacon(10, 10)
             };
+
+            Routes = new ObservableCollection<RouteModel>();
         }
 
         private void UnmannedVehicles_ObjectsAdded(object sender, ObjectsAddedEventArgs<IUnmannedVehicle> e)
@@ -215,6 +233,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 var selectedObstacle = _selectedObject as Obstacle;
                 Obstacles.Remove(selectedObstacle);
             }
+
+            if (_selectedObject is RouteModel)
+            {
+                var selectedRoute = _selectedObject as RouteModel;
+                Routes.Remove(selectedRoute);
+            }
         }
 
         /// <summary>
@@ -222,11 +246,20 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void Edit()
         {
-            if (_selectedObject is Obstacle)
+            var obstacle = _selectedObject as Obstacle;
+            if (obstacle != null)
             {
-                var selectedObstacle = _selectedObject as Obstacle;
+                var selectedObstacle = obstacle;
                 selectedObstacle.IsEditMode = true;
-                MapToolMode = MapToolMode.Reshaping;
+                MapToolMode = MapToolMode.PolygonReshaping;
+            }
+
+            var model = _selectedObject as RouteModel;
+            if (model != null)
+            {
+                var selectedRoute = model;
+                selectedRoute.IsEditMode = true;
+                MapToolMode = MapToolMode.LineReshaping;
             }
         }
 
@@ -268,7 +301,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
 
-            var newBeacon = new Beacon(latitude, longitude);
+            var newBeacon = new Beacon(this, latitude, longitude);
 
             Beacons.Add(newBeacon);
         }
@@ -316,6 +349,22 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Obstacles.Add(obstacle);
         }
 
+        /// <summary>
+        /// Метод, вызываемый при добавлении на карту трассы
+        /// </summary>
+        /// <param name="parameter">Параметр, содержащий координаты точки</param>
+        private void OnRouteDrawn(LineDrawnParameter parameter)
+        {
+            var newRouteModel = new RouteModel();
+
+            foreach (var location in parameter.Locations)
+            {
+                newRouteModel.Coords.Add(new Coord(location.Latitude, location.Longitude));
+            }
+
+            Routes.Add(newRouteModel);
+        }
+
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
         {
             Parent?.NotifyScaleDenominatorChanged(oldValue, newValue);
@@ -324,7 +373,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Установить отслеживаемый объект
         /// </summary>
-        private void SetTrackedVehicle()
+        private void SetTrackedObject()
         {
             if (_selectedObject is UnmannedVehicle)
             {
@@ -333,8 +382,29 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     unmannedVehicle.IsTracked = false;
                 }
 
-                var selectedVehicle = _selectedObject as UnmannedVehicle;
+                foreach (var beacon in Beacons)
+                {
+                    beacon.IsTracked = false;
+                }
+
+                var selectedVehicle = (UnmannedVehicle) _selectedObject;
                 selectedVehicle.IsTracked = true;
+            }
+
+            if (_selectedObject is Beacon)
+            {
+                foreach (var unmannedVehicle in UnmannedVehicles)
+                {
+                    unmannedVehicle.IsTracked = false;
+                }
+
+                foreach (var beacon in Beacons)
+                {
+                    beacon.IsTracked = false;
+                }
+
+                var selectedBeacon = (Beacon) _selectedObject;
+                selectedBeacon.IsTracked = true;
             }
         }
 
@@ -373,6 +443,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToPreciseLineStringDrawingTool()
         {
             MapToolMode = MapToolMode.PreciseLineStringDrawing;
+        }
+
+        /// <summary>
+        /// Переключиться на инструмент добавления трасс
+        /// </summary>
+        public void SwitchToRouteDrawingTool()
+        {
+            MapToolMode = MapToolMode.RouteDrawing;
         }
 
         /// <summary>
@@ -465,7 +543,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         internal UnmannedVehicle(ViewModel parentViewModel)
         {
-            UpdateCalloutText();
+            ParentViewModel = parentViewModel;
+            //UpdateCalloutText();
         }
 
         /// <summary>
@@ -480,9 +559,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Azimuth = azimuth;
             Latitude = latitude;
             Longitude = longitude;
-
-            ParentViewModel = parentViewModel;
-            //Coords = new ObservableCollection<Coord>();
         }
 
         #endregion
@@ -515,7 +591,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 {
                     ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
                 }
-                
             }
         }
 
@@ -527,23 +602,70 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     /// </summary>
     public class Beacon : MapObject
     {
+        #region Fields
+
+        private bool _isTracked;
+        private ViewModel _parentViewModel;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Признак, указывающий, что за объектом необходимо следить
+        /// </summary>
+        internal bool IsTracked
+        {
+            get { return _isTracked; }
+            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateTracking); }
+        }
+
+        /// <summary>
+        /// Родительская ViewModel для доступа к свойствам отслеживания
+        /// </summary>
+        internal ViewModel ParentViewModel
+        {
+            get { return _parentViewModel; }
+            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
+        }
+
+        #endregion
+
         #region Constructors 
 
         /// <summary>
         /// Инициализирует экземпляр класса
         /// </summary>
-        public Beacon()
+        internal Beacon(ViewModel parentViewModel)
         {
-
+            ParentViewModel = parentViewModel;
         }
 
         /// <summary>
         /// Инициализирует экземпляр класса
         /// </summary>
+        /// <param name="parentViewModel">Родительская ViewModel для доступа к функциям слежения</param>
         /// <param name="latitude">Широта</param>
         /// <param name="longitude">Долгота</param>
-        public Beacon(double latitude, double longitude) : base(latitude, longitude)
+        internal Beacon(ViewModel parentViewModel, double latitude, double longitude) : base(latitude, longitude)
         {
+            ParentViewModel = parentViewModel;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void UpdateTracking()
+        {
+            if (ParentViewModel != null && ParentViewModel.IsScalingModeEnabled)
+            {
+                if (IsTracked)
+                {
+                    ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
+                }
+
+            }
         }
 
         #endregion
@@ -691,9 +813,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     /// </summary>
     public class Obstacle : BindableBase
     {
-        #region Properties
+        #region Fields
 
         private bool _isEditMode;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Коллекция координат полигона

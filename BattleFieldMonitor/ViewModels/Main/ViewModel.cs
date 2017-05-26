@@ -21,6 +21,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         private bool _switchToBeaconDtButtonChecked;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
+        private bool _switchToRouteDtButtonChecked;
         private bool _switchToQuickLsdtButtonChecked;
 
         #endregion
@@ -100,6 +101,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                     nameof(SwitchToQuickLsdtButtonChecked));
             }
         }
+
+        /// <summary>
+        /// Зажата кнопка "Добавить трасса"
+        /// </summary>
+        public bool SwitchToRouteDtButtonChecked
+        {
+            get { return _switchToRouteDtButtonChecked; }
+            set
+            {
+                SetProperty(
+                    ref _switchToRouteDtButtonChecked,
+                    value,
+                    nameof(SwitchToRouteDtButtonChecked));
+            }
+        }
         #endregion
 
         #region Commands
@@ -116,6 +132,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         /// Команда переключения на режим рисования объектов точками
         /// </summary>
         public DelegateCommand SwitchToPreciseLsdtCommand { get; }
+
+        /// <summary>
+        /// Команда переключения на режим добавления трасс
+        /// </summary>
+        public DelegateCommand SwitchToRouteDtCommand { get; }
 
         /// <summary>
         /// Команда переключенияы на режим рисования объектов лассо
@@ -142,6 +163,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
             MapScaleOutCommand = new DelegateCommand(MapScaleOut, CanMapScaleOut);
             SwitchToPointDtCommand = new DelegateCommand(SwitchToPointDt);
             SwitchToPreciseLsdtCommand = new DelegateCommand(SwitchToPreciseLsdt);
+            SwitchToRouteDtCommand = new DelegateCommand(SwitchToRouteDt);
             SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
             SwitchToBeaconDtCommand = new DelegateCommand(SwitchToBeaconDt);
 
@@ -219,6 +241,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPointDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
                 _mapContainer.SwitchToBeaconDrawingTool();
             }
             else
@@ -237,6 +260,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToBeaconDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
                 _mapContainer.SwitchToPointDrawingTool();
             }
             else
@@ -255,7 +279,27 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToBeaconDtButtonChecked = false;
                 SwitchToPointDtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
                 _mapContainer.SwitchToPreciseLineStringDrawingTool();
+            }
+            else
+            {
+                _mapContainer.SwitchToSimpleSelectionTool();
+            }
+        }
+
+        /// <summary>
+        /// Переключиться на инструмент добавления трасс
+        /// </summary>
+        private void SwitchToRouteDt()
+        {
+            if (SwitchToRouteDtButtonChecked)
+            {
+                SwitchToPointDtButtonChecked = false;
+                SwitchToBeaconDtButtonChecked = false;
+                SwitchToPreciseLsdtButtonChecked = false;
+                SwitchToQuickLsdtButtonChecked = false;
+                _mapContainer.SwitchToRouteDrawingTool();
             }
             else
             {
@@ -273,6 +317,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToBeaconDtButtonChecked = false;
                 SwitchToPointDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
                 _mapContainer.SwitchToQuickLineStringDrawingTool();
             }
             else

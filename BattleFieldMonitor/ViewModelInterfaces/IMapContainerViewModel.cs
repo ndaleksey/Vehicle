@@ -40,6 +40,11 @@
         void SwitchToPreciseLineStringDrawingTool();
 
         /// <summary>
+        /// Переключиться на инструмент добавления трасс
+        /// </summary>
+        void SwitchToRouteDrawingTool();
+
+        /// <summary>
         /// Переключиться на инструмент Лассо
         /// </summary>
         void SwitchToQuickLineStringDrawingTool();

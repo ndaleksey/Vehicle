@@ -87,7 +87,7 @@
                 </map:QuickLineStringDrawingTool>
             </map:ToolTemplate>
 
-            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.Reshaping}}">
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.PolygonReshaping}}">
                 <map:ReshapingTool>
                     <map:ReshapingTool.PointHandleStyle>
                         <Style TargetType="map:ReshapingToolPointHandle">
@@ -105,6 +105,40 @@
                         </Style>
                     </map:ReshapingTool.PointHandleStyle>
                 </map:ReshapingTool>
+            </map:ToolTemplate>
+
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.LineReshaping}}">
+                <map:ReshapingTool>
+                    <map:ReshapingTool.PointHandleStyle>
+                        <Style TargetType="map:ReshapingToolPointHandle">
+                            <Setter Property="Marker">
+                                <Setter.Value>
+                                    <map:GeometryMarker Brush="#FF3475CD">
+                                        <map:GeometryMarker.Pen>
+                                            <Pen Brush="White" Thickness="2"/>
+                                        </map:GeometryMarker.Pen>
+
+                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                    </map:GeometryMarker>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </map:ReshapingTool.PointHandleStyle>
+                </map:ReshapingTool>
+            </map:ToolTemplate>
+
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.RouteDrawing}}">
+                <map:PreciseLineStringDrawingTool 
+                    d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}" 
+                    Pen="{StaticResource RouteLinePen}">
+
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand
+                            Command="{Binding OnRouteDrawnCommand}"
+                            Event="{x:Static map:PreciseLineStringDrawingTool.DrawnEvent}"
+                            EventArgsConverter="{StaticResource ResourceKey=LineStringDrawnEventArgsConverter}"/>
+                    </dxmvvm:Interaction.Behaviors>
+                </map:PreciseLineStringDrawingTool>
             </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
@@ -215,6 +249,66 @@
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
 
+            <!--Трассы-->
+            <map:MapLayer ItemsSource="{Binding Routes}">
+                <map:MapLayer.ItemShapeTemplate>
+                    <map:ShapeTemplate>
+                        <!--Трасса-->
+                        <map:CompositeShape MouseDown="ContentElement_OnMouseDown">
+                            <map:CompositeShape.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
+                                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                                </ContextMenu>
+                            </map:CompositeShape.ContextMenu>
+
+                            <map:LineStringShape 
+                                PointsSource="{Binding Coords}" 
+                                map:Reshaping.IsMutable="True">
+                                <map:LineStringShape.PointSubshapeTemplate>
+                                    <map:PointSubshapeTemplate>
+                                        <map:GeographicPointSubshape 
+                                        Latitude="{Binding Latitude}" 
+                                        Longitude="{Binding Longitude}"/>
+                                    </map:PointSubshapeTemplate>
+                                </map:LineStringShape.PointSubshapeTemplate>
+
+                                <map:LineStringShape.LineStringSymbol>
+                                    <map:StrokeLineStringSymbol>
+                                        <map:StrokeLineStringSymbol.Stroke>
+                                            <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                        </map:StrokeLineStringSymbol.Stroke>
+                                    </map:StrokeLineStringSymbol>
+                                </map:LineStringShape.LineStringSymbol>
+                            </map:LineStringShape>
+
+                            <map:LineStringShape 
+                                PointsSource="{Binding Coords}" 
+                                map:Reshaping.IsMutable="True">
+
+                                <map:LineStringShape.PointSubshapeTemplate>
+                                    <map:PointSubshapeTemplate>
+                                        <map:GeographicPointSubshape 
+                                        Latitude="{Binding Latitude}" 
+                                        Longitude="{Binding Longitude}"/>
+                                    </map:PointSubshapeTemplate>
+                                </map:LineStringShape.PointSubshapeTemplate>
+
+                                <map:LineStringShape.LineStringSymbol>
+                                    <map:StrokeLineStringSymbol>
+                                        <map:StrokeLineStringSymbol.Stroke>
+                                            <map:PenStroke>
+                                                <Pen Brush="Transparent" Thickness="40"/>
+                                            </map:PenStroke>
+                                        </map:StrokeLineStringSymbol.Stroke>
+                                    </map:StrokeLineStringSymbol>
+                                </map:LineStringShape.LineStringSymbol>
+                            </map:LineStringShape>
+                        </map:CompositeShape>
+                    </map:ShapeTemplate>
+                </map:MapLayer.ItemShapeTemplate>
+            </map:MapLayer>
+            
             <!--Объекты-->
             <map:MapLayer ItemsSource="{Binding UnmannedVehicles}">
                 <map:MapLayer.ItemShapeTemplate>
@@ -224,39 +318,9 @@
                         <map:CompositeShape >
                             <!--Объект-->
                             <map:CompositeShape MouseDown="ContentElement_OnMouseDown">
-                                <!--<map:CompositeShape.Style>
-                                    <Style TargetType="map:CompositeShape">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ParentViewModel.IsScalingModeEnabled}" Value="True">
-                                                <DataTrigger.Setters>
-                                                    <Setter Property="ContextMenu">
-                                                        <Setter.Value>
-                                                            <ContextMenu>
-                                                                <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicle}" IsEnabled="True"/>
-                                                            </ContextMenu>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </DataTrigger.Setters>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding ParentViewModel.IsScalingModeEnabled}" Value="False">
-                                                <DataTrigger.Setters>
-                                                    <Setter Property="ContextMenu">
-                                                        <Setter.Value>
-                                                            <ContextMenu>
-                                                                <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicle}" IsEnabled="False"/>
-                                                            </ContextMenu>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </DataTrigger.Setters>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </map:CompositeShape.Style>-->
-                                
                                 <map:CompositeShape.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicleCommand}">
+                                        <MenuItem Header="Центрировать карту" Command="{Binding SetTrackedObjectCommand}">
                                             <MenuItem.Style>
                                                 <Style TargetType="MenuItem">
                                                     <Style.Triggers>
@@ -481,7 +545,35 @@
             <map:MapLayer ItemsSource="{Binding Beacons}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
-                        <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                        <map:GeographicPointShape 
+                            Latitude="{Binding Latitude}" 
+                            Longitude="{Binding Longitude}"
+                            MouseDown="ContentElement_OnMouseDown">
+                            
+                            <map:GeographicPointShape.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Центрировать карту" Command="{Binding SetTrackedObjectCommand}">
+                                        <MenuItem.Style>
+                                            <Style TargetType="MenuItem">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="True">
+                                                        <DataTrigger.Setters>
+                                                            <Setter Property="IsEnabled" Value="True"/>
+                                                        </DataTrigger.Setters>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="False">
+                                                        <DataTrigger.Setters>
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger.Setters>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </MenuItem.Style>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </map:GeographicPointShape.ContextMenu>
+
                             <map:MarkerPointSymbol>
                                 <map:GeometryMarker Brush="Red">
                                     <map:GeometryMarker.Pen>

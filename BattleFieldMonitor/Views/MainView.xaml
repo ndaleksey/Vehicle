@@ -72,7 +72,12 @@
                         IsChecked="{Binding Path=SwitchToBeaconDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <ToggleButton 
-                        Content="Масштабирование" 
+                        Content="Добавить трассу" 
+                        Command="{Binding SwitchToRouteDtCommand}"
+                        IsChecked="{Binding Path=SwitchToRouteDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
+                        Content="Центрирование" 
                         IsChecked="{Binding Path=IsScalingModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Slider Orientation="Vertical" Height="200" HorizontalAlignment="Center" 
