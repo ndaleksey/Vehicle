@@ -23,7 +23,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         internal bool IsTracked
         {
             get { return _isTracked; }
-            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateTracking); }
+            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateCentering); }
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         internal ViewModel ParentViewModel
         {
             get { return _parentViewModel; }
-            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
+            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateCentering); }
         }
 
         #endregion
@@ -65,7 +65,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         #region Methods
 
-        private void UpdateTracking()
+        private void UpdateCentering()
         {
             if (ParentViewModel != null && ParentViewModel.IsCenteringModeEnabled)
             {
@@ -73,7 +73,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 {
                     ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
                 }
-
             }
         }
 

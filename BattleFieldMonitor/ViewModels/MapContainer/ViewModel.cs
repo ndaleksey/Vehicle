@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using DevExpress.Mvvm;
+using Swsu.BattleFieldMonitor.Common;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
 using Swsu.BattleFieldMonitor.Services;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
@@ -17,6 +18,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private bool _isCenteringModeEnabled;
         private double _scaleDenominator;
         private object _selectedObject;
+        private object _trackedObject;
 
         #endregion
 
@@ -78,6 +80,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 if (UnmannedVehicles.Count == 1)
                 {
                     UnmannedVehicles[0].IsTracked = true;
+                    _trackedObject = UnmannedVehicles[0];
                 }
             }
         }
@@ -242,7 +245,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             if (_selectedObject is ObstacleModel)
             {
                 var selectedObstacle = _selectedObject as ObstacleModel;
-                Obstacles.Remove(selectedObstacle);
+                Obstacles.Remove(selectedObstacle); //TODO: Здесь может возникать исключение "Индекс находится за пределами диапазона", когда количество элементов в коллекции - 0, а мы пытаемся удалить
             }
 
             if (_selectedObject is RouteModel)
@@ -385,6 +388,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
         {
             Parent?.NotifyScaleDenominatorChanged(oldValue, newValue);
+            UpdateCentering();
         }
 
         /// <summary>
@@ -404,6 +408,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     beacon.IsTracked = false;
                 }
 
+                _trackedObject = _selectedObject;
                 var selectedVehicle = (UnmannedVehicleModel) _selectedObject;
                 selectedVehicle.IsTracked = true;
             }
@@ -420,6 +425,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     beacon.IsTracked = false;
                 }
 
+                _trackedObject = _selectedObject;
                 var selectedBeacon = (BeaconModel) _selectedObject;
                 selectedBeacon.IsTracked = true;
             }
@@ -493,6 +499,24 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToSimpleSelectionTool()
         {
             MapToolMode = MapToolMode.SimpleSelection;
+        }
+
+        private void UpdateCentering()
+        {
+            if (IsCenteringModeEnabled)
+            {
+                if (_trackedObject is UnmannedVehicleModel)
+                {
+                    var trackedVehicle = _trackedObject as UnmannedVehicleModel;
+                    MapViewerService.Locate(new GeographicCoordinatesTuple(trackedVehicle.Latitude, trackedVehicle.Longitude));
+                }
+
+                if (_trackedObject is BeaconModel)
+                {
+                    var trackedBeacon = _trackedObject as BeaconModel;
+                    MapViewerService.Locate(new GeographicCoordinatesTuple(trackedBeacon.Latitude, trackedBeacon.Longitude));
+                }
+            }
         }
 
         #endregion
