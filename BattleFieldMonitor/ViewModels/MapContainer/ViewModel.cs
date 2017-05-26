@@ -4,6 +4,7 @@ using System.Globalization;
 using DevExpress.Mvvm;
 using Swsu.BattleFieldMonitor.Common;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
+using Swsu.BattleFieldMonitor.Services;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
 using Swsu.Geo;
 
@@ -110,6 +111,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public DelegateCommand<LineDrawnParameter> OnLineDrawnCommand { get; }
 
+        /// <summary>
+        /// Команда добавления отслеживаемого объекта
+        /// </summary>
+        public DelegateCommand SetTrackedVehicleCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -124,6 +130,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnBeaconDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnBeaconDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
+            SetTrackedVehicleCommand = new DelegateCommand(SetTrackedVehicle);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
 
@@ -145,8 +152,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             {
                 new Beacon(10, 10)
             };
-
-            
         }
 
         #endregion
@@ -227,7 +232,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var azimuth = 360 * random.NextDouble() - 180;
             var speed = 100 * random.NextDouble();
 
-            var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
+            var newVehicle = new UnmannedVehicle(this, latitude, longitude, azimuth)
             {
                 Speed = speed,
                 //Coords = 
@@ -240,8 +245,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
             UnmannedVehicles.Add(newVehicle);
 
-            MapViewerService.Locate(new GeographicCoordinatesTuple(latitude, longitude));
-
+            if (IsScalingModeEnabled)
+            {
+                MapViewerService.Locate(new GeographicCoordinatesTuple(latitude, longitude));
+            }
+            
             //var latitude = parameter.Location.Latitude;
             //var longitude = parameter.Location.Longitude;
 
@@ -262,6 +270,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
         {
             Parent?.NotifyScaleDenominatorChanged(oldValue, newValue);
+        }
+
+        /// <summary>
+        /// Установить отслеживаемый объект
+        /// </summary>
+        private void SetTrackedVehicle()
+        {
+            
         }
 
         #endregion
@@ -329,6 +345,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         private double _azimuth;
         private string _calloutText;
+        private ViewModel _parentViewModel;
         private double _speed;
 
         #endregion
@@ -354,9 +371,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
-        /// Коллекция координат трассы объекта
+        /// Родительская ViewModel для доступа к свойствам отслеживания
         /// </summary>
-        //public ObservableCollection<Coord> Coords { get; }
+        internal ViewModel ParentViewModel
+        {
+            get { return _parentViewModel; }
+            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel)); }
+        }
 
         /// <summary>
         /// Скорость, км/ч
@@ -374,7 +395,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Инициализирует экземпляр класса
         /// </summary>
-        public UnmannedVehicle()
+        internal UnmannedVehicle(ViewModel parentViewModel)
         {
             UpdateCalloutText();
         }
@@ -385,7 +406,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <param name="latitude">Широта</param>
         /// <param name="longitude">Долдгота</param>
         /// <param name="azimuth">Азимут</param>
-        public UnmannedVehicle(double latitude, double longitude, double azimuth) : this()
+        internal UnmannedVehicle(ViewModel parentViewModel, double latitude, double longitude, double azimuth) : this(parentViewModel)
         {
             Azimuth = azimuth;
             Latitude = latitude;
