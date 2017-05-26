@@ -57,6 +57,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 {
                     unmannedVehicle.IsTracked = false;
                 }
+
+                foreach (var beacon in Beacons)
+                {
+                    beacon.IsTracked = false;
+                }
             }
 
             //TODO: Нужно ли сразу же следить за танком при включении режима масштабирования?
@@ -139,7 +144,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Команда добавления отслеживаемого объекта
         /// </summary>
-        public DelegateCommand SetTrackedVehicleCommand { get; }
+        public DelegateCommand SetTrackedObjectCommand { get; }
 
         /// <summary>
         /// Команда добавления трассы
@@ -160,7 +165,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnBeaconDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnBeaconDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
-            SetTrackedVehicleCommand = new DelegateCommand(SetTrackedVehicle);
+            SetTrackedObjectCommand = new DelegateCommand(SetTrackedObject);
             OnRouteDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnRouteDrawn);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
@@ -296,7 +301,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
 
-            var newBeacon = new Beacon(latitude, longitude);
+            var newBeacon = new Beacon(this, latitude, longitude);
 
             Beacons.Add(newBeacon);
         }
@@ -368,7 +373,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Установить отслеживаемый объект
         /// </summary>
-        private void SetTrackedVehicle()
+        private void SetTrackedObject()
         {
             if (_selectedObject is UnmannedVehicle)
             {
@@ -377,8 +382,29 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     unmannedVehicle.IsTracked = false;
                 }
 
-                var selectedVehicle = _selectedObject as UnmannedVehicle;
+                foreach (var beacon in Beacons)
+                {
+                    beacon.IsTracked = false;
+                }
+
+                var selectedVehicle = (UnmannedVehicle) _selectedObject;
                 selectedVehicle.IsTracked = true;
+            }
+
+            if (_selectedObject is Beacon)
+            {
+                foreach (var unmannedVehicle in UnmannedVehicles)
+                {
+                    unmannedVehicle.IsTracked = false;
+                }
+
+                foreach (var beacon in Beacons)
+                {
+                    beacon.IsTracked = false;
+                }
+
+                var selectedBeacon = (Beacon) _selectedObject;
+                selectedBeacon.IsTracked = true;
             }
         }
 
@@ -517,7 +543,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         internal UnmannedVehicle(ViewModel parentViewModel)
         {
-            UpdateCalloutText();
+            ParentViewModel = parentViewModel;
+            //UpdateCalloutText();
         }
 
         /// <summary>
@@ -532,9 +559,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Azimuth = azimuth;
             Latitude = latitude;
             Longitude = longitude;
-
-            ParentViewModel = parentViewModel;
-            //Coords = new ObservableCollection<Coord>();
         }
 
         #endregion
@@ -567,7 +591,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 {
                     ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
                 }
-                
             }
         }
 
@@ -579,23 +602,70 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     /// </summary>
     public class Beacon : MapObject
     {
+        #region Fields
+
+        private bool _isTracked;
+        private ViewModel _parentViewModel;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Признак, указывающий, что за объектом необходимо следить
+        /// </summary>
+        internal bool IsTracked
+        {
+            get { return _isTracked; }
+            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateTracking); }
+        }
+
+        /// <summary>
+        /// Родительская ViewModel для доступа к свойствам отслеживания
+        /// </summary>
+        internal ViewModel ParentViewModel
+        {
+            get { return _parentViewModel; }
+            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
+        }
+
+        #endregion
+
         #region Constructors 
 
         /// <summary>
         /// Инициализирует экземпляр класса
         /// </summary>
-        public Beacon()
+        internal Beacon(ViewModel parentViewModel)
         {
-
+            ParentViewModel = parentViewModel;
         }
 
         /// <summary>
         /// Инициализирует экземпляр класса
         /// </summary>
+        /// <param name="parentViewModel">Родительская ViewModel для доступа к функциям слежения</param>
         /// <param name="latitude">Широта</param>
         /// <param name="longitude">Долгота</param>
-        public Beacon(double latitude, double longitude) : base(latitude, longitude)
+        internal Beacon(ViewModel parentViewModel, double latitude, double longitude) : base(latitude, longitude)
         {
+            ParentViewModel = parentViewModel;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void UpdateTracking()
+        {
+            if (ParentViewModel != null && ParentViewModel.IsScalingModeEnabled)
+            {
+                if (IsTracked)
+                {
+                    ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
+                }
+
+            }
         }
 
         #endregion

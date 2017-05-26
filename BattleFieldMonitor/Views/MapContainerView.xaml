@@ -318,39 +318,9 @@
                         <map:CompositeShape >
                             <!--Объект-->
                             <map:CompositeShape MouseDown="ContentElement_OnMouseDown">
-                                <!--<map:CompositeShape.Style>
-                                    <Style TargetType="map:CompositeShape">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ParentViewModel.IsScalingModeEnabled}" Value="True">
-                                                <DataTrigger.Setters>
-                                                    <Setter Property="ContextMenu">
-                                                        <Setter.Value>
-                                                            <ContextMenu>
-                                                                <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicle}" IsEnabled="True"/>
-                                                            </ContextMenu>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </DataTrigger.Setters>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding ParentViewModel.IsScalingModeEnabled}" Value="False">
-                                                <DataTrigger.Setters>
-                                                    <Setter Property="ContextMenu">
-                                                        <Setter.Value>
-                                                            <ContextMenu>
-                                                                <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicle}" IsEnabled="False"/>
-                                                            </ContextMenu>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </DataTrigger.Setters>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </map:CompositeShape.Style>-->
-                                
                                 <map:CompositeShape.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicleCommand}">
+                                        <MenuItem Header="Центрировать карту" Command="{Binding SetTrackedObjectCommand}">
                                             <MenuItem.Style>
                                                 <Style TargetType="MenuItem">
                                                     <Style.Triggers>
@@ -575,7 +545,35 @@
             <map:MapLayer ItemsSource="{Binding Beacons}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
-                        <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
+                        <map:GeographicPointShape 
+                            Latitude="{Binding Latitude}" 
+                            Longitude="{Binding Longitude}"
+                            MouseDown="ContentElement_OnMouseDown">
+                            
+                            <map:GeographicPointShape.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Центрировать карту" Command="{Binding SetTrackedObjectCommand}">
+                                        <MenuItem.Style>
+                                            <Style TargetType="MenuItem">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="True">
+                                                        <DataTrigger.Setters>
+                                                            <Setter Property="IsEnabled" Value="True"/>
+                                                        </DataTrigger.Setters>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="False">
+                                                        <DataTrigger.Setters>
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger.Setters>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </MenuItem.Style>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </map:GeographicPointShape.ContextMenu>
+
                             <map:MarkerPointSymbol>
                                 <map:GeometryMarker Brush="Red">
                                     <map:GeometryMarker.Pen>

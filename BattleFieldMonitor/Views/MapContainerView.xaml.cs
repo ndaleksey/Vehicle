@@ -35,11 +35,24 @@ namespace Swsu.BattleFieldMonitor.Views
             var compositeShape = sender as CompositeShape;
             if (compositeShape != null)
             {
-                var vehicle = compositeShape.DataContext as UnmannedVehicle;
-                ((ViewModel)DataContext).SelectedObject = vehicle;
+                if (compositeShape.DataContext is UnmannedVehicle)
+                {
+                    var vehicle = (UnmannedVehicle) compositeShape.DataContext;
+                    ((ViewModel)DataContext).SelectedObject = vehicle;
+                }
 
-                var route = compositeShape.DataContext as RouteModel;
-                ((ViewModel)DataContext).SelectedObject = route;
+                if (compositeShape.DataContext is RouteModel)
+                {
+                    var route = (RouteModel) compositeShape.DataContext;
+                    ((ViewModel)DataContext).SelectedObject = route;
+                }
+            }
+
+            var geographicPointShape = sender as GeographicPointShape;
+            if (geographicPointShape != null)
+            {
+                var beacon = geographicPointShape.DataContext as Beacon;
+                ((ViewModel)DataContext).SelectedObject = beacon;
             }
         }
     }
