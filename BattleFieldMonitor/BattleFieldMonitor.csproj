@@ -142,8 +142,6 @@
     <Compile Include="Services\ObjectsAddedEventArgs.cs" />
     <Compile Include="Services\ObjectsRemovalReason.cs" />
     <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
-    <Compile Include="ViewModels\MapContainer\Beacon.cs" />
-    <Compile Include="ViewModels\MapContainer\Coord.cs" />
     <Compile Include="ViewModels\MapContainer\IMapViewerService1.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />

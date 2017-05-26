@@ -120,7 +120,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         #region Constructors
 
-        public ViewModel()
+        public ViewModel(IDatabase database)
         {
             MapToolMode = MapToolMode.SimpleSelection;
 
@@ -133,6 +133,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             SetTrackedVehicleCommand = new DelegateCommand(SetTrackedVehicle);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
+
+            foreach (var unmannedVehicle in database.UnmannedVehicles.Objects)
+            {
+                UnmannedVehicles.Add(new UnmannedVehicle(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading) { Speed = unmannedVehicle.Speed });
+            }
+
+            database.UnmannedVehicles.ObjectsAdded += UnmannedVehicles_ObjectsAdded;
+            database.UnmannedVehicles.ObjectsRemoved += UnmannedVehicles_ObjectsRemoved;
 
             Obstacles = new ObservableCollection<Obstacle>
             {
@@ -152,6 +160,25 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             {
                 new Beacon(10, 10)
             };
+        }
+
+        private void UnmannedVehicles_ObjectsAdded(object sender, ObjectsAddedEventArgs<IUnmannedVehicle> e)
+        {
+            foreach (var unmannedVehicle in e.Objects)
+            {
+                var newUnnamedVehicle = new UnmannedVehicle(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading)
+                {
+                    //TODO: Добавить имя
+                    Speed = unmannedVehicle.Speed
+                };
+
+                UnmannedVehicles.Add(newUnnamedVehicle);
+            }
+        }
+
+        private void UnmannedVehicles_ObjectsRemoved(object sender, ObjectsRemovedEventArgs<IUnmannedVehicle> e)
+        {
+            //TODO:
         }
 
         #endregion
