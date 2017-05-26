@@ -75,6 +75,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 	    public ObservableCollection<Obstacle> Obstacles { get; }
 
         /// <summary>
+        /// Коллекция трасс, отображаемых на карте
+        /// </summary>
+	    public ObservableCollection<RouteModel> Routes { get; }
+
+        /// <summary>
         /// Знаменатель масштаба
         /// </summary>
         public double ScaleDenominator
@@ -136,6 +141,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public DelegateCommand SetTrackedVehicleCommand { get; }
 
+        /// <summary>
+        /// Команда добавления трассы
+        /// </summary>
+        public DelegateCommand<LineDrawnParameter> OnRouteDrawnCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -151,6 +161,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnBeaconDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnBeaconDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
             SetTrackedVehicleCommand = new DelegateCommand(SetTrackedVehicle);
+            OnRouteDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnRouteDrawn);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
 
@@ -164,22 +175,24 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
             Obstacles = new ObservableCollection<Obstacle>
             {
-                new Obstacle
-                {
-                    Coords =
-                    {
-                        new Coord(0, 0),
-                        new Coord(-30, 0),
-                        new Coord(-30, -30),
-                        new Coord(0, -30)
-                    }
-                }
+                //new Obstacle
+                //{
+                //    Coords =
+                //    {
+                //        new Coord(0, 0),
+                //        new Coord(-30, 0),
+                //        new Coord(-30, -30),
+                //        new Coord(0, -30)
+                //    }
+                //}
             };
 
             Beacons = new ObservableCollection<Beacon>
             {
-                new Beacon(10, 10)
+                //new Beacon(10, 10)
             };
+
+            Routes = new ObservableCollection<RouteModel>();
         }
 
         private void UnmannedVehicles_ObjectsAdded(object sender, ObjectsAddedEventArgs<IUnmannedVehicle> e)
@@ -316,6 +329,22 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Obstacles.Add(obstacle);
         }
 
+        /// <summary>
+        /// Метод, вызываемый при добавлении на карту трассы
+        /// </summary>
+        /// <param name="parameter">Параметр, содержащий координаты точки</param>
+        private void OnRouteDrawn(LineDrawnParameter parameter)
+        {
+            var newRouteModel = new RouteModel();
+
+            foreach (var location in parameter.Locations)
+            {
+                newRouteModel.Coords.Add(new Coord(location.Latitude, location.Longitude));
+            }
+
+            Routes.Add(newRouteModel);
+        }
+
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
         {
             Parent?.NotifyScaleDenominatorChanged(oldValue, newValue);
@@ -380,7 +409,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public void SwitchToRouteDrawingTool()
         {
-            
+            MapToolMode = MapToolMode.RouteDrawing;
         }
 
         /// <summary>

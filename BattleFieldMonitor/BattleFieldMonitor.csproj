@@ -152,6 +152,7 @@
     <Compile Include="ViewModels\MapContainer\MapViewerService1.cs" />
     <Compile Include="ViewModels\MapContainer\RectangularEnvelope.cs" />
     <Compile Include="ViewModels\MapContainer\RectangularRangeExtensions.cs" />
+    <Compile Include="ViewModels\MapContainer\RouteModel.cs" />
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">
       <DependentUpon>MapContainerView.xaml</DependentUpon>

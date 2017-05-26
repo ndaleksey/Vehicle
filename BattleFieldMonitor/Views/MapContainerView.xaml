@@ -106,6 +106,20 @@
                     </map:ReshapingTool.PointHandleStyle>
                 </map:ReshapingTool>
             </map:ToolTemplate>
+
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.RouteDrawing}}">
+                <map:PreciseLineStringDrawingTool 
+                    d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}" 
+                    Pen="{StaticResource PolygonBoundaryPen}">
+
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand
+                            Command="{Binding OnRouteDrawnCommand}"
+                            Event="{x:Static map:PreciseLineStringDrawingTool.DrawnEvent}"
+                            EventArgsConverter="{StaticResource ResourceKey=LineStringDrawnEventArgsConverter}"/>
+                    </dxmvvm:Interaction.Behaviors>
+                </map:PreciseLineStringDrawingTool>
+            </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
     
@@ -215,6 +229,55 @@
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
 
+            <!--Трассы-->
+            <map:MapLayer ItemsSource="{Binding Routes}">
+                <map:MapLayer.ItemShapeTemplate>
+                    <map:ShapeTemplate>
+                        <!--Объект-->
+                        <map:CompositeShape>
+                            <!--Трасса-->
+                            <map:LineStringShape PointsSource="{Binding Coords}">
+                                <map:LineStringShape.PointSubshapeTemplate>
+                                    <map:PointSubshapeTemplate>
+                                        <map:GeographicPointSubshape 
+                                            Latitude="{Binding Latitude}" 
+                                            Longitude="{Binding Longitude}"/>
+                                    </map:PointSubshapeTemplate>
+                                </map:LineStringShape.PointSubshapeTemplate>
+
+                                <map:LineStringShape.LineStringSymbol>
+                                    <map:StrokeLineStringSymbol>
+                                        <map:StrokeLineStringSymbol.Stroke>
+                                            <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                        </map:StrokeLineStringSymbol.Stroke>
+                                    </map:StrokeLineStringSymbol>
+                                </map:LineStringShape.LineStringSymbol>
+                                    
+                            </map:LineStringShape>
+                            
+                            <!--<map:LineStringShape PointsSource="{Binding Coords}">
+                                <map:LineStringShape.PointSubshapeTemplate>
+                                    <map:PointSubshapeTemplate>
+                                        <map:GeographicPointSubshape 
+                                            Latitude="{Binding Latitude}" 
+                                            Longitude="{Binding Longitude}"/>
+                                    </map:PointSubshapeTemplate>
+                                </map:LineStringShape.PointSubshapeTemplate>
+
+                                <map:LineStringShape.LineStringSymbol>
+                                    <map:StrokeLineStringSymbol>
+                                        <map:StrokeLineStringSymbol.Stroke>
+                                            <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                        </map:StrokeLineStringSymbol.Stroke>
+                                    </map:StrokeLineStringSymbol>
+                                </map:LineStringShape.LineStringSymbol>
+                                    
+                            </map:LineStringShape>-->
+                        </map:CompositeShape>
+                    </map:ShapeTemplate>
+                </map:MapLayer.ItemShapeTemplate>
+            </map:MapLayer>
+            
             <!--Объекты-->
             <map:MapLayer ItemsSource="{Binding UnmannedVehicles}">
                 <map:MapLayer.ItemShapeTemplate>
