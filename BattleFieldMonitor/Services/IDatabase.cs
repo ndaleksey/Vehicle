@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-
-namespace Swsu.BattleFieldMonitor.Services
+﻿namespace Swsu.BattleFieldMonitor.Services
 {
     internal interface IDatabase
     {
         #region Properties
-        IReadOnlyCollection<IUnmannedVehicle> UnmannedVehicles
+        /*
+        IRepository<IBeacon> Beacons
+        {
+            get;
+        }
+        */
+
+        IRepository<IUnmannedVehicle> UnmannedVehicles
         {
             get;
         }

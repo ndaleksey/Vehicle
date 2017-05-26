@@ -124,15 +124,24 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
+    <Compile Include="Services\BeaconState.cs" />
+    <Compile Include="Services\IBeacon.cs" />
     <Compile Include="Services\IDatabase.cs" />
+    <Compile Include="Services\IDatabaseCommands.cs" />
     <Compile Include="Services\Implementations\Database.cs" />
     <Compile Include="Services\Implementations\UnmannedVehicle.cs" />
+    <Compile Include="Services\IRepository.cs" />
+    <Compile Include="Services\IRepositoryCommands.cs" />
     <Compile Include="Services\IUnmannedVehicle.cs" />
     <Compile Include="Common\GeographicCoordinatesTuple.cs" />
     <Compile Include="Converters1\Parameters\LineDrawnParameter.cs" />
     <Compile Include="Converters1\Parameters\PointDrawnParameter.cs" />
     <Compile Include="Converters1\PointDrawnEventArgsConverter.cs" />
     <Compile Include="Converters1\LineStringDrawnEventArgsConverter.cs" />
+    <Compile Include="Services\ObjectsAdditionReason.cs" />
+    <Compile Include="Services\ObjectsAddedEventArgs.cs" />
+    <Compile Include="Services\ObjectsRemovalReason.cs" />
+    <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IMapContainerViewModelParent.cs" />
@@ -201,7 +210,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Infrastructure\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
