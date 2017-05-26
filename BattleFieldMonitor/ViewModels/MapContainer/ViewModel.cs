@@ -1,10 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using DevExpress.Mvvm;
 using Swsu.BattleFieldMonitor.Common;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
 using Swsu.Geo;
-using Swsu.Maps.Windows.DevExpress;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 {
@@ -36,7 +36,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             private set { SetProperty(ref _mapToolMode, value, nameof(MapToolMode)); }
         }
 
-        private IMapViewerService MapViewerService => GetService<IMapViewerService>();
+        private IMapViewerService1 MapViewerService => GetService<IMapViewerService1>();
 
         /// <summary>
         /// Признак, указывающий, включен ли режим масштабирования (слежения за танком)
@@ -220,40 +220,42 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private void OnPointDrawn(PointDrawnParameter parameter)
         {
             //TODO: Передать Сергею Мирошниченко
-            //var random = new Random();
-            //var latitude = parameter.Location.Latitude;
-            //var longitude = parameter.Location.Longitude;
-            //var azimuth = 360 * random.NextDouble() - 180;
-            //var speed = 100 * random.NextDouble();
-
-            //var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
-            //{
-            //    Speed = speed,
-            //    //Coords = 
-            //    //{
-            //    //    new Coord(latitude, longitude),
-            //    //    new Coord(latitude-10, longitude-10),
-            //    //    new Coord(latitude-20, longitude-10)
-            //    //}
-            //};
-
-            //UnmannedVehicles.Add(newVehicle);
-
+            var random = new Random();
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
+            var azimuth = 360 * random.NextDouble() - 180;
+            var speed = 100 * random.NextDouble();
 
-            var obstacle = new Obstacle();
-
-            var sphere = new Sphere(6378136);
-
-            for (int angle = 0; angle < 360; angle++)
+            var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
             {
-                var solution = sphere.SolveDirectGeodeticProblem(latitude, longitude, angle, 1000000);
+                Speed = speed,
+                //Coords = 
+                //{
+                //    new Coord(latitude, longitude),
+                //    new Coord(latitude-10, longitude-10),
+                //    new Coord(latitude-20, longitude-10)
+                //}
+            };
 
-                obstacle.Coords.Add(new Coord(solution.Latitude2, solution.Longitude2));
-            }
+            UnmannedVehicles.Add(newVehicle);
 
-            Obstacles.Add(obstacle);
+            MapViewerService.Locate(new GeographicCoordinatesTuple(latitude, longitude));
+
+            //var latitude = parameter.Location.Latitude;
+            //var longitude = parameter.Location.Longitude;
+
+            //var obstacle = new Obstacle();
+
+            //var sphere = new Sphere(6378136);
+
+            //for (int angle = 0; angle < 360; angle++)
+            //{
+            //    var solution = sphere.SolveDirectGeodeticProblem(latitude, longitude, angle, 1000000);
+
+            //    obstacle.Coords.Add(new Coord(solution.Latitude2, solution.Longitude2));
+            //}
+
+            //Obstacles.Add(obstacle);
         }
 
         private void OnScaleDenominatorChanged(double oldValue, double newValue)
@@ -272,7 +274,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SetScalingMode(bool value)
         {
             IsScalingModeEnabled = value;
-            MapViewerService.Locate(new GeographicCoordinatesTuple(10, 10));
         }
 
         /// <summary>

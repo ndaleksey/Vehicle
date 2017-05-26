@@ -86,10 +86,6 @@
       <HintPath>..\packages\Swsu.Maps.Windows.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Swsu.Maps.Windows.DevExpress, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Swsu.Maps.Windows.DevExpress.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.DevExpress.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Swsu.Maps.Windows.Epsg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Maps.Windows.Epsg.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.Epsg.dll</HintPath>
       <Private>True</Private>

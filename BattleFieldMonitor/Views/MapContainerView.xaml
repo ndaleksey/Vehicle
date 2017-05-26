@@ -108,11 +108,6 @@
             </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
-
-    <dxmvvm:Interaction.Behaviors>
-        
-        
-    </dxmvvm:Interaction.Behaviors>
     
     <Grid>
         <Grid.ColumnDefinitions>
@@ -498,5 +493,9 @@
             </map:MapLayer>
         </map:MapViewer>
     </Grid>
+    
+    <dxmvvm:Interaction.Behaviors>
+        <viewModels:MapViewerService1 Viewer="{Binding ElementName=TheViewer}"/>
+    </dxmvvm:Interaction.Behaviors>
 </UserControl>
 
