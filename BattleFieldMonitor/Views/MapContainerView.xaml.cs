@@ -25,12 +25,18 @@ namespace Swsu.BattleFieldMonitor.Views
 
         private void ContentElement_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PolygonShape)
+            var polygonShape = sender as PolygonShape;
+            if (polygonShape != null)
             {
-                var polygonShape = sender as PolygonShape;
                 var obstacle = polygonShape.DataContext as Obstacle;
-                //_viewModel.SelectedObstacle = obstacle;
-                ((ViewModel) DataContext).SelectedObstacle = obstacle;
+                ((ViewModel) DataContext).SelectedObject = obstacle;
+            }
+
+            var compositeShape = sender as CompositeShape;
+            if (compositeShape != null)
+            {
+                var vehicle = compositeShape.DataContext as UnmannedVehicle;
+                ((ViewModel)DataContext).SelectedObject = vehicle;
             }
         }
     }

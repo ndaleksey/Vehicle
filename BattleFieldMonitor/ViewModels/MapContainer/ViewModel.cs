@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using DevExpress.Mvvm;
+using Swsu.BattleFieldMonitor.Common;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
+using Swsu.BattleFieldMonitor.Services;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
 using Swsu.Geo;
 
@@ -14,8 +16,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Fields
 
         private MapToolMode _mapToolMode;
+        private bool _isScalingModeEnabled;
         private double _scaleDenominator;
-        private Obstacle _selectedObstacle;
+        private object _selectedObject;
 
         #endregion
 
@@ -35,6 +38,37 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             private set { SetProperty(ref _mapToolMode, value, nameof(MapToolMode)); }
         }
 
+        internal IMapViewerService1 MapViewerService => GetService<IMapViewerService1>();
+
+        /// <summary>
+        /// Признак, указывающий, включен ли режим масштабирования (слежения за танком)
+        /// </summary>
+        public bool IsScalingModeEnabled
+        {
+            get { return _isScalingModeEnabled; }
+            private set { SetProperty(ref _isScalingModeEnabled, value, nameof(IsScalingModeEnabled), OnIsScalingModeEnabledChanged); }
+        }
+
+        private void OnIsScalingModeEnabledChanged(bool oldValue, bool newValue)
+        {
+            if (oldValue)
+            {
+                foreach (var unmannedVehicle in UnmannedVehicles)
+                {
+                    unmannedVehicle.IsTracked = false;
+                }
+            }
+
+            //TODO: Нужно ли сразу же следить за танком при включении режима масштабирования?
+            if (newValue)
+            {
+                if (UnmannedVehicles.Count == 1)
+                {
+                    UnmannedVehicles[0].IsTracked = true;
+                }
+            }
+        }
+
         /// <summary>
         /// Коллекция препятствий, отображаемых на карте
         /// </summary>
@@ -52,10 +86,10 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Выделенное препятствие (грубо говоря, не выделенное, а то, на котором щёлкнули мышкой, в частности, для вызова контекстного меню)
         /// </summary>
-        public Obstacle SelectedObstacle
+        public object SelectedObject
         {
-            get { return _selectedObstacle; }
-            set { SetProperty(ref _selectedObstacle, value, nameof(SelectedObstacle)); }
+            get { return _selectedObject; }
+            set { SetProperty(ref _selectedObject, value, nameof(SelectedObject)); }
         }
 
         /// <summary>
@@ -97,11 +131,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public DelegateCommand<LineDrawnParameter> OnLineDrawnCommand { get; }
 
+        /// <summary>
+        /// Команда добавления отслеживаемого объекта
+        /// </summary>
+        public DelegateCommand SetTrackedVehicleCommand { get; }
+
         #endregion
 
         #region Constructors
 
-        public ViewModel()
+        public ViewModel(IDatabase database)
         {
             MapToolMode = MapToolMode.SimpleSelection;
 
@@ -111,8 +150,17 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnLineDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnLineDrawn);
             OnBeaconDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnBeaconDrawn);
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
+            SetTrackedVehicleCommand = new DelegateCommand(SetTrackedVehicle);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
+
+            foreach (var unmannedVehicle in database.UnmannedVehicles.Objects)
+            {
+                UnmannedVehicles.Add(new UnmannedVehicle(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading) { Speed = unmannedVehicle.Speed });
+            }
+
+            database.UnmannedVehicles.ObjectsAdded += UnmannedVehicles_ObjectsAdded;
+            database.UnmannedVehicles.ObjectsRemoved += UnmannedVehicles_ObjectsRemoved;
 
             Obstacles = new ObservableCollection<Obstacle>
             {
@@ -134,6 +182,25 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             };
         }
 
+        private void UnmannedVehicles_ObjectsAdded(object sender, ObjectsAddedEventArgs<IUnmannedVehicle> e)
+        {
+            foreach (var unmannedVehicle in e.Objects)
+            {
+                var newUnnamedVehicle = new UnmannedVehicle(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading)
+                {
+                    //TODO: Добавить имя
+                    Speed = unmannedVehicle.Speed
+                };
+
+                UnmannedVehicles.Add(newUnnamedVehicle);
+            }
+        }
+
+        private void UnmannedVehicles_ObjectsRemoved(object sender, ObjectsRemovedEventArgs<IUnmannedVehicle> e)
+        {
+            //TODO:
+        }
+
         #endregion
 
         #region Methods
@@ -143,7 +210,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void Delete()
         {
-            Obstacles.Remove(_selectedObstacle);
+            if (_selectedObject is Obstacle)
+            {
+                var selectedObstacle = _selectedObject as Obstacle;
+                Obstacles.Remove(selectedObstacle);
+            }
         }
 
         /// <summary>
@@ -151,9 +222,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void Edit()
         {
-            _selectedObstacle.IsEditMode = true;
-
-            MapToolMode = MapToolMode.Reshaping;
+            if (_selectedObject is Obstacle)
+            {
+                var selectedObstacle = _selectedObject as Obstacle;
+                selectedObstacle.IsEditMode = true;
+                MapToolMode = MapToolMode.Reshaping;
+            }
         }
 
         /// <summary>
@@ -212,7 +286,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             //var azimuth = 360 * random.NextDouble() - 180;
             //var speed = 100 * random.NextDouble();
 
-            //var newVehicle = new UnmannedVehicle(latitude, longitude, azimuth)
+            //var newVehicle = new UnmannedVehicle(this, latitude, longitude, azimuth)
             //{
             //    Speed = speed,
             //    //Coords = 
@@ -247,10 +321,36 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Parent?.NotifyScaleDenominatorChanged(oldValue, newValue);
         }
 
+        /// <summary>
+        /// Установить отслеживаемый объект
+        /// </summary>
+        private void SetTrackedVehicle()
+        {
+            if (_selectedObject is UnmannedVehicle)
+            {
+                foreach (var unmannedVehicle in UnmannedVehicles)
+                {
+                    unmannedVehicle.IsTracked = false;
+                }
+
+                var selectedVehicle = _selectedObject as UnmannedVehicle;
+                selectedVehicle.IsTracked = true;
+            }
+        }
+
         #endregion
 
         #region Methods From Interface
-        
+
+        /// <summary>
+        /// Включить/отключить режим масштабирования (слежения за танком)
+        /// </summary>
+        /// <param name="value">Истина, если включить, иначе ложь</param>
+        public void SetScalingMode(bool value)
+        {
+            IsScalingModeEnabled = value;
+        }
+
         /// <summary>
         /// Переключиться на инструмент добавления маяков
         /// </summary>
@@ -289,6 +389,161 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToSimpleSelectionTool()
         {
             MapToolMode = MapToolMode.SimpleSelection;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Беспилотный автомобиль
+    /// </summary>
+    public class UnmannedVehicle : MapObject
+    {
+        #region Fields
+
+        private double _azimuth;
+        private string _calloutText;
+        private bool _isTracked;
+        private ViewModel _parentViewModel;
+        private double _speed;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Азимут
+        /// </summary>
+        public double Azimuth
+        {
+            get { return _azimuth; }
+            set { SetProperty(ref _azimuth, value, nameof(Azimuth)); }
+        }
+
+        /// <summary>
+        /// Текст из четырёх строк, отображаемый на выноске
+        /// </summary>
+        public string CalloutText
+        {
+            get { return _calloutText; }
+            set { SetProperty(ref _calloutText, value, nameof(CalloutText)); }
+        }
+
+        /// <summary>
+        /// Признак, указывающий, что за объектом необходимо следить
+        /// </summary>
+        internal bool IsTracked
+        {
+            get { return _isTracked; }
+            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateTracking); }
+        }
+
+        /// <summary>
+        /// Родительская ViewModel для доступа к свойствам отслеживания
+        /// </summary>
+        internal ViewModel ParentViewModel
+        {
+            get { return _parentViewModel; }
+            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
+        }
+
+        /// <summary>
+        /// Скорость, км/ч
+        /// </summary>
+        public double Speed
+        {
+            get { return _speed; }
+            set { SetProperty(ref _speed, value, nameof(Speed), UpdateCalloutText); }
+        }
+
+        #endregion
+
+        #region Constructors 
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        internal UnmannedVehicle(ViewModel parentViewModel)
+        {
+            UpdateCalloutText();
+        }
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        /// <param name="parentViewModel">Родительская ViewModel для доступа к функциям слежения</param>
+        /// <param name="latitude">Широта</param>
+        /// <param name="longitude">Долдгота</param>
+        /// <param name="azimuth">Азимут</param>
+        internal UnmannedVehicle(ViewModel parentViewModel, double latitude, double longitude, double azimuth) : this(parentViewModel)
+        {
+            Azimuth = azimuth;
+            Latitude = latitude;
+            Longitude = longitude;
+
+            ParentViewModel = parentViewModel;
+            //Coords = new ObservableCollection<Coord>();
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void UpdateCalloutText()
+        {
+            CalloutText = $"Азимут: {Azimuth.ToString("0.00", CultureInfo.InvariantCulture)}°\n" +
+                          $"Широта: {Latitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
+                          $"Долгота: {Longitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
+                          $"Скорость: {Speed.ToString("0.0", CultureInfo.InvariantCulture)} км/ч";
+        }
+
+        protected override void OnLatitudeChanged()
+        {
+            UpdateTracking();
+        }
+
+        protected override void OnLongitudeChanged()
+        {
+            UpdateTracking();
+        }
+
+        private void UpdateTracking()
+        {
+            if (ParentViewModel != null && ParentViewModel.IsScalingModeEnabled)
+            {
+                if (IsTracked)
+                {
+                    ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
+                }
+                
+            }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Маяк (точка возврата)
+    /// </summary>
+    public class Beacon : MapObject
+    {
+        #region Constructors 
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        public Beacon()
+        {
+
+        }
+
+        /// <summary>
+        /// Инициализирует экземпляр класса
+        /// </summary>
+        /// <param name="latitude">Широта</param>
+        /// <param name="longitude">Долгота</param>
+        public Beacon(double latitude, double longitude) : base(latitude, longitude)
+        {
         }
 
         #endregion
@@ -340,6 +595,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Latitude = latitude;
             Longitude = longitude;
         }
+        
         #endregion
     }
 
@@ -350,6 +606,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     {
         #region Fields
 
+        private string _displayName;
         private double _latitude;
         private double _longitude;
 
@@ -358,12 +615,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Properties
 
         /// <summary>
+        /// Отображаемое имя
+        /// </summary>
+        public string DisplayName
+        {
+            get { return _displayName; }
+            set { SetProperty(ref _displayName, value, nameof(DisplayName)); }
+        }
+
+        /// <summary>
         /// Широта
         /// </summary>
         public double Latitude
         {
             get { return _latitude; }
-            set { SetProperty(ref _latitude, value, nameof(Latitude)); }
+            set { SetProperty(ref _latitude, value, nameof(Latitude), OnLatitudeChanged); }
         }
 
         /// <summary>
@@ -372,7 +638,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public double Longitude
         {
             get { return _longitude; }
-            set { SetProperty(ref _longitude, value, nameof(Longitude)); }
+            set { SetProperty(ref _longitude, value, nameof(Longitude), OnLongitudeChanged); }
         }
 
         #endregion
@@ -384,125 +650,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         public MapObject()
         {
-            
-        }
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долдгота</param>
-        /// <param name="azimuth">Азимут</param>
-        public MapObject(double latitude, double longitude) : this()
-        {
-            Latitude = latitude;
-            Longitude = longitude;
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// Беспилотный автомобиль
-    /// </summary>
-    public class UnmannedVehicle : MapObject
-    {
-        #region Fields
-
-        private double _azimuth;
-        private string _calloutText;
-        private double _speed;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Азимут
-        /// </summary>
-        public double Azimuth
-        {
-            get { return _azimuth; }
-            set { SetProperty(ref _azimuth, value, nameof(Azimuth)); }
-        }
-
-        /// <summary>
-        /// Текст из четырёх строк, отображаемый на выноске
-        /// </summary>
-        public string CalloutText
-        {
-            get { return _calloutText; }
-            set { SetProperty(ref _calloutText, value, nameof(CalloutText)); }
-        }
-
-        /// <summary>
-        /// Коллекция координат трассы объекта
-        /// </summary>
-        //public ObservableCollection<Coord> Coords { get; }
-
-        /// <summary>
-        /// Скорость, км/ч
-        /// </summary>
-        public double Speed
-        {
-            get { return _speed; }
-            set { SetProperty(ref _speed, value, nameof(Speed), UpdateCalloutText); }
-        }
-
-        #endregion
-
-        #region Constructors 
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        public UnmannedVehicle()
-        {
-            UpdateCalloutText();
-        }
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долдгота</param>
-        /// <param name="azimuth">Азимут</param>
-        public UnmannedVehicle(double latitude, double longitude, double azimuth) : this()
-        {
-            Azimuth = azimuth;
-            Latitude = latitude;
-            Longitude = longitude;
-
-            //Coords = new ObservableCollection<Coord>();
-        }
-
-        #endregion
-
-        #region Methods
-
-        private void UpdateCalloutText()
-        {
-            CalloutText = $"Азимут: {Azimuth.ToString("0.00", CultureInfo.InvariantCulture)}°\n" +
-                          $"Широта: {Latitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
-                          $"Долгота: {Longitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
-                          $"Скорость: {Speed.ToString("0.0", CultureInfo.InvariantCulture)} км/ч";
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// Маяк (точка возврата)
-    /// </summary>
-    public class Beacon : MapObject
-    {
-        #region Constructors 
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        public Beacon()
-        {
 
         }
 
@@ -511,9 +658,30 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         /// <param name="latitude">Широта</param>
         /// <param name="longitude">Долгота</param>
-        public Beacon(double latitude, double longitude) : base(latitude, longitude)
+        public MapObject(double latitude, double longitude) : this()
         {
+            Latitude = latitude;
+            Longitude = longitude;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="latitude">Широта</param>
+        /// <param name="longitude">Долгота</param>
+        /// <param name="displayName">Отображаемое имя</param>
+        public MapObject(double latitude, double longitude, string displayName) : this(latitude, longitude)
+        {
+            DisplayName = displayName;
+        }
+
+        #endregion
+
+        #region Methods
+
+        protected virtual void OnLatitudeChanged() { }
+
+        protected virtual void OnLongitudeChanged() { }
 
         #endregion
     }

@@ -108,18 +108,21 @@
             </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
-
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
-        <map:MapViewer 
+        <map:MapViewer
+            Name="TheViewer"
             ScaleDenominator="{Binding Path=ScaleDenominator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
             Tool="{Binding}" 
             ToolTemplateQualifier="{Binding Path=MapToolMode}">
             <map:MapViewer.MapDefinition>
+
+                
                 <!-- Будет заменено привязкой с конвертером. -->
                 <map:WmtsMapDefinition
                         Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
@@ -216,48 +219,65 @@
             <map:MapLayer ItemsSource="{Binding UnmannedVehicles}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
+                        
+                        <!--Объект с выноской-->
                         <map:CompositeShape >
                             <!--Объект-->
-                            <map:CompositeShape>
-                                <!--Трасса-->
-                                <!--<map:LineStringShape PointsSource="{Binding Coords}">
-                                    <map:LineStringShape.PointSubshapeTemplate>
-                                        <map:PointSubshapeTemplate>
-                                            <map:GeographicPointSubshape 
-                                                Latitude="{Binding Latitude}" 
-                                                Longitude="{Binding Longitude}"/>
-                                        </map:PointSubshapeTemplate>
-                                    </map:LineStringShape.PointSubshapeTemplate>
+                            <map:CompositeShape MouseDown="ContentElement_OnMouseDown">
+                                <!--<map:CompositeShape.Style>
+                                    <Style TargetType="map:CompositeShape">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ParentViewModel.IsScalingModeEnabled}" Value="True">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="ContextMenu">
+                                                        <Setter.Value>
+                                                            <ContextMenu>
+                                                                <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicle}" IsEnabled="True"/>
+                                                            </ContextMenu>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
 
-                                    <map:LineStringShape.LineStringSymbol>
-                                        <map:StrokeLineStringSymbol>
-                                            <map:StrokeLineStringSymbol.Stroke>
-                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                            </map:StrokeLineStringSymbol.Stroke>
-                                        </map:StrokeLineStringSymbol>
-                                    </map:LineStringShape.LineStringSymbol>
-                                    
-                                </map:LineStringShape>-->
-                                <!--<map:LineStringShape PointsSource="{Binding Coords}">
-                                    <map:LineStringShape.PointSubshapeTemplate>
-                                        <map:PointSubshapeTemplate>
-                                            <map:GeographicPointSubshape 
-                                                Latitude="{Binding Latitude}" 
-                                                Longitude="{Binding Longitude}"/>
-                                        </map:PointSubshapeTemplate>
-                                    </map:LineStringShape.PointSubshapeTemplate>
+                                            <DataTrigger Binding="{Binding ParentViewModel.IsScalingModeEnabled}" Value="False">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="ContextMenu">
+                                                        <Setter.Value>
+                                                            <ContextMenu>
+                                                                <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicle}" IsEnabled="False"/>
+                                                            </ContextMenu>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </map:CompositeShape.Style>-->
+                                
+                                <map:CompositeShape.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Следить за этим объектом" Command="{Binding SetTrackedVehicleCommand}">
+                                            <MenuItem.Style>
+                                                <Style TargetType="MenuItem">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="True">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
 
-                                    <map:LineStringShape.LineStringSymbol>
-                                        <map:StrokeLineStringSymbol>
-                                            <map:StrokeLineStringSymbol.Stroke>
-                                                <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                            </map:StrokeLineStringSymbol.Stroke>
-                                        </map:StrokeLineStringSymbol>
-                                    </map:LineStringShape.LineStringSymbol>
-                                    
-                                </map:LineStringShape>-->
-
-                                <!--Сам танк-->
+                                                        <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="False">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </MenuItem.Style>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </map:CompositeShape.ContextMenu>
+                                
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>
                                         <map:GeometryMarker Brush="#FF92D050">
@@ -490,5 +510,9 @@
             </map:MapLayer>
         </map:MapViewer>
     </Grid>
+    
+    <dxmvvm:Interaction.Behaviors>
+        <viewModels:MapViewerService1 Viewer="{Binding ElementName=TheViewer}"/>
+    </dxmvvm:Interaction.Behaviors>
 </UserControl>
 
