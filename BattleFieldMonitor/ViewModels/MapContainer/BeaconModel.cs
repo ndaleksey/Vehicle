@@ -11,6 +11,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         private bool _isTracked;
         private ViewModel _parentViewModel;
+        private static int _beaconNumber = 1;
 
         #endregion
 
@@ -54,6 +55,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <param name="longitude">Долгота</param>
         internal BeaconModel(ViewModel parentViewModel, double latitude, double longitude) : base(latitude, longitude)
         {
+            DisplayName = $"Маяк {_beaconNumber}";
+            _beaconNumber++;
+
             ParentViewModel = parentViewModel;
         }
 

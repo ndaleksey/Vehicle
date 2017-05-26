@@ -183,34 +183,25 @@
                     <map:ShapeTemplate>
                         <map:CompositeShape>
                             <map:PolygonShape MouseDown="ContentElement_OnMouseDown">
+                                
+                                <map:PolygonShape.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
+                                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                                    </ContextMenu>
+                                </map:PolygonShape.ContextMenu>
+                                
                                 <map:PolygonShape.Style>
                                     <Style TargetType="map:PolygonShape">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsEditMode}" Value="False">
                                                 <DataTrigger.Setters>
-                                                    <Setter Property="ContextMenu">
-                                                        <Setter.Value>
-                                                            <ContextMenu>
-                                                                <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
-                                                                <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
-                                                            </ContextMenu>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    
                                                     <Setter Property="map:Reshaping.IsMutable" Value="False"/>
                                                 </DataTrigger.Setters>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding IsEditMode}" Value="True">
                                                 <DataTrigger.Setters>
-                                                    <Setter Property="ContextMenu">
-                                                        <Setter.Value>
-                                                            <ContextMenu>
-                                                                <MenuItem Header="Завершить редактирование" Command="{Binding EditCommand}"/>
-                                                            </ContextMenu>
-                                                        </Setter.Value>
-                                                    </Setter>
-
                                                     <Setter Property="map:Reshaping.IsMutable" Value="True"/>
                                                 </DataTrigger.Setters>
                                             </DataTrigger>
@@ -262,8 +253,26 @@
                             </map:CompositeShape.ContextMenu>
 
                             <map:LineStringShape 
-                                PointsSource="{Binding Coords}" 
-                                map:Reshaping.IsMutable="True">
+                                PointsSource="{Binding Coords}">
+                                
+                                <map:LineStringShape.Style>
+                                    <Style TargetType="map:LineStringShape">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="False">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="map:Reshaping.IsMutable" Value="False"/>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="map:Reshaping.IsMutable" Value="True"/>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </map:LineStringShape.Style>
+
                                 <map:LineStringShape.PointSubshapeTemplate>
                                     <map:PointSubshapeTemplate>
                                         <map:GeographicPointSubshape 
@@ -282,9 +291,26 @@
                             </map:LineStringShape>
 
                             <map:LineStringShape 
-                                PointsSource="{Binding Coords}" 
-                                map:Reshaping.IsMutable="True">
+                                PointsSource="{Binding Coords}">
 
+                                <map:LineStringShape.Style>
+                                    <Style TargetType="map:LineStringShape">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="False">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="map:Reshaping.IsMutable" Value="False"/>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="map:Reshaping.IsMutable" Value="True"/>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </map:LineStringShape.Style>
+                                
                                 <map:LineStringShape.PointSubshapeTemplate>
                                     <map:PointSubshapeTemplate>
                                         <map:GeographicPointSubshape 
@@ -544,49 +570,53 @@
             <map:MapLayer ItemsSource="{Binding Beacons}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
-                        <map:GeographicPointShape 
-                            Latitude="{Binding Latitude}" 
-                            Longitude="{Binding Longitude}"
-                            MouseDown="ContentElement_OnMouseDown">
+                        <map:CompositeShape>
                             
-                            <map:GeographicPointShape.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Центрировать карту" Command="{Binding SetTrackedObjectCommand}">
-                                        <MenuItem.Style>
-                                            <Style TargetType="MenuItem">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="True">
-                                                        <DataTrigger.Setters>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </DataTrigger.Setters>
-                                                    </DataTrigger>
+                            <map:GeographicPointShape
+                                Latitude="{Binding Latitude}" 
+                                Longitude="{Binding Longitude}"
+                                MouseDown="ContentElement_OnMouseDown">
+                                
+                                <map:GeographicPointShape.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Центрировать карту" Command="{Binding SetTrackedObjectCommand}">
+                                            <MenuItem.Style>
+                                                <Style TargetType="MenuItem">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="True">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="False">
-                                                        <DataTrigger.Setters>
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger.Setters>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </MenuItem.Style>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </map:GeographicPointShape.ContextMenu>
+                                                        <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="False">
+                                                            <DataTrigger.Setters>
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger.Setters>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </MenuItem.Style>
+                                        </MenuItem>
+                                        <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
+                                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                                    </ContextMenu>
+                                </map:GeographicPointShape.ContextMenu>
 
-                            <map:MarkerPointSymbol>
-                                <map:GeometryMarker>
-                                    <map:GeometryMarker.Brush>
-                                        <ImageBrush ImageSource="../Resources/Icons/Beacon.png"/>
-                                    </map:GeometryMarker.Brush>
+                                <map:MarkerPointSymbol>
+                                    <map:GeometryMarker>
+                                        <map:GeometryMarker.Brush>
+                                            <ImageBrush ImageSource="../Resources/Icons/Beacon.png"/>
+                                        </map:GeometryMarker.Brush>
 
-                                    <RectangleGeometry>
-                                        <RectangleGeometry.Rect>
-                                            <Rect X="-20" Y="-40" Height="40" Width="40"/>
-                                        </RectangleGeometry.Rect>
-                                    </RectangleGeometry>
-                                </map:GeometryMarker>
+                                        <RectangleGeometry>
+                                            <RectangleGeometry.Rect>
+                                                <Rect X="-20" Y="-40" Height="40" Width="40"/>
+                                            </RectangleGeometry.Rect>
+                                        </RectangleGeometry>
+                                    </map:GeometryMarker>
 
-                                <!--<map:GeometryMarker Brush="Red">
+                                    <!--<map:GeometryMarker Brush="Red">
                                     <map:GeometryMarker.Pen>
                                         <Pen Brush="Black" Thickness="1"/>
                                     </map:GeometryMarker.Pen>
@@ -606,8 +636,28 @@
                                         </PathGeometry>
                                     </GeometryGroup>
                                 </map:GeometryMarker>-->
-                            </map:MarkerPointSymbol>
-                        </map:GeographicPointShape>
+                                </map:MarkerPointSymbol>
+                            </map:GeographicPointShape>
+
+                            <map:GeographicPointShape
+                                Latitude="{Binding Latitude}" 
+                                Longitude="{Binding Longitude}">
+                                
+                                <map:MarkerPointSymbol>
+                                    <map:MarkerPointSymbol.Transform>
+                                        <TranslateTransform Y="5"/>
+                                    </map:MarkerPointSymbol.Transform>
+                                    
+                                    <map:TextMarker 
+                                        Text="{Binding DisplayName}"
+                                        FontFamily="Arial" 
+                                        FontSize="12" 
+                                        FontWeight="Bold" 
+                                        Foreground="Black"
+                                        TextAlignment="Center"/>
+                                </map:MarkerPointSymbol>
+                            </map:GeographicPointShape>
+                        </map:CompositeShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
@@ -668,6 +718,20 @@
         <viewModels:MapViewerService1 Viewer="{Binding ElementName=TheViewer}"/>
     </dxmvvm:Interaction.Behaviors>
 </UserControl>
+
+
+
+
+    
+
+
+
+
+
+
+
+
+    
 
 
 

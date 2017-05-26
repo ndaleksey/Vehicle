@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
+﻿using System.Collections.ObjectModel;
 using DevExpress.Mvvm;
-using Swsu.BattleFieldMonitor.Common;
 using Swsu.BattleFieldMonitor.Converters1.Parameters;
 using Swsu.BattleFieldMonitor.Services;
 using Swsu.BattleFieldMonitor.ViewModelInterfaces;
@@ -238,7 +235,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Methods
 
         /// <summary>
-        /// Удалить препятствие с карты
+        /// Удалить объект с карты
         /// </summary>
         private void Delete()
         {
@@ -253,10 +250,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 var selectedRoute = _selectedObject as RouteModel;
                 Routes.Remove(selectedRoute);
             }
+
+            if (_selectedObject is BeaconModel)
+            {
+                var selectedBeacon = _selectedObject as BeaconModel;
+                Beacons.Remove(selectedBeacon);
+            }
         }
 
         /// <summary>
-        /// Включить режим редактирования препятствия
+        /// Включить режим редактирования объекта
         /// </summary>
         private void Edit()
         {

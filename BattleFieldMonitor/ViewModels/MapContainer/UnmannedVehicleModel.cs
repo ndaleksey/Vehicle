@@ -57,7 +57,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
-        /// Скорость, км/ч
+        /// Скорость, м/с
         /// </summary>
         public double Speed
         {
@@ -101,7 +101,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             CalloutText = $"Азимут: {Azimuth.ToString("0.00", CultureInfo.InvariantCulture)}°\n" +
                           $"Широта: {Latitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
                           $"Долгота: {Longitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
-                          $"Скорость: {Speed.ToString("0.0", CultureInfo.InvariantCulture)} км/ч";
+                          $"Скорость: {(Speed * 3.6).ToString("0.0", CultureInfo.InvariantCulture)} км/ч";
         }
 
         protected override void OnLatitudeChanged()
