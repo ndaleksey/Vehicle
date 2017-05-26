@@ -29,15 +29,15 @@ namespace Swsu.BattleFieldMonitor.Views
             if (polygonShape != null)
             {
                 var obstacle = polygonShape.DataContext as Obstacle;
-                ((ViewModel) DataContext).SelectedObstacle = obstacle;
+                ((ViewModel) DataContext).SelectedObject = obstacle;
             }
 
-            //var compositeShape = sender as CompositeShape;
-            //if (compositeShape != null)
-            //{
-            //    var vehicle = compositeShape.DataContext as UnmannedVehicle;
-            //    ((ViewModel)DataContext).SelectedObstacle = vehicle;
-            //}
+            var compositeShape = sender as CompositeShape;
+            if (compositeShape != null)
+            {
+                var vehicle = compositeShape.DataContext as UnmannedVehicle;
+                ((ViewModel)DataContext).SelectedObject = vehicle;
+            }
         }
     }
 }
