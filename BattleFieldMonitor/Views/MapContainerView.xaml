@@ -233,47 +233,34 @@
             <map:MapLayer ItemsSource="{Binding Routes}">
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
-                        <!--Объект-->
-                        <map:CompositeShape>
-                            <!--Трасса-->
-                            <map:LineStringShape PointsSource="{Binding Coords}">
-                                <map:LineStringShape.PointSubshapeTemplate>
-                                    <map:PointSubshapeTemplate>
-                                        <map:GeographicPointSubshape 
-                                            Latitude="{Binding Latitude}" 
-                                            Longitude="{Binding Longitude}"/>
-                                    </map:PointSubshapeTemplate>
-                                </map:LineStringShape.PointSubshapeTemplate>
-
-                                <map:LineStringShape.LineStringSymbol>
-                                    <map:StrokeLineStringSymbol>
-                                        <map:StrokeLineStringSymbol.Stroke>
-                                            <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                        </map:StrokeLineStringSymbol.Stroke>
-                                    </map:StrokeLineStringSymbol>
-                                </map:LineStringShape.LineStringSymbol>
-                                    
-                            </map:LineStringShape>
+                        <!--Трасса-->
+                        <map:LineStringShape 
+                            PointsSource="{Binding Coords}" 
+                            MouseDown="ContentElement_OnMouseDown"
+                            map:Reshaping.IsMutable="True">
+                            <map:LineStringShape.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
+                                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                                </ContextMenu>
+                            </map:LineStringShape.ContextMenu>
                             
-                            <!--<map:LineStringShape PointsSource="{Binding Coords}">
-                                <map:LineStringShape.PointSubshapeTemplate>
-                                    <map:PointSubshapeTemplate>
-                                        <map:GeographicPointSubshape 
-                                            Latitude="{Binding Latitude}" 
-                                            Longitude="{Binding Longitude}"/>
-                                    </map:PointSubshapeTemplate>
-                                </map:LineStringShape.PointSubshapeTemplate>
+                            <map:LineStringShape.PointSubshapeTemplate>
+                                <map:PointSubshapeTemplate>
+                                    <map:GeographicPointSubshape 
+                                        Latitude="{Binding Latitude}" 
+                                        Longitude="{Binding Longitude}"/>
+                                </map:PointSubshapeTemplate>
+                            </map:LineStringShape.PointSubshapeTemplate>
 
-                                <map:LineStringShape.LineStringSymbol>
-                                    <map:StrokeLineStringSymbol>
-                                        <map:StrokeLineStringSymbol.Stroke>
-                                            <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                        </map:StrokeLineStringSymbol.Stroke>
-                                    </map:StrokeLineStringSymbol>
-                                </map:LineStringShape.LineStringSymbol>
-                                    
-                            </map:LineStringShape>-->
-                        </map:CompositeShape>
+                            <map:LineStringShape.LineStringSymbol>
+                                <map:StrokeLineStringSymbol>
+                                    <map:StrokeLineStringSymbol.Stroke>
+                                        <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                    </map:StrokeLineStringSymbol.Stroke>
+                                </map:StrokeLineStringSymbol>
+                            </map:LineStringShape.LineStringSymbol>
+                        </map:LineStringShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>

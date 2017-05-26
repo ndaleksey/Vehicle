@@ -28,7 +28,7 @@ namespace Swsu.BattleFieldMonitor.Views
             var polygonShape = sender as PolygonShape;
             if (polygonShape != null)
             {
-                var obstacle = polygonShape.DataContext as Obstacle;
+            	var obstacle = polygonShape.DataContext as Obstacle;
                 ((ViewModel) DataContext).SelectedObject = obstacle;
             }
 
@@ -37,6 +37,13 @@ namespace Swsu.BattleFieldMonitor.Views
             {
                 var vehicle = compositeShape.DataContext as UnmannedVehicle;
                 ((ViewModel)DataContext).SelectedObject = vehicle;
+            }
+
+            var lineStringShape = sender as LineStringShape;
+            if (lineStringShape != null)
+            {
+                var route = lineStringShape.DataContext as RouteModel;
+                ((ViewModel)DataContext).SelectedObject = route;
             }
         }
     }

@@ -89,7 +89,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
-        /// Выделенное препятствие (грубо говоря, не выделенное, а то, на котором щёлкнули мышкой, в частности, для вызова контекстного меню)
+        /// Выделенный объект, линия или препятствие (грубо говоря, не выделенный, а тот, на котором щёлкнули мышкой, в частности, для вызова контекстного меню)
         /// </summary>
         public object SelectedObject
         {
@@ -228,6 +228,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 var selectedObstacle = _selectedObject as Obstacle;
                 Obstacles.Remove(selectedObstacle);
             }
+
+            if (_selectedObject is RouteModel)
+            {
+                var selectedRoute = _selectedObject as RouteModel;
+                Routes.Remove(selectedRoute);
+            }
         }
 
         /// <summary>
@@ -239,6 +245,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             {
                 var selectedObstacle = _selectedObject as Obstacle;
                 selectedObstacle.IsEditMode = true;
+                MapToolMode = MapToolMode.Reshaping;
+            }
+
+            if (_selectedObject is RouteModel)
+            {
+                var selectedRoute = _selectedObject as RouteModel;
+                selectedRoute.IsEditMode = true;
                 MapToolMode = MapToolMode.Reshaping;
             }
         }
@@ -728,9 +741,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     /// </summary>
     public class Obstacle : BindableBase
     {
-        #region Properties
+        #region Fields
 
         private bool _isEditMode;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Коллекция координат полигона
