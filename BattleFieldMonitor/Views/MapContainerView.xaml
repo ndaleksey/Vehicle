@@ -323,13 +323,13 @@
                                             <MenuItem.Style>
                                                 <Style TargetType="MenuItem">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="True">
+                                                        <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="True">
                                                             <DataTrigger.Setters>
                                                                 <Setter Property="IsEnabled" Value="True"/>
                                                             </DataTrigger.Setters>
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="False">
+                                                        <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="False">
                                                             <DataTrigger.Setters>
                                                                 <Setter Property="IsEnabled" Value="False"/>
                                                             </DataTrigger.Setters>
@@ -555,13 +555,13 @@
                                         <MenuItem.Style>
                                             <Style TargetType="MenuItem">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="True">
+                                                    <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="True">
                                                         <DataTrigger.Setters>
                                                             <Setter Property="IsEnabled" Value="True"/>
                                                         </DataTrigger.Setters>
                                                     </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding IsScalingModeEnabled}" Value="False">
+                                                    <DataTrigger Binding="{Binding IsCenteringModeEnabled}" Value="False">
                                                         <DataTrigger.Setters>
                                                             <Setter Property="IsEnabled" Value="False"/>
                                                         </DataTrigger.Setters>
@@ -574,7 +574,19 @@
                             </map:GeographicPointShape.ContextMenu>
 
                             <map:MarkerPointSymbol>
-                                <map:GeometryMarker Brush="Red">
+                                <map:GeometryMarker>
+                                    <map:GeometryMarker.Brush>
+                                        <ImageBrush ImageSource="../Resources/Icons/Beacon.png"/>
+                                    </map:GeometryMarker.Brush>
+
+                                    <RectangleGeometry>
+                                        <RectangleGeometry.Rect>
+                                            <Rect X="-20" Y="-40" Height="40" Width="40"/>
+                                        </RectangleGeometry.Rect>
+                                    </RectangleGeometry>
+                                </map:GeometryMarker>
+
+                                <!--<map:GeometryMarker Brush="Red">
                                     <map:GeometryMarker.Pen>
                                         <Pen Brush="Black" Thickness="1"/>
                                     </map:GeometryMarker.Pen>
@@ -593,7 +605,7 @@
                                             </PathFigure>
                                         </PathGeometry>
                                     </GeometryGroup>
-                                </map:GeometryMarker>
+                                </map:GeometryMarker>-->
                             </map:MarkerPointSymbol>
                         </map:GeographicPointShape>
                     </map:ShapeTemplate>

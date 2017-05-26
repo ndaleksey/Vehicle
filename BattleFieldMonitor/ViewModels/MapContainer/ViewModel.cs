@@ -28,7 +28,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Коллекция маяков, отображаемых на карте
         /// </summary>
-	    public ObservableCollection<Beacon> Beacons { get; }
+	    public ObservableCollection<BeaconModel> Beacons { get; }
 
         /// <summary>
         /// Режим инструмента карты
@@ -88,7 +88,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Коллекция препятствий, отображаемых на карте
         /// </summary>
-	    public ObservableCollection<Obstacle> Obstacles { get; }
+	    public ObservableCollection<ObstacleModel> Obstacles { get; }
 
         /// <summary>
         /// Коллекция трасс, отображаемых на карте
@@ -116,7 +116,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <summary>
         /// Коллекция танков, отображаемых на карте
         /// </summary>
-	    public ObservableCollection<UnmannedVehicle> UnmannedVehicles { get; }
+	    public ObservableCollection<UnmannedVehicleModel> UnmannedVehicles { get; }
 
         #endregion
 
@@ -179,17 +179,18 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             SetTrackedObjectCommand = new DelegateCommand(SetTrackedObject);
             OnRouteDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnRouteDrawn);
 
-            UnmannedVehicles = new ObservableCollection<UnmannedVehicle>();
+            UnmannedVehicles = new ObservableCollection<UnmannedVehicleModel>();
 
+            //TODO: После того, как была добавлена данная загрузка, возник следующий баг: после закрытия окна процесс остается висеть в памяти
             foreach (var unmannedVehicle in database.UnmannedVehicles.Objects)
             {
-                UnmannedVehicles.Add(new UnmannedVehicle(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading) { Speed = unmannedVehicle.Speed });
+                UnmannedVehicles.Add(new UnmannedVehicleModel(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading) { Speed = unmannedVehicle.Speed });
             }
 
             database.UnmannedVehicles.ObjectsAdded += UnmannedVehicles_ObjectsAdded;
             database.UnmannedVehicles.ObjectsRemoved += UnmannedVehicles_ObjectsRemoved;
 
-            Obstacles = new ObservableCollection<Obstacle>
+            Obstacles = new ObservableCollection<ObstacleModel>
             {
                 //new Obstacle
                 //{
@@ -203,7 +204,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                 //}
             };
 
-            Beacons = new ObservableCollection<Beacon>
+            Beacons = new ObservableCollection<BeaconModel>
             {
                 //new Beacon(10, 10)
             };
@@ -217,7 +218,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         {
             foreach (var unmannedVehicle in e.Objects)
             {
-                var newUnnamedVehicle = new UnmannedVehicle(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading)
+                var newUnnamedVehicle = new UnmannedVehicleModel(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading)
                 {
                     //TODO: Добавить имя
                     Speed = unmannedVehicle.Speed
@@ -241,9 +242,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void Delete()
         {
-            if (_selectedObject is Obstacle)
+            if (_selectedObject is ObstacleModel)
             {
-                var selectedObstacle = _selectedObject as Obstacle;
+                var selectedObstacle = _selectedObject as ObstacleModel;
                 Obstacles.Remove(selectedObstacle);
             }
 
@@ -259,7 +260,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void Edit()
         {
-            var obstacle = _selectedObject as Obstacle;
+            var obstacle = _selectedObject as ObstacleModel;
             if (obstacle != null)
             {
                 var selectedObstacle = obstacle;
@@ -295,7 +296,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// <param name="parameter">Параметр, содержащий координаты точки</param>
         private void OnLineDrawn(LineDrawnParameter parameter)
         {
-            var newObstacle = new Obstacle();
+            var newObstacle = new ObstacleModel();
 
             foreach (var location in parameter.Locations)
             {
@@ -314,7 +315,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
 
-            var newBeacon = new Beacon(this, latitude, longitude);
+            var newBeacon = new BeaconModel(this, latitude, longitude);
 
             Beacons.Add(newBeacon);
         }
@@ -348,7 +349,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             var latitude = parameter.Location.Latitude;
             var longitude = parameter.Location.Longitude;
 
-            var obstacle = new Obstacle();
+            var obstacle = new ObstacleModel();
 
             var sphere = new Sphere(6378136);
 
@@ -388,7 +389,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void SetTrackedObject()
         {
-            if (_selectedObject is UnmannedVehicle)
+            if (_selectedObject is UnmannedVehicleModel)
             {
                 foreach (var unmannedVehicle in UnmannedVehicles)
                 {
@@ -400,11 +401,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     beacon.IsTracked = false;
                 }
 
-                var selectedVehicle = (UnmannedVehicle) _selectedObject;
+                var selectedVehicle = (UnmannedVehicleModel) _selectedObject;
                 selectedVehicle.IsTracked = true;
             }
 
-            if (_selectedObject is Beacon)
+            if (_selectedObject is BeaconModel)
             {
                 foreach (var unmannedVehicle in UnmannedVehicles)
                 {
@@ -416,7 +417,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     beacon.IsTracked = false;
                 }
 
-                var selectedBeacon = (Beacon) _selectedObject;
+                var selectedBeacon = (BeaconModel) _selectedObject;
                 selectedBeacon.IsTracked = true;
             }
         }
@@ -489,381 +490,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToSimpleSelectionTool()
         {
             MapToolMode = MapToolMode.SimpleSelection;
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// Беспилотный автомобиль
-    /// </summary>
-    public class UnmannedVehicle : MapObject
-    {
-        #region Fields
-
-        private double _azimuth;
-        private string _calloutText;
-        private bool _isTracked;
-        private ViewModel _parentViewModel;
-        private double _speed;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Азимут
-        /// </summary>
-        public double Azimuth
-        {
-            get { return _azimuth; }
-            set { SetProperty(ref _azimuth, value, nameof(Azimuth)); }
-        }
-
-        /// <summary>
-        /// Текст из четырёх строк, отображаемый на выноске
-        /// </summary>
-        public string CalloutText
-        {
-            get { return _calloutText; }
-            set { SetProperty(ref _calloutText, value, nameof(CalloutText)); }
-        }
-
-        /// <summary>
-        /// Признак, указывающий, что за объектом необходимо следить
-        /// </summary>
-        internal bool IsTracked
-        {
-            get { return _isTracked; }
-            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateTracking); }
-        }
-
-        /// <summary>
-        /// Родительская ViewModel для доступа к свойствам отслеживания
-        /// </summary>
-        internal ViewModel ParentViewModel
-        {
-            get { return _parentViewModel; }
-            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
-        }
-
-        /// <summary>
-        /// Скорость, км/ч
-        /// </summary>
-        public double Speed
-        {
-            get { return _speed; }
-            set { SetProperty(ref _speed, value, nameof(Speed), UpdateCalloutText); }
-        }
-
-        #endregion
-
-        #region Constructors 
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        internal UnmannedVehicle(ViewModel parentViewModel)
-        {
-            ParentViewModel = parentViewModel;
-            //UpdateCalloutText();
-        }
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        /// <param name="parentViewModel">Родительская ViewModel для доступа к функциям слежения</param>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долдгота</param>
-        /// <param name="azimuth">Азимут</param>
-        internal UnmannedVehicle(ViewModel parentViewModel, double latitude, double longitude, double azimuth) : this(parentViewModel)
-        {
-            Azimuth = azimuth;
-            Latitude = latitude;
-            Longitude = longitude;
-        }
-
-        #endregion
-
-        #region Methods
-
-        private void UpdateCalloutText()
-        {
-            CalloutText = $"Азимут: {Azimuth.ToString("0.00", CultureInfo.InvariantCulture)}°\n" +
-                          $"Широта: {Latitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
-                          $"Долгота: {Longitude.ToString("0.000000", CultureInfo.InvariantCulture)}°\n" +
-                          $"Скорость: {Speed.ToString("0.0", CultureInfo.InvariantCulture)} км/ч";
-        }
-
-        protected override void OnLatitudeChanged()
-        {
-            UpdateTracking();
-        }
-
-        protected override void OnLongitudeChanged()
-        {
-            UpdateTracking();
-        }
-
-        private void UpdateTracking()
-        {
-            if (ParentViewModel != null && ParentViewModel.IsCenteringModeEnabled)
-            {
-                if (IsTracked)
-                {
-                    ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
-                }
-            }
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// Маяк (точка возврата)
-    /// </summary>
-    public class Beacon : MapObject
-    {
-        #region Fields
-
-        private bool _isTracked;
-        private ViewModel _parentViewModel;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Признак, указывающий, что за объектом необходимо следить
-        /// </summary>
-        internal bool IsTracked
-        {
-            get { return _isTracked; }
-            set { SetProperty(ref _isTracked, value, nameof(IsTracked), UpdateTracking); }
-        }
-
-        /// <summary>
-        /// Родительская ViewModel для доступа к свойствам отслеживания
-        /// </summary>
-        internal ViewModel ParentViewModel
-        {
-            get { return _parentViewModel; }
-            set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
-        }
-
-        #endregion
-
-        #region Constructors 
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        internal Beacon(ViewModel parentViewModel)
-        {
-            ParentViewModel = parentViewModel;
-        }
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        /// <param name="parentViewModel">Родительская ViewModel для доступа к функциям слежения</param>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долгота</param>
-        internal Beacon(ViewModel parentViewModel, double latitude, double longitude) : base(latitude, longitude)
-        {
-            ParentViewModel = parentViewModel;
-        }
-
-        #endregion
-
-        #region Methods
-
-        private void UpdateTracking()
-        {
-            if (ParentViewModel != null && ParentViewModel.IsCenteringModeEnabled)
-            {
-                if (IsTracked)
-                {
-                    ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
-                }
-
-            }
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// Точка, задаваемая широтой и долготой
-    /// </summary>
-    public class Coord : BindableBase
-    {
-        #region Fields
-
-        private double _latitude;
-        private double _longitude;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Широта
-        /// </summary>
-        public double Latitude
-        {
-            get { return _latitude; }
-            set { SetProperty(ref _latitude, value, nameof(Latitude)); }
-        }
-
-        /// <summary>
-        /// Долгота
-        /// </summary>
-        public double Longitude
-        {
-            get { return _longitude; }
-            set { SetProperty(ref _longitude, value, nameof(Longitude)); }
-        }
-
-        #endregion
-
-        #region Constructors
-
-        public Coord()
-        {
-
-        }
-
-        public Coord(double latitude, double longitude) : this()
-        {
-            Latitude = latitude;
-            Longitude = longitude;
-        }
-        
-        #endregion
-    }
-
-    /// <summary>
-    /// Объект, отображаемый на карте
-    /// </summary>
-    public class MapObject : BindableBase
-    {
-        #region Fields
-
-        private string _displayName;
-        private double _latitude;
-        private double _longitude;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Отображаемое имя
-        /// </summary>
-        public string DisplayName
-        {
-            get { return _displayName; }
-            set { SetProperty(ref _displayName, value, nameof(DisplayName)); }
-        }
-
-        /// <summary>
-        /// Широта
-        /// </summary>
-        public double Latitude
-        {
-            get { return _latitude; }
-            set { SetProperty(ref _latitude, value, nameof(Latitude), OnLatitudeChanged); }
-        }
-
-        /// <summary>
-        /// Долгота
-        /// </summary>
-        public double Longitude
-        {
-            get { return _longitude; }
-            set { SetProperty(ref _longitude, value, nameof(Longitude), OnLongitudeChanged); }
-        }
-
-        #endregion
-
-        #region Constructors 
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        public MapObject()
-        {
-
-        }
-
-        /// <summary>
-        /// Инициализирует экземпляр класса
-        /// </summary>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долгота</param>
-        public MapObject(double latitude, double longitude) : this()
-        {
-            Latitude = latitude;
-            Longitude = longitude;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долгота</param>
-        /// <param name="displayName">Отображаемое имя</param>
-        public MapObject(double latitude, double longitude, string displayName) : this(latitude, longitude)
-        {
-            DisplayName = displayName;
-        }
-
-        #endregion
-
-        #region Methods
-
-        protected virtual void OnLatitudeChanged() { }
-
-        protected virtual void OnLongitudeChanged() { }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// Класс, представляющий собой препятствие, отображаемое на карте в виде полигона
-    /// </summary>
-    public class Obstacle : BindableBase
-    {
-        #region Fields
-
-        private bool _isEditMode;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Коллекция координат полигона
-        /// </summary>
-        public ObservableCollection<Coord> Coords { get; }
-
-        /// <summary>
-        /// Признак, указывающий на то, что объект находится в режиме редактирования
-        /// </summary>
-        public bool IsEditMode
-        {
-            get { return _isEditMode; }
-            set { SetProperty(ref _isEditMode, value, nameof(IsEditMode)); }
-        }
-
-        #endregion
-
-        #region Constructors
-
-        public Obstacle()
-        {
-            Coords = new ObservableCollection<Coord>();
         }
 
         #endregion
