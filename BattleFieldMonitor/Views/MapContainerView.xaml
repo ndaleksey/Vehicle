@@ -87,7 +87,7 @@
                 </map:QuickLineStringDrawingTool>
             </map:ToolTemplate>
 
-            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.Reshaping}}">
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.PolygonReshaping}}">
                 <map:ReshapingTool>
                     <map:ReshapingTool.PointHandleStyle>
                         <Style TargetType="map:ReshapingToolPointHandle">
@@ -107,10 +107,30 @@
                 </map:ReshapingTool>
             </map:ToolTemplate>
 
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.LineReshaping}}">
+                <map:ReshapingTool>
+                    <map:ReshapingTool.PointHandleStyle>
+                        <Style TargetType="map:ReshapingToolPointHandle">
+                            <Setter Property="Marker">
+                                <Setter.Value>
+                                    <map:GeometryMarker Brush="#FF3475CD">
+                                        <map:GeometryMarker.Pen>
+                                            <Pen Brush="White" Thickness="2"/>
+                                        </map:GeometryMarker.Pen>
+
+                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                    </map:GeometryMarker>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </map:ReshapingTool.PointHandleStyle>
+                </map:ReshapingTool>
+            </map:ToolTemplate>
+
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.RouteDrawing}}">
                 <map:PreciseLineStringDrawingTool 
                     d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}" 
-                    Pen="{StaticResource PolygonBoundaryPen}">
+                    Pen="{StaticResource RouteLinePen}">
 
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand
@@ -234,33 +254,57 @@
                 <map:MapLayer.ItemShapeTemplate>
                     <map:ShapeTemplate>
                         <!--Трасса-->
-                        <map:LineStringShape 
-                            PointsSource="{Binding Coords}" 
-                            MouseDown="ContentElement_OnMouseDown"
-                            map:Reshaping.IsMutable="True">
-                            <map:LineStringShape.ContextMenu>
+                        <map:CompositeShape MouseDown="ContentElement_OnMouseDown">
+                            <map:CompositeShape.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Редактировать" Command="{Binding EditCommand}"/>
                                     <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
                                 </ContextMenu>
-                            </map:LineStringShape.ContextMenu>
-                            
-                            <map:LineStringShape.PointSubshapeTemplate>
-                                <map:PointSubshapeTemplate>
-                                    <map:GeographicPointSubshape 
+                            </map:CompositeShape.ContextMenu>
+
+                            <map:LineStringShape 
+                                PointsSource="{Binding Coords}" 
+                                map:Reshaping.IsMutable="True">
+                                <map:LineStringShape.PointSubshapeTemplate>
+                                    <map:PointSubshapeTemplate>
+                                        <map:GeographicPointSubshape 
                                         Latitude="{Binding Latitude}" 
                                         Longitude="{Binding Longitude}"/>
-                                </map:PointSubshapeTemplate>
-                            </map:LineStringShape.PointSubshapeTemplate>
+                                    </map:PointSubshapeTemplate>
+                                </map:LineStringShape.PointSubshapeTemplate>
 
-                            <map:LineStringShape.LineStringSymbol>
-                                <map:StrokeLineStringSymbol>
-                                    <map:StrokeLineStringSymbol.Stroke>
-                                        <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
-                                    </map:StrokeLineStringSymbol.Stroke>
-                                </map:StrokeLineStringSymbol>
-                            </map:LineStringShape.LineStringSymbol>
-                        </map:LineStringShape>
+                                <map:LineStringShape.LineStringSymbol>
+                                    <map:StrokeLineStringSymbol>
+                                        <map:StrokeLineStringSymbol.Stroke>
+                                            <map:PenStroke Pen="{StaticResource RouteLinePen}"/>
+                                        </map:StrokeLineStringSymbol.Stroke>
+                                    </map:StrokeLineStringSymbol>
+                                </map:LineStringShape.LineStringSymbol>
+                            </map:LineStringShape>
+
+                            <map:LineStringShape 
+                                PointsSource="{Binding Coords}" 
+                                map:Reshaping.IsMutable="True">
+
+                                <map:LineStringShape.PointSubshapeTemplate>
+                                    <map:PointSubshapeTemplate>
+                                        <map:GeographicPointSubshape 
+                                        Latitude="{Binding Latitude}" 
+                                        Longitude="{Binding Longitude}"/>
+                                    </map:PointSubshapeTemplate>
+                                </map:LineStringShape.PointSubshapeTemplate>
+
+                                <map:LineStringShape.LineStringSymbol>
+                                    <map:StrokeLineStringSymbol>
+                                        <map:StrokeLineStringSymbol.Stroke>
+                                            <map:PenStroke>
+                                                <Pen Brush="Transparent" Thickness="40"/>
+                                            </map:PenStroke>
+                                        </map:StrokeLineStringSymbol.Stroke>
+                                    </map:StrokeLineStringSymbol>
+                                </map:LineStringShape.LineStringSymbol>
+                            </map:LineStringShape>
+                        </map:CompositeShape>
                     </map:ShapeTemplate>
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>

@@ -30,7 +30,12 @@
         /// <summary>
         /// Редактирование препятствий
         /// </summary>
-        Reshaping,
+        PolygonReshaping,
+
+        /// <summary>
+        /// Редактирование линий
+        /// </summary>
+        LineReshaping,
 
         /// <summary>
         /// Рисование маяков

@@ -241,18 +241,20 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// </summary>
         private void Edit()
         {
-            if (_selectedObject is Obstacle)
+            var obstacle = _selectedObject as Obstacle;
+            if (obstacle != null)
             {
-                var selectedObstacle = _selectedObject as Obstacle;
+                var selectedObstacle = obstacle;
                 selectedObstacle.IsEditMode = true;
-                MapToolMode = MapToolMode.Reshaping;
+                MapToolMode = MapToolMode.PolygonReshaping;
             }
 
-            if (_selectedObject is RouteModel)
+            var model = _selectedObject as RouteModel;
+            if (model != null)
             {
-                var selectedRoute = _selectedObject as RouteModel;
+                var selectedRoute = model;
                 selectedRoute.IsEditMode = true;
-                MapToolMode = MapToolMode.Reshaping;
+                MapToolMode = MapToolMode.LineReshaping;
             }
         }
 
