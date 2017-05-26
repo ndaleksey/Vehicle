@@ -376,6 +376,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
+        /// Переключиться на инструмент добавления трасс
+        /// </summary>
+        public void SwitchToRouteDrawingTool()
+        {
+            
+        }
+
+        /// <summary>
         /// Переключиться на инструмент Лассо
         /// </summary>
         public void SwitchToQuickLineStringDrawingTool()
