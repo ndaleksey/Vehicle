@@ -154,9 +154,8 @@
             ScaleDenominator="{Binding Path=ScaleDenominator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
             Tool="{Binding}" 
             ToolTemplateQualifier="{Binding Path=MapToolMode}">
+            
             <map:MapViewer.MapDefinition>
-
-                
                 <!-- Будет заменено привязкой с конвертером. -->
                 <map:WmtsMapDefinition
                         Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
@@ -601,10 +600,62 @@
                 </map:MapLayer.ItemShapeTemplate>
             </map:MapLayer>
         </map:MapViewer>
+
+        <Border 
+            BorderBrush="Black"
+            BorderThickness="1"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top">
+            
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Width" Value="200"/>
+                    <Setter Property="Height" Value="200"/>
+                    <Setter Property="Margin" Value="10"/>
+                    
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMiniMapEnabled}" Value="False">
+                            <DataTrigger.Setters>
+                                <!--<Setter Property="Visibility" Value="Collapsed"/>-->
+                                
+                                <!--<Setter Property="Width" Value="0"/>
+                                <Setter Property="Height" Value="0"/>-->
+
+                                <Setter Property="Margin" Value="10, -210, 10, 10"/>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            
+            <map:MapNavigatorViewer
+                TargetActualWidth="{Binding ElementName=TheViewer, Path=ActualWidth}"
+                TargetActualHeight="{Binding ElementName=TheViewer, Path=ActualHeight}"
+                TargetCenterLengthUnit="{Binding ElementName=TheViewer, Path=CenterLengthUnit}"
+                TargetCenterX="{Binding ElementName=TheViewer, Path=CenterX}"
+                TargetCenterY="{Binding ElementName=TheViewer, Path=CenterY}"
+                TargetScaleDenominator="{Binding ElementName=TheViewer, Path=ScaleDenominator}">
+
+                <map:MapNavigatorViewer.MapDefinition>
+                    <!-- Будет заменено привязкой с конвертером. -->
+                    <map:WmtsMapDefinition
+                            Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
+                            LayerIdentifier="world_web_merkator"
+                            StyleIdentifier="DefaultStyle"
+                            TileMatrixSetIdentifier="world_web_merkator_set"
+                            EpsgDataProvider="{StaticResource EpsgDataProvider}" />
+                </map:MapNavigatorViewer.MapDefinition>
+            </map:MapNavigatorViewer>
+        </Border>
+        
+        
     </Grid>
-    
+
     <dxmvvm:Interaction.Behaviors>
         <viewModels:MapViewerService1 Viewer="{Binding ElementName=TheViewer}"/>
     </dxmvvm:Interaction.Behaviors>
 </UserControl>
+
+
 

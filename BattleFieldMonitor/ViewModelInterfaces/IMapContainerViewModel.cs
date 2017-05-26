@@ -19,10 +19,16 @@
         #region Methods
 
         /// <summary>
-        /// Включить/отключить режим масштабирования (слежения за танком)
+        /// Включить/отключить мини-карту
         /// </summary>
         /// <param name="value">Истина, если включить, иначе ложь</param>
-        void SetScalingMode(bool value);
+        void SetMiniMap(bool value);
+        
+        /// <summary>
+        /// Включить/отключить режим центрирования (слежения за танком)
+        /// </summary>
+        /// <param name="value">Истина, если включить, иначе ложь</param>
+        void SetCenteringMode(bool value);
 
         /// <summary>
         /// Переключиться на инструмент добавления маяков

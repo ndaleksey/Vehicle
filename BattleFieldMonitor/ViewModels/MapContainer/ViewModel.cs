@@ -16,7 +16,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Fields
 
         private MapToolMode _mapToolMode;
-        private bool _isScalingModeEnabled;
+        private bool _isMiniMapEnabled;
+        private bool _isCenteringModeEnabled;
         private double _scaleDenominator;
         private object _selectedObject;
 
@@ -40,13 +41,23 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         internal IMapViewerService1 MapViewerService => GetService<IMapViewerService1>();
 
+
         /// <summary>
-        /// Признак, указывающий, включен ли режим масштабирования (слежения за танком)
+        /// Признак, указывающий, включена ли мини-карта
         /// </summary>
-        public bool IsScalingModeEnabled
+        public bool IsMiniMapEnabled
         {
-            get { return _isScalingModeEnabled; }
-            private set { SetProperty(ref _isScalingModeEnabled, value, nameof(IsScalingModeEnabled), OnIsScalingModeEnabledChanged); }
+            get { return _isMiniMapEnabled; }
+            private set { SetProperty(ref _isMiniMapEnabled, value, nameof(IsMiniMapEnabled)); }
+        }
+
+        /// <summary>
+        /// Признак, указывающий, включен ли режим центрирования (слежения за танком)
+        /// </summary>
+        public bool IsCenteringModeEnabled
+        {
+            get { return _isCenteringModeEnabled; }
+            private set { SetProperty(ref _isCenteringModeEnabled, value, nameof(IsCenteringModeEnabled), OnIsScalingModeEnabledChanged); }
         }
 
         private void OnIsScalingModeEnabledChanged(bool oldValue, bool newValue)
@@ -198,6 +209,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             };
 
             Routes = new ObservableCollection<RouteModel>();
+
+            
         }
 
         private void UnmannedVehicles_ObjectsAdded(object sender, ObjectsAddedEventArgs<IUnmannedVehicle> e)
@@ -413,12 +426,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         #region Methods From Interface
 
         /// <summary>
+        /// Включить/отключить мини-карту
+        /// </summary>
+        /// <param name="value">Истина, если включить, иначе ложь</param>
+        public void SetMiniMap(bool value)
+        {
+            IsMiniMapEnabled = value;
+        }
+
+        /// <summary>
         /// Включить/отключить режим масштабирования (слежения за танком)
         /// </summary>
         /// <param name="value">Истина, если включить, иначе ложь</param>
-        public void SetScalingMode(bool value)
+        public void SetCenteringMode(bool value)
         {
-            IsScalingModeEnabled = value;
+            IsCenteringModeEnabled = value;
         }
 
         /// <summary>
@@ -585,7 +607,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         private void UpdateTracking()
         {
-            if (ParentViewModel != null && ParentViewModel.IsScalingModeEnabled)
+            if (ParentViewModel != null && ParentViewModel.IsCenteringModeEnabled)
             {
                 if (IsTracked)
                 {
@@ -658,7 +680,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
         private void UpdateTracking()
         {
-            if (ParentViewModel != null && ParentViewModel.IsScalingModeEnabled)
+            if (ParentViewModel != null && ParentViewModel.IsCenteringModeEnabled)
             {
                 if (IsTracked)
                 {

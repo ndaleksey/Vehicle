@@ -15,9 +15,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         #endregion
 
         #region Fields
+
         private double _scaleDenominator;
         private IMapContainerViewModel _mapContainer;
-        private bool _isScalingModeEnabled;
+        private bool _isMiniMapEnabled;
+        private bool _isCenteringModeEnabled;
         private bool _switchToBeaconDtButtonChecked;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
@@ -34,12 +36,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         }
 
         /// <summary>
-        /// Включен режим масштабирования (слежения за танком)
+        /// Включен режим центрирования (слежения за танком)
         /// </summary>
-        public bool IsScalingModeEnabled
+        public bool IsCenteringModeEnabled
         {
-            get { return _isScalingModeEnabled; }
-            set { SetProperty(ref _isScalingModeEnabled, value, nameof(IsScalingModeEnabled), OnIsScalingModeEnabledChanged); }
+            get { return _isCenteringModeEnabled; }
+            set { SetProperty(ref _isCenteringModeEnabled, value, nameof(IsCenteringModeEnabled), OnIsCenteringModeEnabledChanged); }
+        }
+
+        /// <summary>
+        /// Включена мини-карта
+        /// </summary>
+        public bool IsMiniMapEnabled
+        {
+            get { return _isMiniMapEnabled; }
+            set { SetProperty(ref _isMiniMapEnabled, value, nameof(IsMiniMapEnabled), OnIsMiniMapEnabledChanged); }
         }
 
         /// <summary>
@@ -196,13 +207,20 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         #endregion
 
         #region Methods
-
         
-        private void OnIsScalingModeEnabledChanged(bool oldValue, bool newValue)
+        private void OnIsMiniMapEnabledChanged(bool oldValue, bool newValue)
         {
             if (_mapContainer != null)
             {
-                _mapContainer.SetScalingMode(newValue);
+                _mapContainer.SetMiniMap(newValue);
+            }
+        }
+
+        private void OnIsCenteringModeEnabledChanged(bool oldValue, bool newValue)
+        {
+            if (_mapContainer != null)
+            {
+                _mapContainer.SetCenteringMode(newValue);
             }
         }
 

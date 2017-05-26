@@ -78,7 +78,11 @@
 
                     <ToggleButton 
                         Content="Центрирование" 
-                        IsChecked="{Binding Path=IsScalingModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        IsChecked="{Binding Path=IsCenteringModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
+                        Content="Мини-карта" 
+                        IsChecked="{Binding Path=IsMiniMapEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Slider Orientation="Vertical" Height="200" HorizontalAlignment="Center" 
 							Value="{Binding Path=ScaleDenominator, UpdateSourceTrigger=PropertyChanged}"
