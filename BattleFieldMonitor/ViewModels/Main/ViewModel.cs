@@ -21,6 +21,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         private bool _isMiniMapEnabled;
         private bool _isCenteringModeEnabled;
         private bool _switchToBeaconDtButtonChecked;
+        private bool _switchToDistanceMeasurementToolButtonChecked;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
         private bool _switchToRouteDtButtonChecked;
@@ -65,6 +66,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                     ref _switchToBeaconDtButtonChecked,
                     value,
                     nameof(SwitchToBeaconDtButtonChecked));
+            }
+        }
+
+        /// <summary>
+        /// Зажата кнопка "Измерение расстояний"
+        /// </summary>
+        public bool SwitchToDistanceMeasurementToolButtonChecked
+        {
+            get { return _switchToDistanceMeasurementToolButtonChecked; }
+            set
+            {
+                SetProperty(
+                    ref _switchToDistanceMeasurementToolButtonChecked,
+                    value,
+                    nameof(SwitchToDistanceMeasurementToolButtonChecked));
             }
         }
 
@@ -158,6 +174,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         /// Команда переключения на режим добавления маяков
         /// </summary>
         public DelegateCommand SwitchToBeaconDtCommand { get; }
+        
+        /// <summary>
+        /// Команда переключения на режим измерения расстояний
+        /// </summary>
+        public DelegateCommand SwitchToDistanceMeasurementToolCommand { get; }
 
         /// <summary>
         /// Команда включения режима масштабирования (слежения за танком)
@@ -177,6 +198,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
             SwitchToRouteDtCommand = new DelegateCommand(SwitchToRouteDt);
             SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
             SwitchToBeaconDtCommand = new DelegateCommand(SwitchToBeaconDt);
+            SwitchToDistanceMeasurementToolCommand = new DelegateCommand(SwitchToDistanceMeasurementTool);
 
             //			ScaleDenominator = 1e7;
         }
@@ -260,7 +282,28 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
                 _mapContainer.SwitchToBeaconDrawingTool();
+            }
+            else
+            {
+                _mapContainer.SwitchToSimpleSelectionTool();
+            }
+        }
+
+        /// <summary>
+        /// Переключиться на режим измерения расстояний
+        /// </summary>
+        private void SwitchToDistanceMeasurementTool()
+        {
+            if (SwitchToDistanceMeasurementToolButtonChecked)
+            {
+                SwitchToPointDtButtonChecked = false;
+                SwitchToPreciseLsdtButtonChecked = false;
+                SwitchToQuickLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
+                SwitchToBeaconDtButtonChecked = false;
+                _mapContainer.SwitchToDistanceMeasurementTool();
             }
             else
             {
@@ -279,6 +322,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
                 _mapContainer.SwitchToPointDrawingTool();
             }
             else
@@ -298,6 +342,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPointDtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
                 _mapContainer.SwitchToPreciseLineStringDrawingTool();
             }
             else
@@ -317,6 +362,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToBeaconDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
                 _mapContainer.SwitchToRouteDrawingTool();
             }
             else
@@ -336,6 +382,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPointDtButtonChecked = false;
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
                 _mapContainer.SwitchToQuickLineStringDrawingTool();
             }
             else

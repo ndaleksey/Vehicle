@@ -36,6 +36,11 @@
         void SwitchToBeaconDrawingTool();
 
         /// <summary>
+        /// Переключиться на инструмент измерения расстояний
+        /// </summary>
+        void SwitchToDistanceMeasurementTool();
+
+        /// <summary>
         /// Переключиться на инструмент добавления точек
         /// </summary>
         void SwitchToPointDrawingTool();

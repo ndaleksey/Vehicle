@@ -123,6 +123,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters1\MeasuredEventArgsConverter.cs" />
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
     <Compile Include="Services\BeaconState.cs" />
     <Compile Include="Services\IBeacon.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
     <Compile Include="ViewModels\MapContainer\BeaconModel.cs" />
     <Compile Include="ViewModels\MapContainer\Coord.cs" />
+    <Compile Include="ViewModels\MapContainer\Tools\DistanceMeasurementTool.cs" />
     <Compile Include="ViewModels\MapContainer\IMapViewerService1.cs" />
     <Compile Include="ViewModels\MapContainer\MapObjectModel.cs" />
     <Compile Include="ViewModels\MapContainer\MapToolMode.cs" />

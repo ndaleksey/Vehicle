@@ -10,6 +10,7 @@
 	xmlns:infrastructure="clr-namespace:Swsu.BattleFieldMonitor.Infrastructure"
 	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
 	xmlns:converters1="clr-namespace:Swsu.BattleFieldMonitor.Converters1"
+	xmlns:tools="clr-namespace:Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools"
 	mc:Ignorable="d" 
     DataContext="{infrastructure:UnityResolution ObjectType=viewModels:ViewModel}"
     d:DesignHeight="400"
@@ -26,6 +27,7 @@
             
             <converters1:PointDrawnEventArgsConverter x:Key="PointDrawnEventArgsConverter" />
             <converters1:LineStringDrawnEventArgsConverter x:Key="LineStringDrawnEventArgsConverter" />
+            <converters1:MeasuredEventArgsConverter x:Key="MeasuredEventArgsConverter" />
             
             <map:ToolTemplate2 x:Key="{map:ToolTemplateKey2 DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.Pan}}">
                 <map:PanTool2/>
@@ -72,7 +74,7 @@
                     </dxmvvm:Interaction.Behaviors>
                 </map:PreciseLineStringDrawingTool>
             </map:ToolTemplate>
-
+            
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.QuickLineStringDrawing}}">
                 <map:QuickLineStringDrawingTool 
                     d:DataContext="{d:DesignInstance Type=viewModels:ViewModel, IsDesignTimeCreatable=True}"
@@ -139,6 +141,51 @@
                             EventArgsConverter="{StaticResource ResourceKey=LineStringDrawnEventArgsConverter}"/>
                     </dxmvvm:Interaction.Behaviors>
                 </map:PreciseLineStringDrawingTool>
+            </map:ToolTemplate>
+
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.DistanceMeasurement}}">
+                <tools:DistanceMeasurementTool/>
+
+                <!--<map:MeasurementTool>
+                    <map:MeasurementTool.HandleStyle>
+                        <Style TargetType="map:MeasurementToolHandle">
+                            <Setter Property="Marker">
+                                <Setter.Value>
+                                    <map:GeometryMarker Brush="Red">
+                                        <map:GeometryMarker.Pen>
+                                            <Pen Brush="White" Thickness="2"/>
+                                        </map:GeometryMarker.Pen>
+
+                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                    </map:GeometryMarker>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </map:MeasurementTool.HandleStyle>
+                    
+                    <map:MeasurementTool.Stroke>
+                        <map:PenStroke>
+                            --><!--<Pen Thickness="30">
+                                <Pen.Brush>
+                                    <VisualBrush Stretch="None">
+                                        <VisualBrush.Visual>
+                                            <TextBlock Text="{Binding (map:)}"></TextBlock>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Pen.Brush>
+                            </Pen>--><!--
+                            
+                            <Pen Brush="Black" Thickness="1"/>
+                        </map:PenStroke>
+                    </map:MeasurementTool.Stroke>
+
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand
+                            Command="{Binding OnMeasuredCommand}"
+                            Event="{x:Static map:MeasurementTool.Event}"
+                            EventArgsConverter="{StaticResource ResourceKey=MeasuredEventArgsConverter}"/>
+                    </dxmvvm:Interaction.Behaviors>
+                </map:MeasurementTool>-->
             </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
@@ -711,6 +758,18 @@
                     </map:MapNavigatorViewer.MapDefinition>
                 </map:MapNavigatorViewer>
             </StackPanel>
+        </Border>
+
+        <Border 
+            BorderBrush="Black"
+            Background="White"
+            BorderThickness="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Margin="10"
+            Padding="5">
+
+            <TextBlock Text="{Binding ElementName=TheViewer, Path=(map:MeasurementTool.TotalLength)}"/>
         </Border>
     </Grid>
 

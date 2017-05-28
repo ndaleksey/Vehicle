@@ -45,6 +45,11 @@
         /// <summary>
         /// Рисование трасс
         /// </summary>
-	    RouteDrawing
-	}
+	    RouteDrawing,
+
+        /// <summary>
+        /// Измерение расстояний
+        /// </summary>
+	    DistanceMeasurement
+    }
 }

@@ -77,6 +77,11 @@
                         IsChecked="{Binding Path=SwitchToRouteDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <ToggleButton 
+                        Content="Измерение расстояний" 
+                        Command="{Binding SwitchToDistanceMeasurementToolCommand}"
+                        IsChecked="{Binding Path=SwitchToDistanceMeasurementToolButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
                         Content="Центрирование" 
                         IsChecked="{Binding Path=IsCenteringModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 

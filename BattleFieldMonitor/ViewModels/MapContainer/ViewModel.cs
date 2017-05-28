@@ -153,6 +153,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public DelegateCommand<LineDrawnParameter> OnLineDrawnCommand { get; }
 
         /// <summary>
+        /// Команда измерения
+        /// </summary>
+        public DelegateCommand<object> OnMeasuredCommand { get; }
+
+        /// <summary>
         /// Команда добавления отслеживаемого объекта
         /// </summary>
         public DelegateCommand SetTrackedObjectCommand { get; }
@@ -178,6 +183,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             OnPointDrawnCommand = new DelegateCommand<PointDrawnParameter>(OnPointDrawn);
             SetTrackedObjectCommand = new DelegateCommand(SetTrackedObject);
             OnRouteDrawnCommand = new DelegateCommand<LineDrawnParameter>(OnRouteDrawn);
+            OnMeasuredCommand = new DelegateCommand<object>(OnMeasured);
 
             UnmannedVehicles = new ObservableCollection<UnmannedVehicleModel>();
 
@@ -211,6 +217,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 
             Routes = new ObservableCollection<RouteModel>();
 
+            
+        }
+
+        private void OnMeasured(object obj)
+        {
             
         }
 
@@ -459,6 +470,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToBeaconDrawingTool()
         {
             MapToolMode = MapToolMode.BeaconDrawing;
+        }
+
+        /// <summary>
+        /// Переключиться на инструмент измерения расстояний
+        /// </summary>
+        public void SwitchToDistanceMeasurementTool()
+        {
+            MapToolMode = MapToolMode.DistanceMeasurement;
         }
 
         /// <summary>
