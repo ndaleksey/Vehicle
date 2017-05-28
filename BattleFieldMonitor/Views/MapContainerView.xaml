@@ -691,27 +691,27 @@
                 </Style>
             </Border.Style>
             
-            <map:MapNavigatorViewer
-                TargetActualWidth="{Binding ElementName=TheViewer, Path=ActualWidth}"
-                TargetActualHeight="{Binding ElementName=TheViewer, Path=ActualHeight}"
-                TargetCenterLengthUnit="{Binding ElementName=TheViewer, Path=CenterLengthUnit}"
-                TargetCenterX="{Binding ElementName=TheViewer, Path=CenterX}"
-                TargetCenterY="{Binding ElementName=TheViewer, Path=CenterY}"
-                TargetScaleDenominator="{Binding ElementName=TheViewer, Path=ScaleDenominator}">
+            <StackPanel>
+                <map:MapNavigatorViewer Width="210" Height="210" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    TargetActualWidth="{Binding ElementName=TheViewer, Path=ActualWidth}"
+                    TargetActualHeight="{Binding ElementName=TheViewer, Path=ActualHeight}"
+                    TargetCenterLengthUnit="{Binding ElementName=TheViewer, Path=CenterLengthUnit}"
+                    TargetCenterX="{Binding ElementName=TheViewer, Path=CenterX}"
+                    TargetCenterY="{Binding ElementName=TheViewer, Path=CenterY}"
+                    TargetScaleDenominator="{Binding ElementName=TheViewer, Path=ScaleDenominator}">
 
-                <map:MapNavigatorViewer.MapDefinition>
-                    <!-- Будет заменено привязкой с конвертером. -->
-                    <map:WmtsMapDefinition
+                    <map:MapNavigatorViewer.MapDefinition>
+                        <!-- Будет заменено привязкой с конвертером. -->
+                        <map:WmtsMapDefinition
                             Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
                             LayerIdentifier="world_web_merkator"
                             StyleIdentifier="DefaultStyle"
                             TileMatrixSetIdentifier="world_web_merkator_set"
                             EpsgDataProvider="{StaticResource EpsgDataProvider}" />
-                </map:MapNavigatorViewer.MapDefinition>
-            </map:MapNavigatorViewer>
+                    </map:MapNavigatorViewer.MapDefinition>
+                </map:MapNavigatorViewer>
+            </StackPanel>
         </Border>
-        
-        
     </Grid>
 
     <dxmvvm:Interaction.Behaviors>

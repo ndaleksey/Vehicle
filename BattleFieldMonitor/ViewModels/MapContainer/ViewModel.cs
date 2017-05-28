@@ -245,7 +245,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             if (_selectedObject is ObstacleModel)
             {
                 var selectedObstacle = _selectedObject as ObstacleModel;
-                Obstacles.Remove(selectedObstacle); //TODO: Здесь может возникать исключение "Индекс находится за пределами диапазона", когда количество элементов в коллекции - 0, а мы пытаемся удалить
+                Obstacles.Remove(selectedObstacle); //TODO: Здесь может возникать исключение "Индекс находится за пределами диапазона", когда количество элементов в коллекции - 0, а мы пытаемся удалить. Оно возникает после того, как мы нажимаеем "Завершить редактирование", а затем снова - "Удалить"
             }
 
             if (_selectedObject is RouteModel)
