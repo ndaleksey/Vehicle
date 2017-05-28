@@ -28,16 +28,16 @@ namespace Swsu.BattleFieldMonitor.Views
             var polygonShape = sender as PolygonShape;
             if (polygonShape != null)
             {
-            	var obstacle = polygonShape.DataContext as Obstacle;
+            	var obstacle = polygonShape.DataContext as ObstacleModel;
                 ((ViewModel) DataContext).SelectedObject = obstacle;
             }
 
             var compositeShape = sender as CompositeShape;
             if (compositeShape != null)
             {
-                if (compositeShape.DataContext is UnmannedVehicle)
+                if (compositeShape.DataContext is UnmannedVehicleModel)
                 {
-                    var vehicle = (UnmannedVehicle) compositeShape.DataContext;
+                    var vehicle = (UnmannedVehicleModel) compositeShape.DataContext;
                     ((ViewModel)DataContext).SelectedObject = vehicle;
                 }
 
@@ -51,7 +51,7 @@ namespace Swsu.BattleFieldMonitor.Views
             var geographicPointShape = sender as GeographicPointShape;
             if (geographicPointShape != null)
             {
-                var beacon = geographicPointShape.DataContext as Beacon;
+                var beacon = geographicPointShape.DataContext as BeaconModel;
                 ((ViewModel)DataContext).SelectedObject = beacon;
             }
         }
