@@ -82,6 +82,10 @@
       <HintPath>..\packages\Swsu.Geo.Epsg.1.0.0-alpha\lib\net45\Swsu.Geo.Epsg.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Swsu.Geo.SimpleFeatures, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Geo.SimpleFeatures.1.0.0-alpha\lib\net45\Swsu.Geo.SimpleFeatures.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Swsu.Maps.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Maps.Windows.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.dll</HintPath>
       <Private>True</Private>
