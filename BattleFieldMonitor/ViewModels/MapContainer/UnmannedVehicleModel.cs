@@ -14,6 +14,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private string _calloutText;
         private bool _isTracked;
         private ViewModel _parentViewModel;
+        private bool _showCallout;
         private double _speed;
 
         #endregion
@@ -54,6 +55,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         {
             get { return _parentViewModel; }
             set { SetProperty(ref _parentViewModel, value, nameof(ParentViewModel), UpdateTracking); }
+        }
+
+        /// <summary>
+        /// Признак, определяющий, показывать ли выноску
+        /// </summary>
+        public bool ShowCallout
+        {
+            get { return _showCallout; }
+            set { SetProperty(ref _showCallout, value, nameof(ShowCallout)); }
         }
 
         /// <summary>

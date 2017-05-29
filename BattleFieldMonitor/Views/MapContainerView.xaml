@@ -434,7 +434,7 @@
                             </map:CompositeShape>
 
                             <!--Выноска-->
-                            <map:CompositeShape>
+                            <map:CompositeShape IsVisible="{Binding ShowCallout}">
                                 <!--Чёрный прямоугольник-->
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>

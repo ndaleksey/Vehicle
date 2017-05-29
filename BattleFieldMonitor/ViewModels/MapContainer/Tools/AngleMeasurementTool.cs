@@ -22,6 +22,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
         private bool _mouseButtonPressed;
         protected VehicleContainerGenerator _vehiclesContainerGenerator;
         private bool _isMeasured;
+        private double _radius = 100.0;
         private GeographicLocation _startPoint;
         private GeographicLocation _endPoint;
 
@@ -88,26 +89,58 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            //TODO: При включении инструмента центрирования всё съезжает
             base.OnRender(drawingContext);
             drawingContext.DrawRectangle(Brushes.Transparent, null, new Rect(RenderSize));
 
-            foreach (var vehicleContainer in VehicleContainers)
-            {
-                
-            }
+            var vehicleContainer = VehicleContainers[0];
 
+            // Вытаскиваем широту, долготу и азимут объекта
+            var latitude = vehicleContainer.Latitude;
+            var longitude = vehicleContainer.Longitude;
+            var vehicleAzimuth = vehicleContainer.Azimuth;
+
+            // Вычисляем начальную и конечную точки вектора, направленнного по ходу движения РТК
+            var point0 = Viewer.GeographicLocationToPosition(latitude, longitude, AngleUnit.Degree);
+
+            // Рисуем эту линию
+            Pen linePen = new Pen(Brushes.Black, 1);
+
+            var point1 = new Point(point0.X, point0.Y - _radius);
+            
             if (_isMeasured)
             {
-                Pen pen = new Pen(Brushes.White, 2);
-                Pen linePen = new Pen(Brushes.Black, 2);
+                Pen pen = new Pen(Brushes.White, 1);
 
-                // Рисуем линию и два маркера
+                // Находим новый радиус полупрозрачного круга
+                _radius = Math.Sqrt(
+                    Math.Pow(_startMousePosition.X - _endMousePosition.X, 2) +
+                    Math.Pow(_startMousePosition.Y - _endMousePosition.Y, 2));
+
+                // Рисуем полупрозрачный круг
+                var ellipseBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.1 };
+                drawingContext.DrawEllipse(ellipseBrush, null, point0, _radius, _radius);
+
+                var lineGeometry = new LineGeometry(point0, point1)
+                {
+                    Transform = new RotateTransform(vehicleAzimuth, point0.X, point0.Y)
+                };
+                drawingContext.DrawGeometry(Brushes.Black, linePen, lineGeometry);
+
+                // Рисуем линию и маркер
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
 
-                drawingContext.DrawEllipse(Brushes.Red, pen, _startMousePosition, 15, 15);
-                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 15, 15);
+                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 10, 10);
 
-                // Находим расстояние между точками
+                //var streamGeometry = new StreamGeometry();
+                //using (var context = streamGeometry.Open())
+                //{
+                //    context.BeginFigure(_endMousePosition, false, false);
+                //    context.ArcTo(point1, new Size(_radius / 2, _radius / 2), 0, true, SweepDirection.Clockwise, true, true);
+                //}
+                //drawingContext.DrawGeometry(null, linePen, streamGeometry);
+
+                // Находим угол от РТК до географической точки
                 var sphere = new Sphere(6378136);
                 var solution = sphere.SolveInverseGeodeticProblem(
                     _startPoint.Latitude.Degrees,
@@ -115,40 +148,42 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                     _endPoint.Latitude.Degrees,
                     _endPoint.Longitude.Degrees);
 
-                var distance = solution.Distance;
+                var userAzimuth = solution.Azimuth2;
+
+                // Находим разницу между азимутами 
+                var resultAngle = userAzimuth - vehicleAzimuth;
 
                 // Рисуем текст
-                var textAngle = Math.Atan2(
-                    _endMousePosition.Y - _startMousePosition.Y,
-                    _endMousePosition.X - _startMousePosition.X) * 180 / Math.PI;
+                var textAngle = vehicleAzimuth + resultAngle/2.0;
 
                 var textPosition = new Point(
-                    (_startMousePosition.X + _endMousePosition.X) / 2,
-                    (_startMousePosition.Y + _endMousePosition.Y) / 2);
+                    _startMousePosition.X,
+                    _startMousePosition.Y);
 
                 var transformGroup = new TransformGroup();
 
-                var translateTransform = new TranslateTransform(0, -20);
-                var rotateTransform = new RotateTransform(textAngle, textPosition.X, textPosition.Y);
+                var translateTransform = new TranslateTransform(0, -_radius / 2.0 - 12.0);
+                var rotateTransform = new RotateTransform(textAngle, point0.X, point0.Y);
 
-                if (!(textAngle >= -90 && textAngle < 90))
+                if (resultAngle < -180)
                 {
-                    rotateTransform = new RotateTransform(textAngle + 180, textPosition.X, textPosition.Y);
+                    rotateTransform = new RotateTransform(textAngle + 180, point0.X, point0.Y);
                 }
 
                 transformGroup.Children.Add(translateTransform);
                 transformGroup.Children.Add(rotateTransform);
 
                 var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
-                var distanceString = (distance / 1000).ToString("0.00", CultureInfo.InvariantCulture) + " км.";
+                var angleString = resultAngle.ToString("0.00", CultureInfo.InvariantCulture) + "°";
 
-                var formattedText = new FormattedText(distanceString, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
+                var formattedText = new FormattedText(angleString, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
                 formattedText.TextAlignment = TextAlignment.Center;
 
                 drawingContext.PushTransform(transformGroup);
                 drawingContext.DrawText(formattedText, textPosition);
-                //drawingContext.Pop();
             }
+
+            
             //TODO: Как удалить фигуры при повторном включении инструмента
         }
 
@@ -157,14 +192,19 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
             base.OnMouseDown(e);
             e.Handled = true;
 
-            _endMousePosition = new Point(Double.NaN, Double.NaN);
+            _endMousePosition = e.GetPosition(this);
 
             _mouseButtonPressed = true;
             _isMeasured = true;
 
-            _startMousePosition = e.GetPosition(this);
+            var vehicleContainer = VehicleContainers[0];
+
+            // Вытаскиваем широту, долготу и азимут объекта
+            var latitude = vehicleContainer.Latitude;
+            var longitude = vehicleContainer.Longitude;
+
+            _startMousePosition = Viewer.GeographicLocationToPosition(latitude, longitude, AngleUnit.Degree);
             _startPoint = Viewer.PositionToGeographicLocation(_startMousePosition);
-            var selectedItems = Viewer.LayerContainers[0].SelectedItems;
             
             InvalidateVisual();
         }
