@@ -465,6 +465,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         }
 
         /// <summary>
+        /// Переключиться на инструмент измерения углов
+        /// </summary>
+        public void SwitchToAngleMeasurementTool()
+        {
+            MapToolMode = MapToolMode.AngleMeasurement;
+        }
+
+        /// <summary>
         /// Переключиться на инструмент добавления маяков
         /// </summary>
         public void SwitchToBeaconDrawingTool()

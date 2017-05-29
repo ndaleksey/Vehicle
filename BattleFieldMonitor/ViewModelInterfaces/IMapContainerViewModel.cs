@@ -31,6 +31,11 @@
         void SetCenteringMode(bool value);
 
         /// <summary>
+        /// Переключиться на инструмент измерения углов
+        /// </summary>
+        void SwitchToAngleMeasurementTool();
+
+        /// <summary>
         /// Переключиться на инструмент добавления маяков
         /// </summary>
         void SwitchToBeaconDrawingTool();

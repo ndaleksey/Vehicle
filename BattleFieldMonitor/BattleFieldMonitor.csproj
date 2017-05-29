@@ -149,6 +149,7 @@
     <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
     <Compile Include="ViewModels\MapContainer\BeaconModel.cs" />
     <Compile Include="ViewModels\MapContainer\Coord.cs" />
+    <Compile Include="ViewModels\MapContainer\Tools\AngleMeasurementTool.cs" />
     <Compile Include="ViewModels\MapContainer\Tools\DistanceMeasurementTool.cs" />
     <Compile Include="ViewModels\MapContainer\IMapViewerService1.cs" />
     <Compile Include="ViewModels\MapContainer\MapObjectModel.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="ViewModels\MapContainer\RectangularRangeExtensions.cs" />
     <Compile Include="ViewModels\MapContainer\RouteModel.cs" />
     <Compile Include="ViewModels\MapContainer\UnmannedVehicleModel.cs" />
+    <Compile Include="ViewModels\MapContainer\VehicleContainer.cs" />
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">
       <DependentUpon>MapContainerView.xaml</DependentUpon>

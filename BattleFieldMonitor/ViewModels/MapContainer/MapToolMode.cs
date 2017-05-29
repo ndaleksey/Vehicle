@@ -50,6 +50,11 @@
         /// <summary>
         /// Измерение расстояний
         /// </summary>
-	    DistanceMeasurement
+	    DistanceMeasurement,
+
+        /// <summary>
+        /// Измерение углов
+        /// </summary>
+        AngleMeasurement
     }
 }
