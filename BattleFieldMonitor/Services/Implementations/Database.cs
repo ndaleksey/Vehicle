@@ -20,7 +20,9 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             _unmannedVehicles = new UnmannedVehiclesImpl(this);
 
             SynchronizationContext = SynchronizationContext.Current;
-            new Thread(LoadObjectsAndWaitForChanges).Start();
+            var thread = new Thread(LoadObjectsAndWaitForChanges);
+            thread.IsBackground = true; 
+            thread.Start();
         }
         #endregion
 
