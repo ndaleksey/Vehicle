@@ -225,10 +225,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 };
                 drawingContext.DrawGeometry(Brushes.Black, linePen, lineGeometry);
 
-                // Рисуем линию и маркер
+                // Рисуем линию
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
-
-                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
             }
 
             
