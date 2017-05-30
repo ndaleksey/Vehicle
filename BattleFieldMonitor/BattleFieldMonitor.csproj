@@ -137,12 +137,14 @@
     <Compile Include="Services\Implementations\Database.cs" />
     <Compile Include="Services\Implementations\DbCommandExtensions.cs" />
     <Compile Include="Services\Implementations\DbConnectionExtensions.cs" />
+    <Compile Include="Services\Implementations\Helpers.cs" />
     <Compile Include="Services\Implementations\IdentifiableObject.cs" />
     <Compile Include="Services\Implementations\IdentifiableObjectCollection.cs" />
     <Compile Include="Services\Implementations\Notifications\Notification.cs" />
     <Compile Include="Services\Implementations\Notifications\Operation.cs" />
     <Compile Include="Services\Implementations\Notifications\PrimaryKey.cs" />
     <Compile Include="Services\Implementations\Repository.cs" />
+    <Compile Include="Services\Implementations\RepositoryDelta.cs" />
     <Compile Include="Services\Implementations\UnmannedVehicle.cs" />
     <Compile Include="Services\Implementations\UnmannedVehicleState.cs" />
     <Compile Include="Services\IRepository.cs" />

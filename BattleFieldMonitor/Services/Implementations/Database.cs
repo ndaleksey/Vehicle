@@ -4,7 +4,6 @@ using Swsu.BattleFieldMonitor.Services.Implementations.Notifications;
 using Swsu.Geo;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
@@ -19,13 +18,13 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         #endregion
 
         #region Fields
-        private readonly Repository<IUnmannedVehicle> _unmannedVehicles;
+        private readonly UnmannedVehicleRepository _unmannedVehicles;
         #endregion
 
         #region Constructors
         public Database()
         {
-            _unmannedVehicles = new Repository<IUnmannedVehicle>(SynchronizationContext.Current);
+            _unmannedVehicles = new UnmannedVehicleRepository();
 
             var thread = new Thread(LoadObjectsAndWaitForChanges);
             thread.IsBackground = true;
@@ -37,6 +36,17 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         public IRepository<IUnmannedVehicle> UnmannedVehicles
         {
             get { return _unmannedVehicles; }
+        }
+
+        private IEnumerable<Repository> Repositories
+        {
+            get
+            {
+                yield return _unmannedVehicles;
+                // yield return _beacons;
+                // yield return _obstacles;
+                // ...
+            }
         }
         #endregion
 
@@ -59,9 +69,12 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             {
                 connection.Open();
 
-                LoadUnmannedVehicles(connection);
-                connection.Listen(ChannelName);
+                foreach (var r in Repositories)
+                {
+                    r.Reload(connection);
+                }
 
+                connection.Listen(ChannelName);
                 connection.Notification += OnNotification;
 
                 for (;;)
@@ -69,39 +82,16 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                     // ожидаем извещений...
                     connection.Wait();
 
-                    while (_unmannedVehicles.UpdatedObjectIds.Count > 0)
+                    while (Repositories.Any(r => r.HasDelta))
                     {
-                        var ids = _unmannedVehicles.UpdatedObjectIds.ToArray();
-                        _unmannedVehicles.UpdatedObjectIds.Clear();
-                        ReloadUnmannedVehicles(connection, ids);
+                        foreach (var r in Repositories)
+                        {
+                            if (r.HasDelta)
+                            {
+                                r.LoadDelta(connection);
+                            }
+                        }
                     }
-                }
-            }
-        }
-
-        private void LoadUnmannedVehicles(DbConnection connection)
-        {
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle";
-
-                using (var reader = command.ExecuteReader())
-                {
-                    var objects = new List<UnmannedVehicle>();
-
-                    while (reader.Read())
-                    {
-                        var id = reader.GetGuid(0);
-                        var displayName = reader.GetString(1);
-                        var x = reader.GetDouble(2);
-                        var y = reader.GetDouble(3);
-                        var heading = reader.GetDouble(4);
-                        var speed = reader.GetDouble(5);
-                        var location = new GeographicCoordinates(y, x);
-                        objects.Add(new UnmannedVehicle(id, displayName, location, heading, speed));
-                    }
-
-                    _unmannedVehicles.Add(objects);
                 }
             }
         }
@@ -124,37 +114,141 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 return;
             }
 
-            repository.OnNotification(notification.Operation, notification.Old, notification.New);
-        }
+            repository.ProcessNotification(notification.Operation, notification.Old, notification.New);
+        }        
+        #endregion
 
-        private void ReloadUnmannedVehicles(DbConnection connection, Guid[] ids)
+        #region Nested Types
+        private class UnmannedVehicleRepository : Repository<UnmannedVehicle, IUnmannedVehicle>
         {
-            using (var command = connection.CreateCommand())
+            #region Methods
+            protected override RepositoryDelta<UnmannedVehicle> CreateDelta()
             {
-                command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle WHERE id = ANY(@ids::uuid[])";
-                command.AddParameter("ids").Value = ids;
+                return new UnmannedVehicleRepositoryDelta();
+            }
 
-                using (var reader = command.ExecuteReader())
+            protected internal override void Reload(DbConnection connection)
+            {
+                // TODO: place it into a some kind of data access layer...
+                using (var command = connection.CreateCommand())
                 {
-                    var objects = new List<UnmannedVehicle>();
+                    command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle";
 
-                    while (reader.Read())
+                    using (var reader = command.ExecuteReader())
                     {
-                        /*
-                        var id = reader.GetGuid(0);
-                        var displayName = reader.GetString(1);
-                        var x = reader.GetDouble(2);
-                        var y = reader.GetDouble(3);
-                        var heading = reader.GetDouble(4);
-                        var speed = reader.GetDouble(5);
-                        var location = new GeographicCoordinates(y, x);
-                        objects.Add(new UnmannedVehicle(id, displayName, location, heading, speed));
-                        */
+                        var objects = new List<UnmannedVehicle>();
 
-                        Trace.TraceInformation("***");
+                        while (reader.Read())
+                        {
+                            var id = reader.GetGuid(0);
+                            var displayName = reader.GetString(1);
+                            var x = reader.GetDouble(2);
+                            var y = reader.GetDouble(3);
+                            var heading = reader.GetDouble(4);
+                            var speed = reader.GetDouble(5);
+                            var location = new GeographicCoordinates(y, x);
+                            objects.Add(new UnmannedVehicle(id, displayName, location, heading, speed));
+                        }
+
+                        Add(objects);
                     }
                 }
             }
+            #endregion
+        }
+
+        private class UnmannedVehicleRepositoryDelta : RepositoryDelta<UnmannedVehicle>
+        {
+            #region Methods
+            protected internal override void LoadDelta(DbConnection connection, IReadOnlyDictionary<Guid, UnmannedVehicle> objectById, SynchronizationContext synchronizationContext)
+            {
+                // TODO: place it into a some kind of data access layer...
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle WHERE id = ANY(@ids::uuid[])";
+                    // Поддерживается только обновление.
+                    command.AddParameter("ids").Value = UpdatedObjectIds.ToArray();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var records = new List<UpdateRecord>();
+
+                        while (reader.Read())
+                        {
+                            var id = reader.GetGuid(0);
+                            var displayName = reader.GetString(1);
+                            var x = reader.GetDouble(2);
+                            var y = reader.GetDouble(3);
+                            var heading = reader.GetDouble(4);
+                            var speed = reader.GetDouble(5);
+                            var location = new GeographicCoordinates(y, x);
+
+                            UnmannedVehicle obj;
+
+                            if (objectById.TryGetValue(id, out obj))
+                            {
+                                records.Add(new UpdateRecord(obj, displayName, location, heading, speed));
+                            }
+                        }
+
+                        synchronizationContext.Post(Update, records);
+                    }
+                }
+            }
+
+            private void Update(object o)
+            {
+                var records = (IEnumerable<UpdateRecord>)o;
+
+                foreach (var r in records)
+                {
+                    r.Target.Set(r.DisplayName, r.Location, r.Heading, r.Speed);
+                }
+            }
+            #endregion
+
+            #region Nested Types
+            private struct UpdateRecord
+            {
+                #region Constructors
+                public UpdateRecord(UnmannedVehicle target, string displayName, GeographicCoordinates location, double heading, double speed)
+                {
+                    Target = target;
+                    DisplayName = displayName;
+                    Location = location;
+                    Heading = heading;
+                    Speed = speed;
+                }
+                #endregion
+
+                #region Properties
+                public string DisplayName
+                {
+                    get;
+                }
+
+                public GeographicCoordinates Location
+                {
+                    get;
+                }
+
+                public double Heading
+                {
+                    get;
+                }
+
+                public double Speed
+                {
+                    get;
+                }
+
+                public UnmannedVehicle Target
+                {
+                    get;
+                }
+                #endregion
+            }
+            #endregion
         }
         #endregion
     }

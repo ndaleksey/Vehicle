@@ -19,21 +19,41 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         public string DisplayName
         {
             get;
+            private set;
         }
 
         public double Heading
         {
             get;
+            private set;
         }
 
         public GeographicCoordinates Location
         {
             get;
+            private set;
         }
 
         public double Speed
         {
             get;
+            private set;
+        }
+        #endregion
+
+        #region Methods
+        protected virtual void OnChanged(EventArgs e)
+        {
+            Changed?.Invoke(this, e);
+        }
+
+        internal void Set(string displayName, GeographicCoordinates location, double heading, double speed)
+        {
+            DisplayName = displayName;
+            Location = location;
+            Heading = heading;
+            Speed = speed;
+            OnChanged(EventArgs.Empty);
         }
         #endregion
 

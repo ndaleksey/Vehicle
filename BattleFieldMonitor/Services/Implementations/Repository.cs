@@ -1,126 +1,125 @@
 ﻿using Swsu.BattleFieldMonitor.Services.Implementations.Notifications;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Threading;
 
 namespace Swsu.BattleFieldMonitor.Services.Implementations
 {
-    internal class Repository
+    internal abstract class Repository
     {
         #region Constructors
-        public Repository(SynchronizationContext synchronizationContext)
+        public Repository()
         {
-            SynchronizationContext = synchronizationContext;
-            UpdatedObjectIds = new HashSet<Guid>();
+            SynchronizationContext = SynchronizationContext.Current;
         }
         #endregion
 
-        #region Properties
-        public ISet<Guid> UpdatedObjectIds
-        {
-            get;
-        }
-
+        #region Properties      
         protected SynchronizationContext SynchronizationContext
         {
             get;
         }
+
+        protected abstract RepositoryDelta BaseDelta
+        {
+            get;
+        }
+
+        internal bool HasDelta
+        {
+            get { return BaseDelta != null; }
+        }
         #endregion
 
         #region Methods
-        internal void OnNotification(Operation operation, PrimaryKey oldKey, PrimaryKey newKey)
+        protected abstract void EnsureDeltaCreated();
+
+        protected internal abstract void LoadDelta(DbConnection connection);
+
+        protected internal abstract void Reload(DbConnection connection);
+
+        internal void ProcessNotification(Operation operation, PrimaryKey oldKey, PrimaryKey newKey)
         {
-            switch (operation)
-            {
-                case Operation.Insert:
-                    if (newKey == null)
-                    {
-                        // TODO: Issue some warning...
-                        return;
-                    }
-
-                    OnNotificationInsert(newKey.Id);
-                    break;
-
-                case Operation.Update:
-                    if (oldKey == null || newKey == null)
-                    {
-                        // TODO: Issue some warning...
-                        return;
-                    }
-
-                    OnNotificationUpdate(oldKey.Id, newKey.Id);
-                    break;
-
-                case Operation.Delete:
-                    if (oldKey == null)
-                    {
-                        // TODO: Issue some warning...
-                        return;
-                    }
-
-                    OnNotificationDelete(oldKey.Id);
-                    break;
-            }
-        }
-
-        private void OnNotificationDelete(Guid id)
-        {
-            Trace.TraceInformation("Object deleted.");
-        }
-
-        private void OnNotificationInsert(Guid id)
-        {
-            Trace.TraceInformation("Object inserted.");
-        }
-
-        private void OnNotificationUpdate(Guid oldId, Guid newId)
-        {
-            Trace.TraceInformation("Object updated.");
-
-            if (newId == oldId)
-            {
-                UpdatedObjectIds.Add(newId);
-            }
+            EnsureDeltaCreated();
+            BaseDelta.ProcessNotification(operation, oldKey, newKey);
         }
         #endregion
     }
 
-    internal class Repository<T> : Repository, IRepository<T>
-        where T : IIdentifiableObject
+    internal abstract class Repository<T, TI> : Repository, IRepository<TI>
+        where T : IdentifiableObject, TI
+        where TI : IIdentifiableObject
     {
         #region Fields
+        private RepositoryDelta<T> _delta;
+
+        // Только для обращения из рабочей нити.
+        private readonly Dictionary<Guid, T> _objectById = new Dictionary<Guid, T>();
+
+        // Только для обращения из нити пользовательского интерфейса.
         private readonly IdentifiableObjectCollection<T> _objects = new IdentifiableObjectCollection<T>();
         #endregion
 
         #region Constructors
-        public Repository(SynchronizationContext synchronizationContext) : base(synchronizationContext)
+        public Repository()
         {
         }
         #endregion
 
         #region Properites
-        public IReadOnlyCollection<T> Objects
+        public IReadOnlyCollection<TI> Objects
         {
             get { return _objects; }
+        }
+
+        protected override sealed RepositoryDelta BaseDelta
+        {
+            get { return _delta; }
         }
         #endregion
 
         #region Methods
-        protected virtual void OnObjectsAdded(ObjectsAddedEventArgs<T> e)
+        protected void Add(IReadOnlyCollection<T> objects)
+        {
+            foreach (var o in objects)
+            {
+                _objectById.Add(o.Id, o);
+            }
+
+            SynchronizationContext.Send(AddCallback, objects);
+        }
+
+        protected abstract RepositoryDelta<T> CreateDelta();
+
+        protected override sealed void EnsureDeltaCreated()
+        {
+            if (_delta == null)
+            {
+                _delta = CreateDelta();
+            }
+        }
+
+        protected internal override sealed void LoadDelta(DbConnection connection)
+        {
+            Debug.Assert(_delta != null);
+
+            // Дельта не должна изменяться после начала загрузки,
+            // поэтому сбрасываем текущую дельту, чтобы извещения,
+            // приходящие во время загрузки ранее сформированной дельты,
+            // приводили бы к созданию новой дельты.
+            Helpers.Exchange(ref _delta, null).LoadDelta(connection, _objectById, SynchronizationContext);
+        }
+
+        protected virtual void OnObjectsAdded(ObjectsAddedEventArgs<TI> e)
         {
             ObjectsAdded?.Invoke(this, e);
         }
 
-        protected virtual void OnObjectsRemoved(ObjectsRemovedEventArgs<T> e)
+        protected virtual void OnObjectsRemoved(ObjectsRemovedEventArgs<TI> e)
         {
             ObjectsRemoved?.Invoke(this, e);
-        }
-
-        internal void Add(IReadOnlyCollection<T> objects)
-        {
-            SynchronizationContext.Send(AddCallback, objects);
         }
 
         private void AddCallback(object state)
@@ -132,14 +131,14 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 _objects.Add(o);
             }
 
-            OnObjectsAdded(new ObjectsAddedEventArgs<T>(objects, ObjectsAdditionReason.Loaded));
+            OnObjectsAdded(new ObjectsAddedEventArgs<TI>(objects, ObjectsAdditionReason.Loaded));
         }
         #endregion
 
         #region Events
-        public event EventHandler<ObjectsAddedEventArgs<T>> ObjectsAdded;
+        public event EventHandler<ObjectsAddedEventArgs<TI>> ObjectsAdded;
 
-        public event EventHandler<ObjectsRemovedEventArgs<T>> ObjectsRemoved;
+        public event EventHandler<ObjectsRemovedEventArgs<TI>> ObjectsRemoved;
         #endregion
     }
 }
