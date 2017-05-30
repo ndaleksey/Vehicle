@@ -145,47 +145,18 @@
 
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.DistanceMeasurement}}">
                 <tools:DistanceMeasurementTool/>
+            </map:ToolTemplate>
 
-                <!--<map:MeasurementTool>
-                    <map:MeasurementTool.HandleStyle>
-                        <Style TargetType="map:MeasurementToolHandle">
-                            <Setter Property="Marker">
-                                <Setter.Value>
-                                    <map:GeometryMarker Brush="Red">
-                                        <map:GeometryMarker.Pen>
-                                            <Pen Brush="White" Thickness="2"/>
-                                        </map:GeometryMarker.Pen>
-
-                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
-                                    </map:GeometryMarker>
-                                </Setter.Value>
-                            </Setter>
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.AngleMeasurement}}">
+                <tools:AngleMeasurementTool VehiclesSource="{Binding UnmannedVehicles}">
+                    <tools:AngleMeasurementTool.VehicleContainerStyle>
+                        <Style TargetType="viewModels:VehicleContainer">
+                            <Setter Property="Latitude" Value="{Binding Latitude}"/>
+                            <Setter Property="Longitude" Value="{Binding Longitude}"/>
+                            <Setter Property="Azimuth" Value="{Binding Azimuth}"/>
                         </Style>
-                    </map:MeasurementTool.HandleStyle>
-                    
-                    <map:MeasurementTool.Stroke>
-                        <map:PenStroke>
-                            --><!--<Pen Thickness="30">
-                                <Pen.Brush>
-                                    <VisualBrush Stretch="None">
-                                        <VisualBrush.Visual>
-                                            <TextBlock Text="{Binding (map:)}"></TextBlock>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Pen.Brush>
-                            </Pen>--><!--
-                            
-                            <Pen Brush="Black" Thickness="1"/>
-                        </map:PenStroke>
-                    </map:MeasurementTool.Stroke>
-
-                    <dxmvvm:Interaction.Behaviors>
-                        <dxmvvm:EventToCommand
-                            Command="{Binding OnMeasuredCommand}"
-                            Event="{x:Static map:MeasurementTool.Event}"
-                            EventArgsConverter="{StaticResource ResourceKey=MeasuredEventArgsConverter}"/>
-                    </dxmvvm:Interaction.Behaviors>
-                </map:MeasurementTool>-->
+                    </tools:AngleMeasurementTool.VehicleContainerStyle>
+                </tools:AngleMeasurementTool>
             </map:ToolTemplate>
         </ResourceDictionary>
 	</UserControl.Resources>
@@ -463,7 +434,7 @@
                             </map:CompositeShape>
 
                             <!--Выноска-->
-                            <map:CompositeShape>
+                            <map:CompositeShape IsVisible="{Binding ShowCallout}">
                                 <!--Чёрный прямоугольник-->
                                 <map:GeographicPointShape Latitude="{Binding Latitude}" Longitude="{Binding Longitude}">
                                     <map:MarkerPointSymbol>

@@ -82,6 +82,11 @@
                         IsChecked="{Binding Path=SwitchToDistanceMeasurementToolButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <ToggleButton 
+                        Content="Измерение углов" 
+                        Command="{Binding SwitchToAngleMeasurementToolCommand}"
+                        IsChecked="{Binding Path=SwitchToAngleMeasurementToolButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
                         Content="Центрирование" 
                         IsChecked="{Binding Path=IsCenteringModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 

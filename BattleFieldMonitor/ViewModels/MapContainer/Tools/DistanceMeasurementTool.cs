@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Swsu.Geo;
@@ -33,14 +31,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
             if (_isMeasured)
             {
-                Pen pen = new Pen(Brushes.White, 2);
-                Pen linePen = new Pen(Brushes.Black, 2);
+                Pen pen = new Pen(Brushes.White, 1);
+                Pen linePen = new Pen(Brushes.Black, 1);
 
                 // Рисуем линию и два маркера
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
 
-                drawingContext.DrawEllipse(Brushes.Red, pen, _startMousePosition, 15, 15);
-                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 15, 15);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _startMousePosition, 10, 10);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
 
                 // Находим расстояние между точками
                 var sphere = new Sphere(6378136);

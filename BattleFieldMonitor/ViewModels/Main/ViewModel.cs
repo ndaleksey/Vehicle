@@ -20,6 +20,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         private IMapContainerViewModel _mapContainer;
         private bool _isMiniMapEnabled;
         private bool _isCenteringModeEnabled;
+        private bool _switchToAngleMeasurementToolButtonChecked;
         private bool _switchToBeaconDtButtonChecked;
         private bool _switchToDistanceMeasurementToolButtonChecked;
         private bool _switchToPointDtButtonChecked;
@@ -52,6 +53,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         {
             get { return _isMiniMapEnabled; }
             set { SetProperty(ref _isMiniMapEnabled, value, nameof(IsMiniMapEnabled), OnIsMiniMapEnabledChanged); }
+        }
+
+        /// <summary>
+        /// Зажата кнопка "Измерение углов"
+        /// </summary>
+        public bool SwitchToAngleMeasurementToolButtonChecked
+        {
+            get { return _switchToAngleMeasurementToolButtonChecked; }
+            set
+            {
+                SetProperty(
+                    ref _switchToAngleMeasurementToolButtonChecked,
+                    value,
+                    nameof(SwitchToAngleMeasurementToolButtonChecked));
+            }
         }
 
         /// <summary>
@@ -171,6 +187,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         public DelegateCommand SwitchToQuickLsdtCommand { get; }
 
         /// <summary>
+        /// Команда переключения на режим измерения углов
+        /// </summary>
+        public DelegateCommand SwitchToAngleMeasurementToolCommand { get; }
+
+        /// <summary>
         /// Команда переключения на режим добавления маяков
         /// </summary>
         public DelegateCommand SwitchToBeaconDtCommand { get; }
@@ -198,6 +219,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
             SwitchToRouteDtCommand = new DelegateCommand(SwitchToRouteDt);
             SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
             SwitchToBeaconDtCommand = new DelegateCommand(SwitchToBeaconDt);
+            SwitchToAngleMeasurementToolCommand = new DelegateCommand(SwitchToAngleMeasurementTool);
             SwitchToDistanceMeasurementToolCommand = new DelegateCommand(SwitchToDistanceMeasurementTool);
 
             //			ScaleDenominator = 1e7;
@@ -234,7 +256,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         {
             if (_mapContainer != null)
             {
-                _mapContainer.SetMiniMap(newValue);
+                _mapContainer?.SetMiniMap(newValue);
             }
         }
 
@@ -272,6 +294,27 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         }
 
         /// <summary>
+        /// Переключиться на режим измерения углов
+        /// </summary>
+        private void SwitchToAngleMeasurementTool()
+        {
+            if (SwitchToAngleMeasurementToolButtonChecked)
+            {
+                SwitchToPointDtButtonChecked = false;
+                SwitchToPreciseLsdtButtonChecked = false;
+                SwitchToQuickLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
+                SwitchToBeaconDtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToAngleMeasurementTool();
+            }
+            else
+            {
+                _mapContainer?.SwitchToSimpleSelectionTool();
+            }
+        }
+
+        /// <summary>
         /// Переключиться на инструмент добавления маяков
         /// </summary>
         private void SwitchToBeaconDt()
@@ -283,11 +326,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
-                _mapContainer.SwitchToBeaconDrawingTool();
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToBeaconDrawingTool();
             }
             else
             {
-                _mapContainer.SwitchToSimpleSelectionTool();
+                _mapContainer?.SwitchToSimpleSelectionTool();
             }
         }
 
@@ -303,11 +347,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToBeaconDtButtonChecked = false;
-                _mapContainer.SwitchToDistanceMeasurementTool();
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToDistanceMeasurementTool();
             }
             else
             {
-                _mapContainer.SwitchToSimpleSelectionTool();
+                _mapContainer?.SwitchToSimpleSelectionTool();
             }
         }
 
@@ -323,11 +368,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
-                _mapContainer.SwitchToPointDrawingTool();
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToPointDrawingTool();
             }
             else
             {
-                _mapContainer.SwitchToSimpleSelectionTool();
+                _mapContainer?.SwitchToSimpleSelectionTool();
             }
         }
 
@@ -343,11 +389,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
-                _mapContainer.SwitchToPreciseLineStringDrawingTool();
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToPreciseLineStringDrawingTool();
             }
             else
             {
-                _mapContainer.SwitchToSimpleSelectionTool();
+                _mapContainer?.SwitchToSimpleSelectionTool();
             }
         }
 
@@ -363,11 +410,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
-                _mapContainer.SwitchToRouteDrawingTool();
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToRouteDrawingTool();
             }
             else
             {
-                _mapContainer.SwitchToSimpleSelectionTool();
+                _mapContainer?.SwitchToSimpleSelectionTool();
             }
         }
 
@@ -383,11 +431,12 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToPreciseLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
-                _mapContainer.SwitchToQuickLineStringDrawingTool();
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToQuickLineStringDrawingTool();
             }
             else
             {
-                _mapContainer.SwitchToSimpleSelectionTool();
+                _mapContainer?.SwitchToSimpleSelectionTool();
             }
         }
 
