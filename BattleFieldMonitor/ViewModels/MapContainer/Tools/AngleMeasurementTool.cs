@@ -114,29 +114,18 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                     Math.Pow(_startMousePosition.X - _endMousePosition.X, 2) +
                     Math.Pow(_startMousePosition.Y - _endMousePosition.Y, 2));
 
-                var point1 = new Point(point0.X, point0.Y - _radius);
+                var point1X = _radius * Math.Cos(vehicleAzimuth * Math.PI / 180);
+                var point1Y = -_radius * Math.Sin(vehicleAzimuth * Math.PI / 180);
+
+                var point1 = new Point(point0.X + point1X, point0.Y + point1Y);
 
                 // Рисуем полупрозрачный круг
                 var ellipseBrush = new SolidColorBrush(Colors.Black) {Opacity = 0.1};
                 drawingContext.DrawEllipse(ellipseBrush, null, _startMousePosition, _radius, _radius);
 
-                var lineGeometry = new LineGeometry(point0, point1)
-                {
-                    Transform = new RotateTransform(vehicleAzimuth, point0.X, point0.Y)
-                };
+                // Рисуем линию в направлении движения РТК
+                var lineGeometry = new LineGeometry(point0, point1);
                 drawingContext.DrawGeometry(Brushes.Black, linePen, lineGeometry);
-
-                // Рисуем линию и маркер
-                drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
-                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
-
-                //var streamGeometry = new StreamGeometry();
-                //using (var context = streamGeometry.Open())
-                //{
-                //    context.BeginFigure(_endMousePosition, false, false);
-                //    context.ArcTo(point1, new Size(_radius / 2, _radius / 2), 0, true, SweepDirection.Clockwise, true, true);
-                //}
-                //drawingContext.DrawGeometry(null, linePen, streamGeometry);
 
                 // Находим угол от РТК до географической точки
                 var sphere = new Sphere(6378136);
@@ -150,11 +139,32 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
                 // Находим разницу между азимутами 
                 var resultAngle = userAzimuth - vehicleAzimuth;
-
+                
                 if (resultAngle < -180)
                 {
                     resultAngle += 360;
                 }
+
+                // Рисуем дугу, соединяющую отрезки
+                var streamGeometry = new StreamGeometry();
+
+                var sweepDirection = SweepDirection.Counterclockwise;
+
+                if (resultAngle < 0 || resultAngle > 180)
+                {
+                    sweepDirection = SweepDirection.Clockwise;
+                }
+
+                using (var context = streamGeometry.Open())
+                {
+                    context.BeginFigure(_endMousePosition, false, false);
+                    context.ArcTo(point1, new Size(_radius, _radius), 0, false, sweepDirection, true, true);
+                }
+                drawingContext.DrawGeometry(null, linePen, streamGeometry);
+
+                // Рисуем линию и маркер
+                drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
 
                 // Рисуем текст
                 var textAngle = vehicleAzimuth + resultAngle/2.0;
@@ -204,11 +214,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 var ellipseBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.1 };
                 drawingContext.DrawEllipse(ellipseBrush, null, point0, _radius, _radius);
 
-                var point1 = new Point(point0.X, point0.Y - _radius);
+                var point1X = _radius * Math.Cos(vehicleAzimuth * Math.PI / 180);
+                var point1Y = -_radius * Math.Sin(vehicleAzimuth * Math.PI / 180);
 
+                var point1 = new Point(point0.X + point1X, point0.Y + point1Y);
+                
                 var lineGeometry = new LineGeometry(point0, point1)
                 {
-                    Transform = new RotateTransform(vehicleAzimuth, point0.X, point0.Y)
+                    //Transform = new RotateTransform(vehicleAzimuth, point0.X, point0.Y)
                 };
                 drawingContext.DrawGeometry(Brushes.Black, linePen, lineGeometry);
 

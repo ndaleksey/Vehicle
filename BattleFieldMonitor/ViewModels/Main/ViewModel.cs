@@ -305,6 +305,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToBeaconDtButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToAngleMeasurementTool();
             }
             else
