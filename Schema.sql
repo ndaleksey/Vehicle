@@ -116,3 +116,67 @@ ALTER TABLE unmanned_vehicle_message
   ADD FOREIGN KEY (unmanned_vehicle_id) REFERENCES unmanned_vehicle(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 CREATE INDEX unmanned_vehicle_message_received_at ON unmanned_vehicle_message (unmanned_vehicle_id, received_at);
+
+CREATE FUNCTION send_insert_notify() RETURNS TRIGGER AS
+$$
+DECLARE
+  info XML;
+BEGIN
+  info =
+    XMLELEMENT(NAME "notification", XMLATTRIBUTES(TG_OP as "op", TG_TABLE_NAME AS "table-name"),
+      XMLELEMENT(NAME "new", XMLATTRIBUTES(NEW.id AS "id")));
+
+  PERFORM pg_notify('nkb_vs', CAST(info AS TEXT));
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE FUNCTION send_update_notify() RETURNS TRIGGER AS
+$$
+DECLARE
+  info XML;
+BEGIN
+  info =
+    XMLELEMENT(NAME "notification", XMLATTRIBUTES(TG_OP as "op", TG_TABLE_NAME AS "table-name"),
+      XMLELEMENT(NAME "old", XMLATTRIBUTES(OLD.id AS "id")),
+      XMLELEMENT(NAME "new", XMLATTRIBUTES(NEW.id AS "id")));
+
+  PERFORM pg_notify('nkb_vs', CAST(info AS TEXT));
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE FUNCTION send_delete_notify() RETURNS TRIGGER AS
+$$
+DECLARE
+  info XML;
+BEGIN
+  info =
+    XMLELEMENT(NAME "notification", XMLATTRIBUTES(TG_OP as "op", TG_TABLE_NAME AS "table-name"),
+      XMLELEMENT(NAME "old", XMLATTRIBUTES(OLD.id AS "id")));
+
+  PERFORM pg_notify('nkb_vs', CAST(info AS TEXT));
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER unmanned_vehicle_ai AFTER INSERT
+ON unmanned_vehicle
+FOR EACH ROW
+EXECUTE PROCEDURE send_insert_notify();
+
+CREATE TRIGGER unmanned_vehicle_au AFTER UPDATE
+ON unmanned_vehicle
+FOR EACH ROW
+EXECUTE PROCEDURE send_update_notify();
+
+CREATE TRIGGER unmanned_vehicle_ad AFTER DELETE
+ON unmanned_vehicle
+FOR EACH ROW
+EXECUTE PROCEDURE send_delete_notify();
+
+INSERT INTO unmanned_vehicle(id, display_name, address, x, y, heading, speed, state_flags) VALUES
+  ('ff23b6ce-f2b7-4108-ad5a-039d4220ac7c', 'Танк №1', '123', 5, 65, 60, 3, 0);
