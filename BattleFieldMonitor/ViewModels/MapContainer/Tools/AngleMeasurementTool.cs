@@ -103,23 +103,22 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
             // Вычисляем начальную и конечную точки вектора, направленнного по ходу движения РТК
             var point0 = Viewer.GeographicLocationToPosition(latitude, longitude, AngleUnit.Degree);
 
-            // Рисуем эту линию
+            // Рисуем линию по ходу движения РТК
+            Pen pen = new Pen(Brushes.White, 1);
             Pen linePen = new Pen(Brushes.Black, 1);
-
-            var point1 = new Point(point0.X, point0.Y - _radius);
             
             if (_isMeasured)
             {
-                Pen pen = new Pen(Brushes.White, 1);
-
                 // Находим новый радиус полупрозрачного круга
                 _radius = Math.Sqrt(
                     Math.Pow(_startMousePosition.X - _endMousePosition.X, 2) +
                     Math.Pow(_startMousePosition.Y - _endMousePosition.Y, 2));
 
+                var point1 = new Point(point0.X, point0.Y - _radius);
+
                 // Рисуем полупрозрачный круг
-                var ellipseBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.1 };
-                drawingContext.DrawEllipse(ellipseBrush, null, point0, _radius, _radius);
+                var ellipseBrush = new SolidColorBrush(Colors.Black) {Opacity = 0.1};
+                drawingContext.DrawEllipse(ellipseBrush, null, _startMousePosition, _radius, _radius);
 
                 var lineGeometry = new LineGeometry(point0, point1)
                 {
@@ -129,7 +128,6 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
                 // Рисуем линию и маркер
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
-
                 drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 10, 10);
 
                 //var streamGeometry = new StreamGeometry();
@@ -162,25 +160,46 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
                 var transformGroup = new TransformGroup();
 
-                var translateTransform = new TranslateTransform(0, -_radius / 2.0 - 12.0);
-                var rotateTransform = new RotateTransform(textAngle, point0.X, point0.Y);
+                var translateTransform = new TranslateTransform(0, -_radius/2.0 - 12.0);
+                var rotateTransform = new RotateTransform(textAngle, _startMousePosition.X, _startMousePosition.Y);
 
                 if (resultAngle < -180)
                 {
-                    rotateTransform = new RotateTransform(textAngle + 180, point0.X, point0.Y);
+                    rotateTransform = new RotateTransform(textAngle + 180, _startMousePosition.X, _startMousePosition.Y);
                 }
 
                 transformGroup.Children.Add(translateTransform);
                 transformGroup.Children.Add(rotateTransform);
 
-                var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold,
+                    FontStretches.Normal);
                 var angleString = resultAngle.ToString("0.00", CultureInfo.InvariantCulture) + "°";
 
-                var formattedText = new FormattedText(angleString, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
+                var formattedText = new FormattedText(angleString, CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
                 formattedText.TextAlignment = TextAlignment.Center;
 
                 drawingContext.PushTransform(transformGroup);
                 drawingContext.DrawText(formattedText, textPosition);
+            }
+            else
+            {
+                // Рисуем полупрозрачный круг
+                var ellipseBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.1 };
+                drawingContext.DrawEllipse(ellipseBrush, null, point0, _radius, _radius);
+
+                var point1 = new Point(point0.X, point0.Y - _radius);
+
+                var lineGeometry = new LineGeometry(point0, point1)
+                {
+                    Transform = new RotateTransform(vehicleAzimuth, point0.X, point0.Y)
+                };
+                drawingContext.DrawGeometry(Brushes.Black, linePen, lineGeometry);
+
+                // Рисуем линию и маркер
+                drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
+
+                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 10, 10);
             }
 
             
@@ -193,6 +212,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
             e.Handled = true;
 
             _endMousePosition = e.GetPosition(this);
+            _endPoint = Viewer.PositionToGeographicLocation(_endMousePosition);
 
             _mouseButtonPressed = true;
             _isMeasured = true;
