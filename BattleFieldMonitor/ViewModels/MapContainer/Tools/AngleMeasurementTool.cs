@@ -114,8 +114,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                     Math.Pow(_startMousePosition.X - _endMousePosition.X, 2) +
                     Math.Pow(_startMousePosition.Y - _endMousePosition.Y, 2));
 
-                var point1X = _radius * Math.Cos(vehicleAzimuth * Math.PI / 180);
-                var point1Y = -_radius * Math.Sin(vehicleAzimuth * Math.PI / 180);
+                var point1X = _radius * Math.Sin(vehicleAzimuth * Math.PI / 180);
+                var point1Y = -_radius * Math.Cos(vehicleAzimuth * Math.PI / 180);
 
                 var point1 = new Point(point0.X + point1X, point0.Y + point1Y);
 
@@ -214,8 +214,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 var ellipseBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.1 };
                 drawingContext.DrawEllipse(ellipseBrush, null, point0, _radius, _radius);
 
-                var point1X = _radius * Math.Cos(vehicleAzimuth * Math.PI / 180);
-                var point1Y = -_radius * Math.Sin(vehicleAzimuth * Math.PI / 180);
+                var point1X = _radius * Math.Sin(vehicleAzimuth * Math.PI / 180);
+                var point1Y = -_radius * Math.Cos(vehicleAzimuth * Math.PI / 180);
 
                 var point1 = new Point(point0.X + point1X, point0.Y + point1Y);
                 
