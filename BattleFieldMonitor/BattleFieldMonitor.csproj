@@ -142,7 +142,9 @@
     <Compile Include="Services\Implementations\Notifications\Notification.cs" />
     <Compile Include="Services\Implementations\Notifications\Operation.cs" />
     <Compile Include="Services\Implementations\Notifications\PrimaryKey.cs" />
+    <Compile Include="Services\Implementations\Repository.cs" />
     <Compile Include="Services\Implementations\UnmannedVehicle.cs" />
+    <Compile Include="Services\Implementations\UnmannedVehicleState.cs" />
     <Compile Include="Services\IRepository.cs" />
     <Compile Include="Services\IRepositoryCommands.cs" />
     <Compile Include="Services\IUnmannedVehicle.cs" />

@@ -25,9 +25,8 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         #region Constructors
         public Database()
         {
-            _unmannedVehicles = new Repository<IUnmannedVehicle>(this);
+            _unmannedVehicles = new Repository<IUnmannedVehicle>(SynchronizationContext.Current);
 
-            SynchronizationContext = SynchronizationContext.Current;
             var thread = new Thread(LoadObjectsAndWaitForChanges);
             thread.IsBackground = true;
             thread.Start();
@@ -38,11 +37,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         public IRepository<IUnmannedVehicle> UnmannedVehicles
         {
             get { return _unmannedVehicles; }
-        }
-
-        private SynchronizationContext SynchronizationContext
-        {
-            get;
         }
         #endregion
 
@@ -161,142 +155,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                     }
                 }
             }
-        }
-        #endregion
-
-        #region Nested Types     
-        private class Repository
-        {
-            #region Constructors
-            public Repository()
-            {
-                UpdatedObjectIds = new HashSet<Guid>();
-            }
-            #endregion
-
-            #region Properties
-            public ISet<Guid> UpdatedObjectIds
-            {
-                get;
-            }
-            #endregion
-
-            #region Methods
-            internal void OnNotification(Operation operation, PrimaryKey oldKey, PrimaryKey newKey)
-            {
-                switch (operation)
-                {
-                    case Operation.Insert:
-                        if (newKey == null)
-                        {
-                            // TODO: Issue some warning...
-                            return;
-                        }
-
-                        OnNotificationInsert(newKey.Id);
-                        break;
-
-                    case Operation.Update:
-                        if (oldKey == null || newKey == null)
-                        {
-                            // TODO: Issue some warning...
-                            return;
-                        }
-
-                        OnNotificationUpdate(oldKey.Id, newKey.Id);
-                        break;
-
-                    case Operation.Delete:
-                        if (oldKey == null)
-                        {
-                            // TODO: Issue some warning...
-                            return;
-                        }
-
-                        OnNotificationDelete(oldKey.Id);
-                        break;
-                }
-            }
-
-            private void OnNotificationDelete(Guid id)
-            {
-                Trace.TraceInformation("Object deleted.");
-            }
-
-            private void OnNotificationInsert(Guid id)
-            {
-                Trace.TraceInformation("Object inserted.");
-            }
-
-            private void OnNotificationUpdate(Guid oldId, Guid newId)
-            {
-                Trace.TraceInformation("Object updated.");
-
-                if (newId == oldId)
-                {
-                    UpdatedObjectIds.Add(newId);
-                }
-            }
-            #endregion
-        }
-
-        private class Repository<T> : Repository, IRepository<T>
-            where T : IIdentifiableObject
-        {
-            #region Fields
-            private readonly IdentifiableObjectCollection<T> _objects = new IdentifiableObjectCollection<T>();
-
-            private readonly Database _outer;
-            #endregion
-
-            #region Constructors
-            public Repository(Database outer)
-            {
-                _outer = outer;
-            }
-            #endregion
-
-            #region Properites
-            public IReadOnlyCollection<T> Objects
-            {
-                get { return _objects; }
-            }
-            #endregion
-
-            #region Methods
-            protected virtual void OnObjectsAdded(ObjectsAddedEventArgs<T> e)
-            {
-                ObjectsAdded?.Invoke(this, e);
-            }
-
-            protected virtual void OnObjectsRemoved(ObjectsRemovedEventArgs<T> e)
-            {
-                ObjectsRemoved?.Invoke(this, e);
-            }
-
-            internal void Add(IReadOnlyCollection<T> objects)
-            {
-                _outer.SynchronizationContext.Send(AddCallback, objects);
-            }
-
-            private void AddCallback(object state)
-            {
-                var objects = (IReadOnlyCollection<T>)state;
-
-                foreach (var o in objects)
-                {
-                    _objects.Add(o);
-                }
-
-                OnObjectsAdded(new ObjectsAddedEventArgs<T>(objects, ObjectsAdditionReason.Loaded));
-            }
-            #endregion
-
-            #region Events
-            public event EventHandler<ObjectsAddedEventArgs<T>> ObjectsAdded;
-
-            public event EventHandler<ObjectsRemovedEventArgs<T>> ObjectsRemoved;
-            #endregion
         }
         #endregion
     }
