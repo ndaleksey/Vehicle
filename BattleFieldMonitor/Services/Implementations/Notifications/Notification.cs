@@ -33,7 +33,7 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations.Notifications
             set;
         }
 
-        [XmlAttribute("tableName")]
+        [XmlAttribute("table-name")]
         public string TableName
         {
             get;

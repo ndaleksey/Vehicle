@@ -4,8 +4,10 @@ using Swsu.BattleFieldMonitor.Services.Implementations.Notifications;
 using Swsu.Geo;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace Swsu.BattleFieldMonitor.Services.Implementations
@@ -72,6 +74,13 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 {
                     // ожидаем извещений...
                     connection.Wait();
+
+                    while (_unmannedVehicles.UpdatedObjectIds.Count > 0)
+                    {
+                        var ids = _unmannedVehicles.UpdatedObjectIds.ToArray();
+                        _unmannedVehicles.UpdatedObjectIds.Clear();
+                        ReloadUnmannedVehicles(connection, ids);
+                    }
                 }
             }
         }
@@ -95,7 +104,7 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                         var heading = reader.GetDouble(4);
                         var speed = reader.GetDouble(5);
                         var location = new GeographicCoordinates(y, x);
-                        objects.Add(new UnmannedVehicle(displayName, location, heading, speed));
+                        objects.Add(new UnmannedVehicle(id, displayName, location, heading, speed));
                     }
 
                     _unmannedVehicles.Add(objects);
@@ -123,11 +132,55 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
 
             repository.OnNotification(notification.Operation, notification.Old, notification.New);
         }
+
+        private void ReloadUnmannedVehicles(DbConnection connection, Guid[] ids)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle WHERE id = ANY(@ids::uuid[])";
+                command.AddParameter("ids").Value = ids;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    var objects = new List<UnmannedVehicle>();
+
+                    while (reader.Read())
+                    {
+                        /*
+                        var id = reader.GetGuid(0);
+                        var displayName = reader.GetString(1);
+                        var x = reader.GetDouble(2);
+                        var y = reader.GetDouble(3);
+                        var heading = reader.GetDouble(4);
+                        var speed = reader.GetDouble(5);
+                        var location = new GeographicCoordinates(y, x);
+                        objects.Add(new UnmannedVehicle(id, displayName, location, heading, speed));
+                        */
+
+                        Trace.TraceInformation("***");
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Nested Types     
         private class Repository
         {
+            #region Constructors
+            public Repository()
+            {
+                UpdatedObjectIds = new HashSet<Guid>();
+            }
+            #endregion
+
+            #region Properties
+            public ISet<Guid> UpdatedObjectIds
+            {
+                get;
+            }
+            #endregion
+
             #region Methods
             internal void OnNotification(Operation operation, PrimaryKey oldKey, PrimaryKey newKey)
             {
@@ -178,14 +231,20 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             private void OnNotificationUpdate(Guid oldId, Guid newId)
             {
                 Trace.TraceInformation("Object updated.");
+
+                if (newId == oldId)
+                {
+                    UpdatedObjectIds.Add(newId);
+                }
             }
             #endregion
         }
 
         private class Repository<T> : Repository, IRepository<T>
+            where T : IIdentifiableObject
         {
             #region Fields
-            private readonly List<T> _objects = new List<T>();
+            private readonly IdentifiableObjectCollection<T> _objects = new IdentifiableObjectCollection<T>();
 
             private readonly Database _outer;
             #endregion
@@ -218,12 +277,17 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             internal void Add(IReadOnlyCollection<T> objects)
             {
                 _outer.SynchronizationContext.Send(AddCallback, objects);
-            }            
+            }
 
             private void AddCallback(object state)
             {
                 var objects = (IReadOnlyCollection<T>)state;
-                _objects.AddRange(objects);
+
+                foreach (var o in objects)
+                {
+                    _objects.Add(o);
+                }
+
                 OnObjectsAdded(new ObjectsAddedEventArgs<T>(objects, ObjectsAdditionReason.Loaded));
             }
             #endregion

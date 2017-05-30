@@ -3,10 +3,10 @@ using System;
 
 namespace Swsu.BattleFieldMonitor.Services.Implementations
 {
-    internal class UnmannedVehicle : IUnmannedVehicle
+    internal class UnmannedVehicle : IdentifiableObject, IUnmannedVehicle
     {
         #region Constructors
-        public UnmannedVehicle(string displayName, GeographicCoordinates location, double heading, double speed)
+        public UnmannedVehicle(Guid id, string displayName, GeographicCoordinates location, double heading, double speed) : base(id)
         {
             DisplayName = displayName;
             Location = location;

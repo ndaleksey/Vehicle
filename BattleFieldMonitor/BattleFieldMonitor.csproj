@@ -133,8 +133,12 @@
     <Compile Include="Services\IBeacon.cs" />
     <Compile Include="Services\IDatabase.cs" />
     <Compile Include="Services\IDatabaseCommands.cs" />
+    <Compile Include="Services\IIdentifiableObject.cs" />
     <Compile Include="Services\Implementations\Database.cs" />
+    <Compile Include="Services\Implementations\DbCommandExtensions.cs" />
     <Compile Include="Services\Implementations\DbConnectionExtensions.cs" />
+    <Compile Include="Services\Implementations\IdentifiableObject.cs" />
+    <Compile Include="Services\Implementations\IdentifiableObjectCollection.cs" />
     <Compile Include="Services\Implementations\Notifications\Notification.cs" />
     <Compile Include="Services\Implementations\Notifications\Operation.cs" />
     <Compile Include="Services\Implementations\Notifications\PrimaryKey.cs" />

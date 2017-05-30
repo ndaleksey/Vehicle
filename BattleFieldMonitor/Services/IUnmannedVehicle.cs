@@ -3,7 +3,7 @@ using System;
 
 namespace Swsu.BattleFieldMonitor.Services
 {
-    internal interface IUnmannedVehicle
+    internal interface IUnmannedVehicle : IIdentifiableObject
     {
         #region Properties
         string DisplayName
