@@ -37,8 +37,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 // Рисуем линию и два маркера
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
 
-                drawingContext.DrawEllipse(Brushes.Red, pen, _startMousePosition, 10, 10);
-                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 10, 10);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _startMousePosition, 10, 10);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
 
                 // Находим расстояние между точками
                 var sphere = new Sphere(6378136);

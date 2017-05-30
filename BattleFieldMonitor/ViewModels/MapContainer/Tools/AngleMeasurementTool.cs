@@ -128,7 +128,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
                 // Рисуем линию и маркер
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
-                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 10, 10);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
 
                 //var streamGeometry = new StreamGeometry();
                 //using (var context = streamGeometry.Open())
@@ -151,25 +151,41 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 // Находим разницу между азимутами 
                 var resultAngle = userAzimuth - vehicleAzimuth;
 
+                if (resultAngle < -180)
+                {
+                    resultAngle += 360;
+                }
+
                 // Рисуем текст
                 var textAngle = vehicleAzimuth + resultAngle/2.0;
 
-                var textPosition = new Point(
-                    _startMousePosition.X,
-                    _startMousePosition.Y);
+                var textDistance = _radius/2 + 6;
 
-                var transformGroup = new TransformGroup();
+                var textAngleRad = textAngle*Math.PI/180;
+                var cosTextAngleRad = Math.Sin(textAngleRad);
+                var sinTextAngleRad = Math.Cos(textAngleRad);
 
-                var translateTransform = new TranslateTransform(0, -_radius/2.0 - 12.0);
-                var rotateTransform = new RotateTransform(textAngle, _startMousePosition.X, _startMousePosition.Y);
+                var x = textDistance*cosTextAngleRad;
+                var y = -textDistance*sinTextAngleRad - 6;
 
-                if (resultAngle < -180)
-                {
-                    rotateTransform = new RotateTransform(textAngle + 180, _startMousePosition.X, _startMousePosition.Y);
-                }
+                var textPosition = new Point(_startMousePosition.X + x, _startMousePosition.Y + y);
 
-                transformGroup.Children.Add(translateTransform);
-                transformGroup.Children.Add(rotateTransform);
+                //var textPosition = new Point(
+                //    _startMousePosition.X,
+                //    _startMousePosition.Y);
+
+                //var transformGroup = new TransformGroup();
+
+                //var translateTransform = new TranslateTransform(0, -_radius/2.0 - 12.0);
+                //var rotateTransform = new RotateTransform(textAngle, _startMousePosition.X, _startMousePosition.Y);
+
+                //if (resultAngle < -180)
+                //{
+                //    rotateTransform = new RotateTransform(textAngle + 180, _startMousePosition.X, _startMousePosition.Y);
+                //}
+
+                //transformGroup.Children.Add(translateTransform);
+                //transformGroup.Children.Add(rotateTransform);
 
                 var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold,
                     FontStretches.Normal);
@@ -179,7 +195,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                     FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
                 formattedText.TextAlignment = TextAlignment.Center;
 
-                drawingContext.PushTransform(transformGroup);
+                //drawingContext.PushTransform(transformGroup);
                 drawingContext.DrawText(formattedText, textPosition);
             }
             else
@@ -199,7 +215,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 // Рисуем линию и маркер
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
 
-                drawingContext.DrawEllipse(Brushes.Red, pen, _endMousePosition, 10, 10);
+                drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
             }
 
             
