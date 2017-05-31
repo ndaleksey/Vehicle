@@ -128,8 +128,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters1\MeasuredEventArgsConverter.cs" />
+    <Compile Include="DataAccess\ObstacleQueries.cs" />
     <Compile Include="DataAccess\UnmannedVehicleQueries.cs" />
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
+    <Compile Include="Models\Implementations\Obstacle.cs" />
+    <Compile Include="Models\IObstacle.cs" />
     <Compile Include="Services\BeaconState.cs" />
     <Compile Include="Services\IBeacon.cs" />
     <Compile Include="Services\IDatabase.cs" />
@@ -144,6 +147,7 @@
     <Compile Include="Services\Implementations\Notifications\Notification.cs" />
     <Compile Include="Services\Implementations\Notifications\Operation.cs" />
     <Compile Include="Services\Implementations\Notifications\PrimaryKey.cs" />
+    <Compile Include="Services\Implementations\Repositories\ObstacleRepository.cs" />
     <Compile Include="Services\Implementations\Repository.cs" />
     <Compile Include="Services\Implementations\RepositoryDelta.cs" />
     <Compile Include="Services\Implementations\UnmannedVehicle.cs" />
@@ -241,9 +245,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Icons\Engine.png" />
     <Resource Include="Resources\Icons\Globe.png" />
