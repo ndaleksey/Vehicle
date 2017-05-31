@@ -30,7 +30,7 @@ CREATE TABLE obstacle -- препятствия
 (
   id uuid NOT NULL,
   display_name TEXT NOT NULL,
-  geometry XML NOT NULL,
+  geometry TEXT NOT NULL, -- должно быть Polygon либо MultiPolygon в формате WKT
   x_min DOUBLE PRECISION NOT NULL, -- западная долгота
   y_min DOUBLE PRECISION NOT NULL, -- южная широта
   x_max DOUBLE PRECISION NOT NULL, -- восточная долгота
