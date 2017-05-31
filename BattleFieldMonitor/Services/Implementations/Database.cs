@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using Swsu.BattleFieldMonitor.DataAccess;
 using Swsu.BattleFieldMonitor.Properties;
 using Swsu.BattleFieldMonitor.Services.Implementations.Notifications;
 using Swsu.Geo;
@@ -115,7 +116,7 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             }
 
             repository.ProcessNotification(notification.Operation, notification.Old, notification.New);
-        }        
+        }
         #endregion
 
         #region Nested Types
@@ -129,30 +130,14 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
 
             protected internal override void Reload(DbConnection connection)
             {
-                // TODO: place it into a some kind of data access layer...
-                using (var command = connection.CreateCommand())
+                var objects = new List<UnmannedVehicle>();
+
+                foreach (var r in UnmannedVehicleQueries.SelectAll(connection))
                 {
-                    command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle";
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        var objects = new List<UnmannedVehicle>();
-
-                        while (reader.Read())
-                        {
-                            var id = reader.GetGuid(0);
-                            var displayName = reader.GetString(1);
-                            var x = reader.GetDouble(2);
-                            var y = reader.GetDouble(3);
-                            var heading = reader.GetDouble(4);
-                            var speed = reader.GetDouble(5);
-                            var location = new GeographicCoordinates(y, x);
-                            objects.Add(new UnmannedVehicle(id, displayName, location, heading, speed));
-                        }
-
-                        Add(objects);
-                    }
+                    objects.Add(new UnmannedVehicle(r.Id, r.DisplayName, r.Location, r.Heading, r.Speed));
                 }
+
+                Add(objects);
             }
             #endregion
         }
@@ -162,38 +147,20 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             #region Methods
             protected internal override void LoadDelta(DbConnection connection, IReadOnlyDictionary<Guid, UnmannedVehicle> objectById, SynchronizationContext synchronizationContext)
             {
-                // TODO: place it into a some kind of data access layer...
-                using (var command = connection.CreateCommand())
+                var records = new List<UpdateRecord>();
+
+                // TODO: Support all kinds of changes. Now only updates are supported.
+                foreach (var r in UnmannedVehicleQueries.SelectByIds(connection, UpdatedObjectIds.ToArray()))
                 {
-                    command.CommandText = "SELECT id, display_name, x, y, heading, speed FROM nkb_vs.unmanned_vehicle WHERE id = ANY(@ids::uuid[])";
-                    // Поддерживается только обновление.
-                    command.AddParameter("ids").Value = UpdatedObjectIds.ToArray();
+                    UnmannedVehicle obj;
 
-                    using (var reader = command.ExecuteReader())
+                    if (objectById.TryGetValue(r.Id, out obj))
                     {
-                        var records = new List<UpdateRecord>();
-
-                        while (reader.Read())
-                        {
-                            var id = reader.GetGuid(0);
-                            var displayName = reader.GetString(1);
-                            var x = reader.GetDouble(2);
-                            var y = reader.GetDouble(3);
-                            var heading = reader.GetDouble(4);
-                            var speed = reader.GetDouble(5);
-                            var location = new GeographicCoordinates(y, x);
-
-                            UnmannedVehicle obj;
-
-                            if (objectById.TryGetValue(id, out obj))
-                            {
-                                records.Add(new UpdateRecord(obj, displayName, location, heading, speed));
-                            }
-                        }
-
-                        synchronizationContext.Post(Update, records);
+                        records.Add(new UpdateRecord(obj, r.DisplayName, r.Location, r.Heading, r.Speed));
                     }
                 }
+
+                synchronizationContext.Post(Update, records);
             }
 
             private void Update(object o)

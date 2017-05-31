@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace Swsu.BattleFieldMonitor.Services.Implementations
+namespace Swsu.BattleFieldMonitor.DataAccess
 {
     internal static class DbCommandExtensions
     {

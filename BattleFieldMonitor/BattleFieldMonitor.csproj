@@ -128,6 +128,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters1\MeasuredEventArgsConverter.cs" />
+    <Compile Include="DataAccess\UnmannedVehicleQueries.cs" />
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
     <Compile Include="Services\BeaconState.cs" />
     <Compile Include="Services\IBeacon.cs" />
@@ -135,7 +136,7 @@
     <Compile Include="Services\IDatabaseCommands.cs" />
     <Compile Include="Services\IIdentifiableObject.cs" />
     <Compile Include="Services\Implementations\Database.cs" />
-    <Compile Include="Services\Implementations\DbCommandExtensions.cs" />
+    <Compile Include="DataAccess\DbCommandExtensions.cs" />
     <Compile Include="Services\Implementations\DbConnectionExtensions.cs" />
     <Compile Include="Services\Implementations\Helpers.cs" />
     <Compile Include="Services\Implementations\IdentifiableObject.cs" />
