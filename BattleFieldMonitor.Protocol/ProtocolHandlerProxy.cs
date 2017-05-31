@@ -26,11 +26,16 @@ namespace Swsu.BattleFieldMonitor.Protocol
             throw new NotImplementedException();
         }
 
+        public Coordinates3D GetReturnPoint()
+        {
+            throw new NotImplementedException();
+        }
+
         public unsafe VehicleTelemetry GetUgvTelemetry()
         {
             new RequestHeader(ProtocolVersion.V1, RequestType.GetUgvTelemetry).Write(_stream);
 
-            var size = DecodeAndGetPayloadSize(ResponseHeader.Read(_stream));
+            var size = DecodeResponse(ResponseHeader.Read(_stream));
 
             if (size != sizeof(VehicleTelemetry))
             {
@@ -47,12 +52,18 @@ namespace Swsu.BattleFieldMonitor.Protocol
                 case ResponseStatus.OK:
                     break;
 
+                case ResponseStatus.Malformed:
+                    throw new MalformedPayloadException();
+
+                case ResponseStatus.WrongRequestType:
+                    throw new WrongRequestTypeException();
+
                 default:
                     throw new ProtocolException();
             }
         }
 
-        private static int DecodeAndGetPayloadSize(ResponseHeader header)
+        private static int DecodeResponse(ResponseHeader header)
         {
             if (header.Version != ProtocolVersion.V1)
             {

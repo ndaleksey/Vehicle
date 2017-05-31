@@ -5,6 +5,8 @@
         #region Methods
         VehicleTelemetry GetControlCenterTelemetry();
 
+        Coordinates3D GetReturnPoint();
+
         VehicleTelemetry GetUgvTelemetry();
         #endregion
     }

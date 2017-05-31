@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using Swsu.Common;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Swsu.BattleFieldMonitor.Protocol
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct RequestHeader
     {
         #region Fields
@@ -35,17 +36,23 @@ namespace Swsu.BattleFieldMonitor.Protocol
             payloadSize = PayloadSize;
         }
 
-        public static unsafe RequestHeader Read(Stream stream)
-        {
-            RequestHeader value;
-            stream.ReadFully((byte*)&value, sizeof(RequestHeader));
-            value.SwapBytes();
-            return value;
-        }
-
         public void SwapBytes()
         {
             BinaryDataHelpers.SwapBytes(ref PayloadSize);
+        }
+
+        public static unsafe bool TryRead(Stream stream, out RequestHeader result)
+        {
+            RequestHeader value;
+
+            if (stream.TryReadFully((byte*)&value, sizeof(RequestHeader)))
+            {
+                value.SwapBytes();
+                result = value;
+                return true;
+            }
+
+            return DefaultHelpers.False(out result);
         }
 
         public unsafe void Write(Stream stream)
