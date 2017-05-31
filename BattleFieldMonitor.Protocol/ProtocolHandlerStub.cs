@@ -23,9 +23,9 @@ namespace Swsu.BattleFieldMonitor.Protocol
         #endregion
 
         #region Methods
-        public void Process(Stream inputStream, Stream outputStream)
+        public void Process(Stream requestStream, Stream responseStream)
         {
-            for (RequestHeader header; RequestHeader.TryRead(inputStream, out header);)
+            for (RequestHeader header; RequestHeader.TryRead(requestStream, out header);)
             {
                 if (header.Version != ProtocolVersion.V1)
                 {
@@ -41,19 +41,19 @@ namespace Swsu.BattleFieldMonitor.Protocol
 
                 try
                 {
-                    Process(header.Type, (int)payloadSize, inputStream, outputStream);
+                    Process(header.Type, (int)payloadSize, requestStream, responseStream);
                 }
                 catch (WrongRequestTypeException)
                 {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.WrongRequestType).Write(inputStream);
+                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.WrongRequestType).Write(responseStream);
                 }
                 catch (MalformedPayloadException)
                 {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.Malformed).Write(inputStream);
+                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.Malformed).Write(responseStream);
                 }
                 catch (Exception)
                 {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.UnknownError).Write(inputStream);
+                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.UnknownError).Write(responseStream);
                 }
             }
         }
@@ -63,16 +63,16 @@ namespace Swsu.BattleFieldMonitor.Protocol
             return new ResponseHeader(ProtocolVersion.V1, ResponseStatus.OK, (uint)payloadSize);
         }
 
-        private void Process(RequestType requestType, int payloadSize, Stream inputStream, Stream outputStream)
+        private void Process(RequestType requestType, int payloadSize, Stream requestStream, Stream responseStream)
         {
             switch (requestType)
             {
                 case RequestType.GetReturnPoint:
-                    ProcessGetReturnPoint(payloadSize, inputStream, outputStream);
+                    ProcessGetReturnPoint(payloadSize, requestStream, responseStream);
                     break;
 
                 case RequestType.GetUgvTelemetry:
-                    ProcessGetUgvTelemetry(payloadSize, inputStream, outputStream);
+                    ProcessGetUgvTelemetry(payloadSize, requestStream, responseStream);
                     break;
 
                 default:
@@ -80,7 +80,7 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
         }
 
-        private unsafe void ProcessGetReturnPoint(int payloadSize, Stream inputStream, Stream outputStream)
+        private unsafe void ProcessGetReturnPoint(int payloadSize, Stream requestStream, Stream responseStream)
         {
             if (payloadSize != 0)
             {
@@ -88,11 +88,11 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
 
             var result = _handler.GetReturnPoint();
-            EncodeResponse(SizeOf.Coordinates3D).Write(outputStream);
-            result.Write(outputStream);
+            EncodeResponse(SizeOf.Coordinates3D).Write(responseStream);
+            result.Write(responseStream);
         }
 
-        private unsafe void ProcessGetUgvTelemetry(int payloadSize, Stream inputStream, Stream outputStream)
+        private unsafe void ProcessGetUgvTelemetry(int payloadSize, Stream requestStream, Stream responseStream)
         {
             if (payloadSize != 0)
             {
@@ -100,8 +100,8 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
 
             var result = _handler.GetUgvTelemetry();
-            EncodeResponse(SizeOf.VehicleTelemetry).Write(outputStream);
-            result.Write(outputStream);
+            EncodeResponse(SizeOf.VehicleTelemetry).Write(responseStream);
+            result.Write(responseStream);
         }
         #endregion
     }

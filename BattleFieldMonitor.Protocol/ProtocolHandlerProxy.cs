@@ -10,13 +10,16 @@ namespace Swsu.BattleFieldMonitor.Protocol
         #endregion
 
         #region Fields
-        private readonly Stream _stream;
+        private readonly Stream _requestStream;
+
+        private readonly Stream _responseStream;
         #endregion
 
         #region Constructors
-        public ProtocolHandlerProxy(Stream stream)
+        public ProtocolHandlerProxy(Stream requestStream, Stream responseStream)
         {
-            _stream = stream;
+            _requestStream = requestStream;
+            _responseStream = responseStream;
         }
         #endregion
 
@@ -33,16 +36,16 @@ namespace Swsu.BattleFieldMonitor.Protocol
 
         public unsafe VehicleTelemetry GetUgvTelemetry()
         {
-            new RequestHeader(ProtocolVersion.V1, RequestType.GetUgvTelemetry).Write(_stream);
+            new RequestHeader(ProtocolVersion.V1, RequestType.GetUgvTelemetry).Write(_requestStream);
 
-            var size = DecodeResponse(ResponseHeader.Read(_stream));
+            var size = DecodeResponse(ResponseHeader.Read(_responseStream));
 
             if (size != sizeof(VehicleTelemetry))
             {
                 throw new InvalidPayloadSizeException(size);
             }
 
-            return VehicleTelemetry.Read(_stream);
+            return VehicleTelemetry.Read(_responseStream);
         }
 
         private static void CheckStatus(ResponseStatus status)
