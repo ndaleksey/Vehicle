@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Swsu.BattleFieldMonitor.Common;
+using Swsu.BattleFieldMonitor.Services;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
 {
@@ -9,13 +10,14 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
     public class UnmannedVehicleModel : MapObjectModel
     {
         #region Fields
-
+        //TODO: Добавить имя
         private double _azimuth;
         private string _calloutText;
         private bool _isTracked;
         private ViewModel _parentViewModel;
         private bool _showCallout;
         private double _speed;
+        private IUnmannedVehicle _source;
 
         #endregion
 
@@ -75,6 +77,15 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             set { SetProperty(ref _speed, value, nameof(Speed), UpdateCalloutText); }
         }
 
+        /// <summary>
+        /// РТК в базе данных
+        /// </summary>
+        internal IUnmannedVehicle Source
+        {
+            get { return _source; }
+            set { SetProperty(ref _source, value, nameof(Source)); }
+        }
+
         #endregion
 
         #region Constructors 
@@ -92,14 +103,19 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         /// Инициализирует экземпляр класса
         /// </summary>
         /// <param name="parentViewModel">Родительская ViewModel для доступа к функциям слежения</param>
-        /// <param name="latitude">Широта</param>
-        /// <param name="longitude">Долдгота</param>
-        /// <param name="azimuth">Азимут</param>
-        internal UnmannedVehicleModel(ViewModel parentViewModel, double latitude, double longitude, double azimuth) : this(parentViewModel)
+        /// <param name="source">РТК в базе данных, откуда считываются все параметры этой модели</param>
+        internal UnmannedVehicleModel(ViewModel parentViewModel, IUnmannedVehicle source) : this(parentViewModel)
         {
-            Azimuth = azimuth;
-            Latitude = latitude;
-            Longitude = longitude;
+            Source = source;
+            UpdateFromSource();
+
+            //TODO: Использовать слабые событие
+            Source.Changed += Vehicle_Changed;
+        }
+
+        private void Vehicle_Changed(object sender, System.EventArgs e)
+        {
+            UpdateFromSource();
         }
 
         #endregion
@@ -133,6 +149,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
                     ParentViewModel.MapViewerService.Locate(new GeographicCoordinatesTuple(Latitude, Longitude));
                 }
             }
+        }
+
+        /// <summary>
+        /// Обновляет параметры модели РТК при изменениях в базе
+        /// </summary>
+        private void UpdateFromSource()
+        {
+            Azimuth = Source.Heading;
+            Latitude = Source.Location.Latitude;
+            Longitude = Source.Location.Longitude;
         }
 
         #endregion

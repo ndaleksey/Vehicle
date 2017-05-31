@@ -190,7 +190,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             //TODO: После того, как была добавлена данная загрузка, возник следующий баг: после закрытия окна процесс остается висеть в памяти
             foreach (var unmannedVehicle in database.UnmannedVehicles.Objects)
             {
-                UnmannedVehicles.Add(new UnmannedVehicleModel(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading) { Speed = unmannedVehicle.Speed });
+                UnmannedVehicles.Add(new UnmannedVehicleModel(this, unmannedVehicle));
             }
 
             database.UnmannedVehicles.ObjectsAdded += UnmannedVehicles_ObjectsAdded;
@@ -229,12 +229,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         {
             foreach (var unmannedVehicle in e.Objects)
             {
-                var newUnnamedVehicle = new UnmannedVehicleModel(this, unmannedVehicle.Location.Latitude, unmannedVehicle.Location.Longitude, unmannedVehicle.Heading)
-                {
-                    //TODO: Добавить имя
-                    Speed = unmannedVehicle.Speed
-                };
-
+                var newUnnamedVehicle = new UnmannedVehicleModel(this, unmannedVehicle);
                 UnmannedVehicles.Add(newUnnamedVehicle);
             }
         }
