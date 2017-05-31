@@ -1,12 +1,10 @@
 ﻿using Swsu.BattleFieldMonitor.Services.Implementations.Notifications;
 using System;
-using System.Data.Common;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Swsu.BattleFieldMonitor.Services.Implementations
 {
-    internal abstract class RepositoryDelta
+    internal class RepositoryDelta
     {
         #region Fields
         private readonly HashSet<Guid> _deletedObjectIds = new HashSet<Guid>();
@@ -17,17 +15,17 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         #endregion
 
         #region Properties
-        protected IEnumerable<Guid> DeletedObjectIds
+        internal IEnumerable<Guid> DeletedObjectIds
         {
             get { return _deletedObjectIds; }
         }
 
-        protected IEnumerable<Guid> InsertedObjectIds
+        internal IEnumerable<Guid> InsertedObjectIds
         {
             get { return _insertedObjectIds; }
         }
 
-        protected IEnumerable<Guid> UpdatedObjectIds
+        internal IEnumerable<Guid> UpdatedObjectIds
         {
             get { return _updatedObjectIds; }
         }
@@ -92,14 +90,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 _insertedObjectIds.Add(newId);
             }
         }
-        #endregion
-    }
-
-    internal abstract class RepositoryDelta<T> : RepositoryDelta
-        where T : IdentifiableObject
-    {
-        #region Methods
-        protected internal abstract void LoadDelta(DbConnection connection, IReadOnlyDictionary<Guid, T> objectById, SynchronizationContext synchronizationContext);
         #endregion
     }
 }

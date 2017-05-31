@@ -9,6 +9,10 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
 {
     internal abstract class Repository
     {
+        #region Fields
+        private RepositoryDelta _delta;
+        #endregion
+
         #region Constructors
         public Repository()
         {
@@ -22,28 +26,36 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             get;
         }
 
-        protected abstract RepositoryDelta BaseDelta
-        {
-            get;
-        }
-
         internal bool HasDelta
         {
-            get { return BaseDelta != null; }
+            get { return _delta != null; }
         }
         #endregion
 
         #region Methods
-        protected abstract void EnsureDeltaCreated();
-
-        protected internal abstract void LoadDelta(DbConnection connection);
+        protected abstract void LoadDeltaCore(DbConnection connection, RepositoryDelta repositoryDelta);
 
         protected internal abstract void Reload(DbConnection connection);
 
+        internal void LoadDelta(DbConnection connection)
+        {
+            Debug.Assert(_delta != null);
+
+            // Дельта не должна изменяться после начала загрузки,
+            // поэтому сбрасываем текущую дельту, чтобы извещения,
+            // приходящие во время загрузки ранее сформированной дельты,
+            // приводили бы к созданию новой дельты.
+            LoadDeltaCore(connection, Helpers.Exchange(ref _delta, null));
+        }
+
         internal void ProcessNotification(Operation operation, PrimaryKey oldKey, PrimaryKey newKey)
         {
-            EnsureDeltaCreated();
-            BaseDelta.ProcessNotification(operation, oldKey, newKey);
+            if (_delta == null)
+            {
+                _delta = new RepositoryDelta();
+            }
+
+            _delta.ProcessNotification(operation, oldKey, newKey);
         }
         #endregion
     }
@@ -53,8 +65,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         where TI : IIdentifiableObject
     {
         #region Fields
-        private RepositoryDelta<T> _delta;
-
         // Только для обращения из рабочей нити.
         private readonly Dictionary<Guid, T> _objectById = new Dictionary<Guid, T>();
 
@@ -73,11 +83,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         {
             get { return _objects; }
         }
-
-        protected override sealed RepositoryDelta BaseDelta
-        {
-            get { return _delta; }
-        }
         #endregion
 
         #region Methods
@@ -91,27 +96,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
             SynchronizationContext.Send(AddCallback, objects);
         }
 
-        protected abstract RepositoryDelta<T> CreateDelta();
-
-        protected override sealed void EnsureDeltaCreated()
-        {
-            if (_delta == null)
-            {
-                _delta = CreateDelta();
-            }
-        }
-
-        protected internal override sealed void LoadDelta(DbConnection connection)
-        {
-            Debug.Assert(_delta != null);
-
-            // Дельта не должна изменяться после начала загрузки,
-            // поэтому сбрасываем текущую дельту, чтобы извещения,
-            // приходящие во время загрузки ранее сформированной дельты,
-            // приводили бы к созданию новой дельты.
-            Helpers.Exchange(ref _delta, null).LoadDelta(connection, _objectById, SynchronizationContext);
-        }
-
         protected virtual void OnObjectsAdded(ObjectsAddedEventArgs<TI> e)
         {
             ObjectsAdded?.Invoke(this, e);
@@ -120,6 +104,11 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         protected virtual void OnObjectsRemoved(ObjectsRemovedEventArgs<TI> e)
         {
             ObjectsRemoved?.Invoke(this, e);
+        }
+
+        protected bool TryGetObjectById(Guid id, out T result)
+        {
+            return _objectById.TryGetValue(id, out result);
         }
 
         private void AddCallback(object state)

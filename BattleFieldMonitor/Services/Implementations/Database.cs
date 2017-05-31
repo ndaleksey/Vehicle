@@ -3,7 +3,6 @@ using Swsu.BattleFieldMonitor.DataAccess;
 using Swsu.BattleFieldMonitor.Properties;
 using Swsu.BattleFieldMonitor.Services.Implementations.Notifications;
 using Swsu.Geo;
-using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -123,9 +122,22 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         private class UnmannedVehicleRepository : Repository<UnmannedVehicle, IUnmannedVehicle>
         {
             #region Methods
-            protected override RepositoryDelta<UnmannedVehicle> CreateDelta()
+            protected override void LoadDeltaCore(DbConnection connection, RepositoryDelta repositoryDelta)
             {
-                return new UnmannedVehicleRepositoryDelta();
+                var records = new List<UpdateRecord>();
+
+                // TODO: Support all kinds of changes. Now only updates are supported.
+                foreach (var r in UnmannedVehicleQueries.SelectByIds(connection, repositoryDelta.UpdatedObjectIds.ToArray()))
+                {
+                    UnmannedVehicle obj;
+
+                    if (TryGetObjectById(r.Id, out obj))
+                    {
+                        records.Add(new UpdateRecord(obj, r.DisplayName, r.Location, r.Heading, r.Speed));
+                    }
+                }
+
+                SynchronizationContext.Post(Update, records);
             }
 
             protected internal override void Reload(DbConnection connection)
@@ -138,29 +150,6 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 }
 
                 Add(objects);
-            }
-            #endregion
-        }
-
-        private class UnmannedVehicleRepositoryDelta : RepositoryDelta<UnmannedVehicle>
-        {
-            #region Methods
-            protected internal override void LoadDelta(DbConnection connection, IReadOnlyDictionary<Guid, UnmannedVehicle> objectById, SynchronizationContext synchronizationContext)
-            {
-                var records = new List<UpdateRecord>();
-
-                // TODO: Support all kinds of changes. Now only updates are supported.
-                foreach (var r in UnmannedVehicleQueries.SelectByIds(connection, UpdatedObjectIds.ToArray()))
-                {
-                    UnmannedVehicle obj;
-
-                    if (objectById.TryGetValue(r.Id, out obj))
-                    {
-                        records.Add(new UpdateRecord(obj, r.DisplayName, r.Location, r.Heading, r.Speed));
-                    }
-                }
-
-                synchronizationContext.Post(Update, records);
             }
 
             private void Update(object o)
