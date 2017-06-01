@@ -483,6 +483,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             MapToolMode = MapToolMode.DistanceMeasurement;
         }
 
+        public void SwitchToHeightMeasurementTool()
+        {
+            MapToolMode = MapToolMode.HeightMeasurement;
+        }
+
         /// <summary>
         /// Переключиться на инструмент добавления точек
         /// </summary>

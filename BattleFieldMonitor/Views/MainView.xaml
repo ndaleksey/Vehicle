@@ -82,6 +82,11 @@
                         IsChecked="{Binding Path=SwitchToDistanceMeasurementToolButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <ToggleButton 
+                        Content="Измерение перепадов высот" 
+                        Command="{Binding SwitchToHeightMeasurementToolCommand}"
+                        IsChecked="{Binding Path=SwitchToHeightMeasurementToolButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ToggleButton 
                         Content="Измерение углов" 
                         Command="{Binding SwitchToAngleMeasurementToolCommand}"
                         IsChecked="{Binding Path=SwitchToAngleMeasurementToolButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,7 +13,7 @@ using Swsu.Maps.Windows.Tools;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 {
-    class DistanceMeasurementTool : Tool
+    class HeightMeasurementTool : Tool
     {
         #region Fields
 
@@ -43,9 +47,9 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 // Находим расстояние между точками
                 var sphere = new Sphere(6378136);
                 var solution = sphere.SolveInverseGeodeticProblem(
-                    _startPoint.Latitude.Degrees, 
-                    _startPoint.Longitude.Degrees, 
-                    _endPoint.Latitude.Degrees, 
+                    _startPoint.Latitude.Degrees,
+                    _startPoint.Longitude.Degrees,
+                    _endPoint.Latitude.Degrees,
                     _endPoint.Longitude.Degrees);
 
                 var distance = solution.Distance;
@@ -68,13 +72,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 {
                     rotateTransform = new RotateTransform(textAngle + 180, textPosition.X, textPosition.Y);
                 }
-                
+
                 transformGroup.Children.Add(translateTransform);
                 transformGroup.Children.Add(rotateTransform);
-                
+
                 var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
                 var distanceString = (distance / 1000).ToString("0.00", CultureInfo.InvariantCulture) + " км.";
-                
+
                 var formattedText = new FormattedText(distanceString, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
                 formattedText.TextAlignment = TextAlignment.Center;
 
@@ -97,7 +101,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
             _startMousePosition = e.GetPosition(this);
             _startPoint = Viewer.PositionToGeographicLocation(_startMousePosition);
-            
+
             InvalidateVisual();
         }
 

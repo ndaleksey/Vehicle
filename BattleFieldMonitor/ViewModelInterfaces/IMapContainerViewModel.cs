@@ -46,6 +46,11 @@
         void SwitchToDistanceMeasurementTool();
 
         /// <summary>
+        /// Переключиться на инструмент измерения перепадов высот
+        /// </summary>
+        void SwitchToHeightMeasurementTool();
+
+        /// <summary>
         /// Переключиться на инструмент добавления точек
         /// </summary>
         void SwitchToPointDrawingTool();

@@ -147,6 +147,10 @@
                 <tools:DistanceMeasurementTool/>
             </map:ToolTemplate>
 
+            <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.HeightMeasurement}}">
+                <tools:HeightMeasurementTool/>
+            </map:ToolTemplate>
+
             <map:ToolTemplate x:Key="{map:ToolTemplateKey DataType={x:Type viewModels:ViewModel}, Qualifier={x:Static viewModels:MapToolMode.AngleMeasurement}}">
                 <tools:AngleMeasurementTool VehiclesSource="{Binding UnmannedVehicles}">
                     <tools:AngleMeasurementTool.VehicleContainerStyle>
