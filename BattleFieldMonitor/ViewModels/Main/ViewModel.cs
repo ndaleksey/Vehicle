@@ -23,6 +23,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         private bool _switchToAngleMeasurementToolButtonChecked;
         private bool _switchToBeaconDtButtonChecked;
         private bool _switchToDistanceMeasurementToolButtonChecked;
+        private bool _switchToHeightMeasurementToolButtonChecked;
         private bool _switchToPointDtButtonChecked;
         private bool _switchToPreciseLsdtButtonChecked;
         private bool _switchToRouteDtButtonChecked;
@@ -97,6 +98,21 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                     ref _switchToDistanceMeasurementToolButtonChecked,
                     value,
                     nameof(SwitchToDistanceMeasurementToolButtonChecked));
+            }
+        }
+
+        /// <summary>
+        /// Зажата кнопка "Измерение перепадов высот"
+        /// </summary>
+        public bool SwitchToHeightMeasurementToolButtonChecked
+        {
+            get { return _switchToHeightMeasurementToolButtonChecked; }
+            set
+            {
+                SetProperty(
+                    ref _switchToHeightMeasurementToolButtonChecked,
+                    value,
+                    nameof(SwitchToHeightMeasurementToolButtonChecked));
             }
         }
 
@@ -202,6 +218,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
         public DelegateCommand SwitchToDistanceMeasurementToolCommand { get; }
 
         /// <summary>
+        /// Команда переключения на режим измерения перепадов высот
+        /// </summary>
+        public DelegateCommand SwitchToHeightMeasurementToolCommand { get; }
+
+        /// <summary>
         /// Команда включения режима масштабирования (слежения за танком)
         /// </summary>
         public DelegateCommand EnableScalingModeCommand { get; }
@@ -221,6 +242,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
             SwitchToBeaconDtCommand = new DelegateCommand(SwitchToBeaconDt);
             SwitchToAngleMeasurementToolCommand = new DelegateCommand(SwitchToAngleMeasurementTool);
             SwitchToDistanceMeasurementToolCommand = new DelegateCommand(SwitchToDistanceMeasurementTool);
+            SwitchToHeightMeasurementToolCommand = new DelegateCommand(SwitchToHeightMeasurementTool);
 
             //			ScaleDenominator = 1e7;
         }
@@ -306,6 +328,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToBeaconDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToAngleMeasurementTool();
             }
             else
@@ -327,6 +350,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
                 SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToBeaconDrawingTool();
             }
             else
@@ -348,7 +372,30 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToBeaconDtButtonChecked = false;
                 SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToDistanceMeasurementTool();
+            }
+            else
+            {
+                _mapContainer?.SwitchToSimpleSelectionTool();
+            }
+        }
+
+        /// <summary>
+        /// Переключиться на режим измерения перепадов высот
+        /// </summary>
+        private void SwitchToHeightMeasurementTool()
+        {
+            if (SwitchToHeightMeasurementToolButtonChecked)
+            {
+                SwitchToPointDtButtonChecked = false;
+                SwitchToPreciseLsdtButtonChecked = false;
+                SwitchToQuickLsdtButtonChecked = false;
+                SwitchToRouteDtButtonChecked = false;
+                SwitchToBeaconDtButtonChecked = false;
+                SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToDistanceMeasurementToolButtonChecked = false;
+                _mapContainer?.SwitchToHeightMeasurementTool();
             }
             else
             {
@@ -369,6 +416,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
                 SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToPointDrawingTool();
             }
             else
@@ -390,6 +438,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
                 SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToPreciseLineStringDrawingTool();
             }
             else
@@ -411,6 +460,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToQuickLsdtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
                 SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToRouteDrawingTool();
             }
             else
@@ -432,6 +482,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.Main
                 SwitchToRouteDtButtonChecked = false;
                 SwitchToDistanceMeasurementToolButtonChecked = false;
                 SwitchToAngleMeasurementToolButtonChecked = false;
+                SwitchToHeightMeasurementToolButtonChecked = false;
                 _mapContainer?.SwitchToQuickLineStringDrawingTool();
             }
             else

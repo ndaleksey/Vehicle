@@ -74,12 +74,20 @@
       <HintPath>..\packages\Swsu.Common.Windows.DevExpress.1.0.0-alpha\lib\net45\Swsu.Common.Windows.DevExpress.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Swsu.Coverages, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Coverages.1.0.7\lib\net45\Swsu.Coverages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Swsu.Geo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Geo.1.0.0-alpha\lib\net45\Swsu.Geo.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Swsu.Geo.Epsg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Geo.Epsg.1.0.0-alpha\lib\net45\Swsu.Geo.Epsg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.Geo.Georeferencing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Geo.Georeferencing.1.0.0-alpha\lib\net45\Swsu.Geo.Georeferencing.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Swsu.Geo.SimpleFeatures, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -96,6 +104,10 @@
     </Reference>
     <Reference Include="Swsu.Maps.Windows.Maps.Wmts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Swsu.Maps.Windows.Maps.Wmts.1.0.0-alpha\lib\net45\Swsu.Maps.Windows.Maps.Wmts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Swsu.MultipartParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Coverages.1.0.7\lib\net45\Swsu.MultipartParser.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Swsu.OpenGis.Schemas, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -177,6 +189,7 @@
     <Compile Include="ViewModels\MapContainer\RectangularEnvelope.cs" />
     <Compile Include="ViewModels\MapContainer\RectangularRangeExtensions.cs" />
     <Compile Include="ViewModels\MapContainer\RouteModel.cs" />
+    <Compile Include="ViewModels\MapContainer\Tools\HeightMeasurementTool.cs" />
     <Compile Include="ViewModels\MapContainer\UnmannedVehicleModel.cs" />
     <Compile Include="ViewModels\MapContainer\VehicleContainer.cs" />
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
