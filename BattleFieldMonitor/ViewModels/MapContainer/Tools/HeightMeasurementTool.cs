@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Swsu.Coverages;
 using Swsu.Geo;
+using Swsu.Geo.Epsg;
 using Swsu.Maps.Windows;
 using Swsu.Maps.Windows.Tools;
 
@@ -19,6 +21,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
         private Point _startMousePosition;
         private Point _endMousePosition;
+        private double _heightDifference;
         private bool _mouseButtonPressed;
         private bool _isMeasured;
         private GeographicLocation _startPoint;
@@ -42,17 +45,16 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 drawingContext.DrawLine(linePen, _startMousePosition, _endMousePosition);
 
                 drawingContext.DrawEllipse(Brushes.Black, pen, _startMousePosition, 10, 10);
+
+                var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                var text = "h₁"; //h₂
+                var heightMarkerFormattedText = new FormattedText(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.White) {TextAlignment = TextAlignment.Center};
+                drawingContext.DrawText(heightMarkerFormattedText, new Point(_startMousePosition.X, _startMousePosition.Y - 7));
+
                 drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
-
-                // Находим расстояние между точками
-                var sphere = new Sphere(6378136);
-                var solution = sphere.SolveInverseGeodeticProblem(
-                    _startPoint.Latitude.Degrees,
-                    _startPoint.Longitude.Degrees,
-                    _endPoint.Latitude.Degrees,
-                    _endPoint.Longitude.Degrees);
-
-                var distance = solution.Distance;
+                text = "h₂";
+                heightMarkerFormattedText = new FormattedText(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.White) { TextAlignment = TextAlignment.Center };
+                drawingContext.DrawText(heightMarkerFormattedText, new Point(_endMousePosition.X, _endMousePosition.Y - 7));
 
                 // Рисуем текст
                 var textAngle = Math.Atan2(
@@ -76,9 +78,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 transformGroup.Children.Add(translateTransform);
                 transformGroup.Children.Add(rotateTransform);
 
-                var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
-                var distanceString = (distance / 1000).ToString("0.00", CultureInfo.InvariantCulture) + " км.";
+                var distanceString = "h₂ - h₁ = " + _heightDifference.ToString("0.00", CultureInfo.InvariantCulture) + " м.";
 
+                if (_heightDifference == 0)
+                {
+                    distanceString = "";
+                }
+                
                 var formattedText = new FormattedText(distanceString, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
                 formattedText.TextAlignment = TextAlignment.Center;
 
@@ -94,6 +100,8 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
             base.OnMouseDown(e);
             e.Handled = true;
 
+            _heightDifference = 0;
+
             _endMousePosition = new Point(Double.NaN, Double.NaN);
 
             _mouseButtonPressed = true;
@@ -105,7 +113,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
             InvalidateVisual();
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected override async void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
@@ -116,11 +124,13 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 _endMousePosition = e.GetPosition(this);
                 _endPoint = Viewer.PositionToGeographicLocation(_endMousePosition);
 
+                // Находим перепад высот между точками
+                //_heightDifference = await Task.Run(() => FindHeightDifference(_startPoint, _endPoint));
                 InvalidateVisual();
             }
         }
 
-        protected override void OnMouseUp(MouseButtonEventArgs e)
+        protected override async void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
 
@@ -133,11 +143,53 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 _endMousePosition = e.GetPosition(this);
                 _endPoint = Viewer.PositionToGeographicLocation(_endMousePosition);
 
+                // Находим перепад высот между точками
+                _heightDifference = await Task.Run(() => FindHeightDifference(_startPoint, _endPoint));
+
                 InvalidateVisual();
 
                 //_startMousePosition = new Point(Double.NaN, Double.NaN);
                 //_endMousePosition = new Point(Double.NaN, Double.NaN);
             }
+        }
+
+        private double FindHeightDifference(GeographicLocation startPoint, GeographicLocation endPoint)
+        {
+            var height1 = FindHeight(startPoint);
+            var height2 = FindHeight(endPoint);
+
+            var difference = height2 - height1;
+
+            //InvalidateVisual();
+            return difference;
+        }
+
+        private double FindHeight(GeographicLocation startPoint)
+        {
+            var latitude = Convert.ToDouble(startPoint.Latitude.Degrees);
+            var longitude = Convert.ToDouble(startPoint.Longitude.Degrees);
+            double height;
+
+            string id = "world";  //строка задает идентификатор покрытия
+            string crsUri = null;
+            var uri = new Uri("http://10.6.7.179:13013/?SERVICE=WCS&VERSION=1.1.1&REQUEST=GetCapabilities");
+
+            ICoverage wcsCover = new WcsCoverage(uri, id, new MicrosoftAccessEpsgRegistry(@"C:\EPSG\EPSG_v8_9.mdb"));
+            Interpolation interpolation = Interpolation.Linear;
+
+            try
+            {
+                //height = await Task.Run(() => wcsCover.Get(latitude, longitude, crsUri, interpolation));
+                height = wcsCover.Get(latitude, longitude, crsUri, interpolation);
+
+            }
+            catch (Exception ex)
+            {
+                //Debug.Error(ex, "Не удается получить высоту");
+                return 0;
+            }
+
+            return height;
         }
 
         #endregion
