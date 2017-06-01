@@ -27,6 +27,27 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
         }
 
+        public static unsafe ushort ReadUInt16(this Stream stream)
+        {
+            ushort value;
+            stream.ReadFully((byte*)&value, sizeof(ushort));
+            return value;
+        }
+
+        public static unsafe uint ReadUInt32(this Stream stream)
+        {
+            uint value;
+            stream.ReadFully((byte*)&value, sizeof(uint));
+            return value;
+        }
+
+        public static unsafe ulong ReadUInt64(this Stream stream)
+        {
+            ulong value;
+            stream.ReadFully((byte*)&value, sizeof(ulong));
+            return value;
+        }
+
         public static unsafe bool TryReadFully(this Stream stream, byte* ptr, int count)
         {
             ArrayHelpers.EnsureLength(ref _buffer, count);
@@ -81,6 +102,21 @@ namespace Swsu.BattleFieldMonitor.Protocol
         public static void Write(this Stream stream, byte[] buffer)
         {
             stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public static unsafe void Write(this Stream stream, ushort value)
+        {
+            stream.Write((byte*)&value, sizeof(ushort));
+        }
+
+        public static unsafe void Write(this Stream stream, uint value)
+        {
+            stream.Write((byte*)&value, sizeof(uint));
+        }
+
+        public static unsafe void Write(this Stream stream, ulong value)
+        {
+            stream.Write((byte*)&value, sizeof(ulong));
         }
 
         private static unsafe void Copy(byte* from, byte* to, int count)

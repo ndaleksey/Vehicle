@@ -22,6 +22,18 @@ namespace Swsu.BattleFieldMonitor.Protocol
             throw new NotImplementedException();
         }
 
+        public Trajectory GetTrajectory()
+        {
+            WriteRequestHeader(RequestType.GetTrajectory);
+
+            int payloadSize;
+            ReadResponseHeader(out payloadSize);
+
+            var result = new Trajectory();
+            result.Read(ResponseStream);
+            return result;
+        }
+
         public VehicleTelemetry GetUgvTelemetry()
         {
             WriteRequestHeader(RequestType.GetUgvTelemetry);

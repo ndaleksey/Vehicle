@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Swsu.BattleFieldMonitor.Protocol
 {
@@ -24,6 +25,10 @@ namespace Swsu.BattleFieldMonitor.Protocol
                     ProcessGetReturnPoint(requestStream, responseStream, payloadSize);
                     break;
 
+                case RequestType.GetTrajectory:
+                    ProcessGetTrajectory(requestStream, responseStream, payloadSize);
+                    break;
+
                 case RequestType.GetUgvTelemetry:
                     ProcessGetUgvTelemetry(requestStream, responseStream, payloadSize);
                     break;
@@ -31,7 +36,7 @@ namespace Swsu.BattleFieldMonitor.Protocol
                 default:
                     throw new WrongRequestTypeException();
             }
-        }
+        }        
 
         private void ProcessGetReturnPoint(Stream requestStream, Stream responseStream, int payloadSize)
         {
@@ -42,6 +47,18 @@ namespace Swsu.BattleFieldMonitor.Protocol
 
             var result = _handler.GetReturnPoint();
             WriteResponseHeader(responseStream, SizeOf.Coordinates3D);
+            result.Write(responseStream);
+        }
+
+        private void ProcessGetTrajectory(Stream requestStream, Stream responseStream, int payloadSize)
+        {
+            if (payloadSize != 0)
+            {
+                throw new MalformedPayloadException();
+            }
+
+            var result = _handler.GetTrajectory();
+            WriteResponseHeader(responseStream, result.SizeInBytes);
             result.Write(responseStream);
         }
 

@@ -7,6 +7,8 @@
 
         Coordinates3D GetReturnPoint();
 
+        Trajectory GetTrajectory();
+
         VehicleTelemetry GetUgvTelemetry();
         #endregion
     }

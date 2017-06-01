@@ -14,38 +14,31 @@ namespace Swsu.BattleFieldMonitor.Protocol
             var handlerMock = new Mock<IProtocolHandler>(MockBehavior.Strict);
             handlerMock.Setup(h => h.GetReturnPoint()).Returns(new Coordinates3D(30, 50, 10));
             var stub = new ProtocolHandlerStub(handlerMock.Object);
-            var request = new MemoryStream(GetGetReturnPointRequest());
+            var request = new MemoryStream(ReferenceData.GetReturnPoint_Request);
             var response = new MemoryStream();
 
             stub.Process(request, response);
 
             handlerMock.Verify(h => h.GetReturnPoint(), Times.Once());
-            CollectionAssert.AreEqual(GetGetReturnPointResponse(), response.ToArray());
+            CollectionAssert.AreEqual(ReferenceData.GetReturnPoint_Response, response.ToArray());
         }
 
-        private static byte[] GetGetReturnPointRequest()
+        [TestMethod]
+        public void Should_ProcessGetTrajectory()
         {
-            using (var stream = new MemoryStream())
-            {
-                stream.WriteByte((byte)ProtocolVersion.V1);
-                stream.WriteByte((byte)RequestType.GetReturnPoint);
-                stream.Write(BigEndian.GetBytes((uint)0));
-                return stream.ToArray();
-            }
-        }
+            var handlerMock = new Mock<IProtocolHandler>(MockBehavior.Strict);
+            var waypoint1 = new Coordinates3D(30, 50, 10);
+            var waypoint2 = new Coordinates3D(32, 52, 11);
+            var waypoint3 = new Coordinates3D(35, 55, 12);
+            handlerMock.Setup(h => h.GetTrajectory()).Returns(new Trajectory { Timestamp = 100500, Waypoints = { waypoint1, waypoint2, waypoint3 } });
+            var stub = new ProtocolHandlerStub(handlerMock.Object);
+            var request = new MemoryStream(ReferenceData.GetTrajectory_Request);
+            var response = new MemoryStream();
 
-        private static byte[] GetGetReturnPointResponse()
-        {
-            using (var stream = new MemoryStream())
-            {
-                stream.WriteByte((byte)ProtocolVersion.V1);
-                stream.WriteByte((byte)ResponseStatus.OK);
-                stream.Write(BigEndian.GetBytes((uint)SizeOf.Coordinates3D));
-                stream.Write(BigEndian.GetBytes(30.0));
-                stream.Write(BigEndian.GetBytes(50.0));
-                stream.Write(BigEndian.GetBytes(10.0));
-                return stream.ToArray();
-            }
+            stub.Process(request, response);
+
+            handlerMock.Verify(h => h.GetTrajectory(), Times.Once());
+            CollectionAssert.AreEqual(ReferenceData.GetTrajectory_Response, response.ToArray());
         }
         #endregion
     }
