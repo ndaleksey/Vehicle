@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{144DA9AC-54DA-4ECA-BC41-AD69E169B504}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{12FCAE7F-174B-4FF6-AC93-3573E025775B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Swsu.BattleFieldMonitor.Protocol</RootNamespace>
-    <AssemblyName>BattleFieldMonitor.Protocol</AssemblyName>
+    <RootNamespace>Swsu.BattleFieldMonitor.VehicleSimulator</RootNamespace>
+    <AssemblyName>BattleFieldMonitor.VehicleSimulator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,9 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -36,12 +36,16 @@
       <HintPath>..\packages\Swsu.Common.1.0.0-alpha\lib\net45\Swsu.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    <Reference Include="Swsu.Geo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Geo.1.0.0-alpha\lib\net45\Swsu.Geo.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Swsu.Mathematics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swsu.Mathematics.1.0.0-alpha\lib\net45\Swsu.Mathematics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,40 +54,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArrayHelpers.cs" />
-    <Compile Include="BinaryDataHelpers.cs" />
-    <Compile Include="BlittableCollection.cs" />
-    <Compile Include="Coordinates3D.cs" />
-    <Compile Include="DefaultPorts.cs" />
-    <Compile Include="InvalidPayloadSizeException.cs" />
-    <Compile Include="IProtocolHandler.cs" />
-    <Compile Include="Keypoint.cs" />
-    <Compile Include="MalformedPayloadException.cs" />
-    <Compile Include="Path.cs" />
-    <Compile Include="PayloadToLargeException.cs" />
+    <Compile Include="Matrices.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtocolException.cs" />
-    <Compile Include="ProtocolHandler.cs" />
-    <Compile Include="ProtocolHandlerProxy.cs" />
-    <Compile Include="ProtocolHandlerProxyBase.cs" />
-    <Compile Include="ProtocolHandlerStub.cs" />
-    <Compile Include="ProtocolHandlerStubBase.cs" />
-    <Compile Include="ProtocolVersion.cs" />
-    <Compile Include="RequestHeader.cs" />
-    <Compile Include="RequestType.cs" />
-    <Compile Include="ResponseHeader.cs" />
-    <Compile Include="ResponseStatus.cs" />
-    <Compile Include="Segment.cs" />
-    <Compile Include="SegmentHeader.cs" />
-    <Compile Include="SizeOf.cs" />
-    <Compile Include="StreamExtensions.cs" />
-    <Compile Include="Trajectory.cs" />
-    <Compile Include="VehicleTelemetry.cs" />
-    <Compile Include="Coordinates3DCollection.cs" />
-    <Compile Include="WrongRequestTypeException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BattleFieldMonitor.Protocol\BattleFieldMonitor.Protocol.csproj">
+      <Project>{144da9ac-54da-4eca-bc41-ad69e169b504}</Project>
+      <Name>BattleFieldMonitor.Protocol</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
