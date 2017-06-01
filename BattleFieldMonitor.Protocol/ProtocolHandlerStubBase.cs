@@ -42,7 +42,11 @@ namespace Swsu.BattleFieldMonitor.Protocol
                 }
                 catch (MalformedPayloadException)
                 {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.Malformed).Write(responseStream);
+                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.MalformedPayload).Write(responseStream);
+                }
+                catch (NotImplementedException)
+                {
+                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.WrongRequestType).Write(responseStream);
                 }
                 catch (Exception)
                 {

@@ -61,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolException.cs" />
     <Compile Include="ProtocolHandlerProxy.cs" />
+    <Compile Include="ProtocolHandlerProxyBase.cs" />
     <Compile Include="ProtocolHandlerStub.cs" />
     <Compile Include="ProtocolHandlerStubBase.cs" />
     <Compile Include="ProtocolVersion.cs" />

@@ -3,23 +3,11 @@ using System.IO;
 
 namespace Swsu.BattleFieldMonitor.Protocol
 {
-    public class ProtocolHandlerProxy : IProtocolHandler
+    public class ProtocolHandlerProxy : ProtocolHandlerProxyBase, IProtocolHandler
     {
-        #region Constants
-        public const int MaximumPayloadSize = 1 << 30; // 1 GB
-        #endregion
-
-        #region Fields
-        private readonly Stream _requestStream;
-
-        private readonly Stream _responseStream;
-        #endregion
-
         #region Constructors
-        public ProtocolHandlerProxy(Stream requestStream, Stream responseStream)
+        public ProtocolHandlerProxy(Stream requestStream, Stream responseStream) : base(requestStream, responseStream)
         {
-            _requestStream = requestStream;
-            _responseStream = responseStream;
         }
         #endregion
 
@@ -34,55 +22,19 @@ namespace Swsu.BattleFieldMonitor.Protocol
             throw new NotImplementedException();
         }
 
-        public unsafe VehicleTelemetry GetUgvTelemetry()
+        public VehicleTelemetry GetUgvTelemetry()
         {
-            new RequestHeader(ProtocolVersion.V1, RequestType.GetUgvTelemetry).Write(_requestStream);
+            WriteRequestHeader(RequestType.GetUgvTelemetry);
 
-            var size = DecodeResponse(ResponseHeader.Read(_responseStream));
+            int payloadSize;
+            ReadResponseHeader(out payloadSize);
 
-            if (size != sizeof(VehicleTelemetry))
+            if (payloadSize != SizeOf.VehicleTelemetry)
             {
-                throw new InvalidPayloadSizeException(size);
+                throw new InvalidPayloadSizeException(payloadSize);
             }
 
-            return VehicleTelemetry.Read(_responseStream);
-        }
-
-        private static void CheckStatus(ResponseStatus status)
-        {
-            switch (status)
-            {
-                case ResponseStatus.OK:
-                    break;
-
-                case ResponseStatus.Malformed:
-                    throw new MalformedPayloadException();
-
-                case ResponseStatus.WrongRequestType:
-                    throw new WrongRequestTypeException();
-
-                default:
-                    throw new ProtocolException();
-            }
-        }
-
-        private static int DecodeResponse(ResponseHeader header)
-        {
-            if (header.Version != ProtocolVersion.V1)
-            {
-                throw new ProtocolException();
-            }
-
-            CheckStatus(header.Status);
-
-            var size = (int)header.PayloadSize;
-
-            if (size > MaximumPayloadSize)
-            {
-                throw new ProtocolException();
-            }
-
-            return size;
+            return VehicleTelemetry.Read(ResponseStream);
         }
         #endregion
     }

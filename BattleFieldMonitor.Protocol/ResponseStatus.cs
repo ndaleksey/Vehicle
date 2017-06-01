@@ -25,6 +25,6 @@
         /// <summary>
         /// Некорректные данные в payload.
         /// </summary>
-        Malformed = 0x83
+        MalformedPayload = 0x83
     }
 }
