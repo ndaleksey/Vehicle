@@ -80,7 +80,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
                 var distanceString = "h₂ - h₁ = " + _heightDifference.ToString("0.00", CultureInfo.InvariantCulture) + " м.";
 
-                if (_heightDifference == 0)
+                if (double.IsNaN(_heightDifference))
                 {
                     distanceString = "";
                 }
@@ -100,7 +100,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
             base.OnMouseDown(e);
             e.Handled = true;
 
-            _heightDifference = 0;
+            _heightDifference = double.NaN;
 
             _endMousePosition = new Point(Double.NaN, Double.NaN);
 

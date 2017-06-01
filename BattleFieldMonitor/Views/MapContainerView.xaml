@@ -22,7 +22,7 @@
 				<ResourceDictionary Source="../Resources/CommonResources.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
-            <Pen x:Key="PolygonBoundaryPen" Brush="Red" Thickness="2"/>
+            <Pen x:Key="PolygonBoundaryPen" Brush="Red" Thickness="1"/>
             <Pen x:Key="RouteLinePen" Brush="#FF3475CD" Thickness="2"/>
             
             <converters1:PointDrawnEventArgsConverter x:Key="PointDrawnEventArgsConverter" />
@@ -97,10 +97,10 @@
                                 <Setter.Value>
                                     <map:GeometryMarker Brush="Red">
                                         <map:GeometryMarker.Pen>
-                                            <Pen Brush="White" Thickness="2"/>
+                                            <Pen Brush="White" Thickness="1"/>
                                         </map:GeometryMarker.Pen>
 
-                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                        <EllipseGeometry Center="0, 0" RadiusX="10" RadiusY="10"/>
                                     </map:GeometryMarker>
                                 </Setter.Value>
                             </Setter>
@@ -117,10 +117,10 @@
                                 <Setter.Value>
                                     <map:GeometryMarker Brush="#FF3475CD">
                                         <map:GeometryMarker.Pen>
-                                            <Pen Brush="White" Thickness="2"/>
+                                            <Pen Brush="White" Thickness="1"/>
                                         </map:GeometryMarker.Pen>
 
-                                        <EllipseGeometry Center="0, 0" RadiusX="15" RadiusY="15"/>
+                                        <EllipseGeometry Center="0, 0" RadiusX="10" RadiusY="10"/>
                                     </map:GeometryMarker>
                                 </Setter.Value>
                             </Setter>
@@ -731,18 +731,6 @@
                         EpsgDataProvider="{StaticResource EpsgDataProvider}" />
                 </map:MapNavigatorViewer.MapDefinition>
             </map:MapNavigatorViewer>
-        </Border>
-
-        <Border 
-            BorderBrush="Black"
-            Background="White"
-            BorderThickness="1"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Margin="10"
-            Padding="5">
-
-            <TextBlock Text="{Binding ElementName=TheViewer, Path=(map:MeasurementTool.TotalLength)}"/>
         </Border>
     </Grid>
 

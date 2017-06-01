@@ -15,7 +15,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         private string _calloutText;
         private bool _isTracked;
         private ViewModel _parentViewModel;
-        private bool _showCallout;
+        private bool _showCallout = true;
         private double _speed;
         private IUnmannedVehicle _source;
 
@@ -159,6 +159,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             Azimuth = Source.Heading;
             Latitude = Source.Location.Latitude;
             Longitude = Source.Location.Longitude;
+            UpdateCalloutText();
         }
 
         #endregion
