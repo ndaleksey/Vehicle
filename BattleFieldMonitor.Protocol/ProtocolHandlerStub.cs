@@ -1,18 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Swsu.BattleFieldMonitor.Protocol
 {
-    public class ProtocolHandlerStub
+    public class ProtocolHandlerStub : ProtocolHandlerStubBase
     {
-        #region Constants
-        public const uint MaximumPayloadSize = 1 << 30;
-        #endregion
-
         #region Fields
         private readonly IProtocolHandler _handler;
-
-        private readonly byte[] _payload = new byte[1 << 10];
         #endregion
 
         #region Constructors
@@ -22,57 +15,17 @@ namespace Swsu.BattleFieldMonitor.Protocol
         }
         #endregion
 
-        #region Methods
-        public void Process(Stream requestStream, Stream responseStream)
-        {
-            for (RequestHeader header; RequestHeader.TryRead(requestStream, out header);)
-            {
-                if (header.Version != ProtocolVersion.V1)
-                {
-                    throw new ProtocolException(); // May be we need to send an appropriate error response.
-                }
-
-                var payloadSize = header.PayloadSize;
-
-                if (payloadSize > MaximumPayloadSize)
-                {
-                    throw new PayloadToLargeException();
-                }
-
-                try
-                {
-                    Process(header.Type, (int)payloadSize, requestStream, responseStream);
-                }
-                catch (WrongRequestTypeException)
-                {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.WrongRequestType).Write(responseStream);
-                }
-                catch (MalformedPayloadException)
-                {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.Malformed).Write(responseStream);
-                }
-                catch (Exception)
-                {
-                    new ResponseHeader(ProtocolVersion.V1, ResponseStatus.UnknownError).Write(responseStream);
-                }
-            }
-        }
-
-        private static ResponseHeader EncodeResponse(int payloadSize)
-        {
-            return new ResponseHeader(ProtocolVersion.V1, ResponseStatus.OK, (uint)payloadSize);
-        }
-
-        private void Process(RequestType requestType, int payloadSize, Stream requestStream, Stream responseStream)
+        #region Methods        
+        protected override void Process(Stream requestStream, Stream responseStream, RequestType requestType, int payloadSize)
         {
             switch (requestType)
             {
                 case RequestType.GetReturnPoint:
-                    ProcessGetReturnPoint(payloadSize, requestStream, responseStream);
+                    ProcessGetReturnPoint(requestStream, responseStream, payloadSize);
                     break;
 
                 case RequestType.GetUgvTelemetry:
-                    ProcessGetUgvTelemetry(payloadSize, requestStream, responseStream);
+                    ProcessGetUgvTelemetry(requestStream, responseStream, payloadSize);
                     break;
 
                 default:
@@ -80,7 +33,7 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
         }
 
-        private unsafe void ProcessGetReturnPoint(int payloadSize, Stream requestStream, Stream responseStream)
+        private void ProcessGetReturnPoint(Stream requestStream, Stream responseStream, int payloadSize)
         {
             if (payloadSize != 0)
             {
@@ -88,11 +41,11 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
 
             var result = _handler.GetReturnPoint();
-            EncodeResponse(SizeOf.Coordinates3D).Write(responseStream);
+            WriteResponseHeader(responseStream, SizeOf.Coordinates3D);
             result.Write(responseStream);
         }
 
-        private unsafe void ProcessGetUgvTelemetry(int payloadSize, Stream requestStream, Stream responseStream)
+        private void ProcessGetUgvTelemetry(Stream requestStream, Stream responseStream, int payloadSize)
         {
             if (payloadSize != 0)
             {
@@ -100,7 +53,7 @@ namespace Swsu.BattleFieldMonitor.Protocol
             }
 
             var result = _handler.GetUgvTelemetry();
-            EncodeResponse(SizeOf.VehicleTelemetry).Write(responseStream);
+            WriteResponseHeader(responseStream, SizeOf.VehicleTelemetry);
             result.Write(responseStream);
         }
         #endregion

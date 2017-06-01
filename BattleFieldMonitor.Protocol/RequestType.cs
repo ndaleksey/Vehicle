@@ -1,6 +1,6 @@
 ﻿namespace Swsu.BattleFieldMonitor.Protocol
 {
-    internal enum RequestType : byte
+    public enum RequestType : byte
     {
         GetUgvTelemetry = 0x01,
         GetControlCenterTelemetry = 0x02,

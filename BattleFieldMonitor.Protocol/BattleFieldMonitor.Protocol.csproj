@@ -62,6 +62,7 @@
     <Compile Include="ProtocolException.cs" />
     <Compile Include="ProtocolHandlerProxy.cs" />
     <Compile Include="ProtocolHandlerStub.cs" />
+    <Compile Include="ProtocolHandlerStubBase.cs" />
     <Compile Include="ProtocolVersion.cs" />
     <Compile Include="RequestHeader.cs" />
     <Compile Include="RequestType.cs" />

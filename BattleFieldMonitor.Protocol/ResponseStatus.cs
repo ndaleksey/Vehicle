@@ -1,6 +1,6 @@
 ﻿namespace Swsu.BattleFieldMonitor.Protocol
 {
-    internal enum ResponseStatus : byte
+    public enum ResponseStatus : byte
     {
         /// <summary>
         /// Запрос выполнен успешно.
