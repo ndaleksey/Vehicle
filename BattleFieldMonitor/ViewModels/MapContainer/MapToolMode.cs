@@ -60,6 +60,6 @@
         /// <summary>
         /// Измерение перепадов высот
         /// </summary>
-	    HeightMeasurement
-	}
+        HeightMeasurement
+    }
 }

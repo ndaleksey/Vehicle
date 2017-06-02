@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Swsu.BattleFieldMonitor.Views.Panel.BindingPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Swsu.BattleFieldMonitor.Views.Panel"
+             xmlns:common="clr-namespace:Swsu.BattleFieldMonitor.Common"
+             xmlns:paneViewModel="clr-namespace:Swsu.BattleFieldMonitor.ViewModels.PaneViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.DataContext>
+        <paneViewModel:BindingPanelViewModel/>
+    </UserControl.DataContext>
+
+    <StackPanel>
+        <common:ToolToggleButton Content="Центрирование"
+                                 Margin="0.5cm,0.5cm,0.5cm,0.5cm"
+                                 IsChecked="{Binding Path=IsCenteringModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+    </StackPanel>
+</UserControl>

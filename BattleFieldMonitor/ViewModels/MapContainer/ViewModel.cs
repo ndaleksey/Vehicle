@@ -530,6 +530,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
             UnmannedVehicles[0].ShowCallout = true;
         }
 
+        public void SwitchToHeightMeasurementTool()
+        {
+            MapToolMode = MapToolMode.HeightMeasurement;
+        }
+
         private void UpdateCentering()
         {
             if (IsCenteringModeEnabled)

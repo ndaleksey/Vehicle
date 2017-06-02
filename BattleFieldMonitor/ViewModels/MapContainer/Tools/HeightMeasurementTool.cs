@@ -48,7 +48,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
 
                 var typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
                 var text = "h₁"; //h₂
-                var heightMarkerFormattedText = new FormattedText(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.White) {TextAlignment = TextAlignment.Center};
+                var heightMarkerFormattedText = new FormattedText(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.White) { TextAlignment = TextAlignment.Center };
                 drawingContext.DrawText(heightMarkerFormattedText, new Point(_startMousePosition.X, _startMousePosition.Y - 7));
 
                 drawingContext.DrawEllipse(Brushes.Black, pen, _endMousePosition, 10, 10);
@@ -84,7 +84,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer.Tools
                 {
                     distanceString = "";
                 }
-                
+
                 var formattedText = new FormattedText(distanceString, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, typeface, 12, Brushes.Black);
                 formattedText.TextAlignment = TextAlignment.Center;
 

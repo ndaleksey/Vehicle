@@ -6,491 +6,233 @@ using System.Windows.Input;
 
 namespace Swsu.BattleFieldMonitor.ViewModels.Main
 {
-    internal class ViewModel : ViewModelBaseExtended,
-        IMapContainerViewModelParent
-    {
-        #region Constants
+	internal class ViewModel : ViewModelBaseExtended,
+		IMapContainerViewModelParent,
+		IMeasurementsPanelViewModelParent,
+		ILayoutPanelViewModelParent,
+		IManualRoutePanelViewModelParent,
+		AddGraphicSymbolsPanelViewModelParent,
+		IBindingPanelViewModelParent,
+		IMapPanelViewModelParent
+	{
+		#region Constants
 
-        private const double Scale = 0.75;
-        #endregion
+		private const double Scale = 0.75;
 
-        #region Fields
+		#endregion
 
-        private double _scaleDenominator;
-        private IMapContainerViewModel _mapContainer;
-        private bool _isMiniMapEnabled;
-        private bool _isCenteringModeEnabled;
-        private bool _switchToAngleMeasurementToolButtonChecked;
-        private bool _switchToBeaconDtButtonChecked;
-        private bool _switchToDistanceMeasurementToolButtonChecked;
-        private bool _switchToHeightMeasurementToolButtonChecked;
-        private bool _switchToPointDtButtonChecked;
-        private bool _switchToPreciseLsdtButtonChecked;
-        private bool _switchToRouteDtButtonChecked;
-        private bool _switchToQuickLsdtButtonChecked;
+		#region Fields
 
-        #endregion
 
-        #region Properties
-        public double ScaleDenominator
-        {
-            get { return _scaleDenominator; }
-            set { SetProperty(ref _scaleDenominator, value, nameof(ScaleDenominator), OnScaleDenominatorChanged); }
-        }
+		private double _scaleDenominator;
+		private IMapContainerViewModel _mapContainer;
+		private IMeasurementsPanelViewModel _measurementsPanel;
+		private ILayoutPanelViewModel _layoutPanel;
+		private IManualRoutePanelViewModel _manualRoutePanel;
+		private IAddGraphicSymbolsPanelViewModel _addGraphicSymbolsPanel;
+		private IBindingPanelViewModel _bindingPanel;
+		private IMapPanelViewModel _mapPanel;
 
-        /// <summary>
-        /// Включен режим центрирования (слежения за танком)
-        /// </summary>
-        public bool IsCenteringModeEnabled
-        {
-            get { return _isCenteringModeEnabled; }
-            set { SetProperty(ref _isCenteringModeEnabled, value, nameof(IsCenteringModeEnabled), OnIsCenteringModeEnabledChanged); }
-        }
+		private bool _isPanelVisible;
+		#endregion
 
-        /// <summary>
-        /// Включена мини-карта
-        /// </summary>
-        public bool IsMiniMapEnabled
-        {
-            get { return _isMiniMapEnabled; }
-            set { SetProperty(ref _isMiniMapEnabled, value, nameof(IsMiniMapEnabled), OnIsMiniMapEnabledChanged); }
-        }
+		#region Properties
 
-        /// <summary>
-        /// Зажата кнопка "Измерение углов"
-        /// </summary>
-        public bool SwitchToAngleMeasurementToolButtonChecked
-        {
-            get { return _switchToAngleMeasurementToolButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToAngleMeasurementToolButtonChecked,
-                    value,
-                    nameof(SwitchToAngleMeasurementToolButtonChecked));
-            }
-        }
+		public bool IsPanelVisible
+		{
+			get { return _isPanelVisible;}
+			set { SetProperty(ref _isPanelVisible, value, nameof(IsPanelVisible)); }
+		}
 
-        /// <summary>
-        /// Зажата кнопка "Добавить маяк"
-        /// </summary>
-        public bool SwitchToBeaconDtButtonChecked
-        {
-            get { return _switchToBeaconDtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToBeaconDtButtonChecked,
-                    value,
-                    nameof(SwitchToBeaconDtButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Измерение расстояний"
-        /// </summary>
-        public bool SwitchToDistanceMeasurementToolButtonChecked
-        {
-            get { return _switchToDistanceMeasurementToolButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToDistanceMeasurementToolButtonChecked,
-                    value,
-                    nameof(SwitchToDistanceMeasurementToolButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Измерение перепадов высот"
-        /// </summary>
-        public bool SwitchToHeightMeasurementToolButtonChecked
-        {
-            get { return _switchToHeightMeasurementToolButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToHeightMeasurementToolButtonChecked,
-                    value,
-                    nameof(SwitchToHeightMeasurementToolButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Добавить точку"
-        /// </summary>
-        public bool SwitchToPointDtButtonChecked
-        {
-            get { return _switchToPointDtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToPointDtButtonChecked,
-                    value,
-                    nameof(SwitchToPointDtButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Рисование точками"
-        /// </summary>
-        public bool SwitchToPreciseLsdtButtonChecked
-        {
-            get { return _switchToPreciseLsdtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToPreciseLsdtButtonChecked,
-                    value,
-                    nameof(SwitchToPreciseLsdtButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Лассо"
-        /// </summary>
-        public bool SwitchToQuickLsdtButtonChecked
-        {
-            get { return _switchToQuickLsdtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToQuickLsdtButtonChecked,
-                    value,
-                    nameof(SwitchToQuickLsdtButtonChecked));
-            }
-        }
-
-        /// <summary>
-        /// Зажата кнопка "Добавить трасса"
-        /// </summary>
-        public bool SwitchToRouteDtButtonChecked
-        {
-            get { return _switchToRouteDtButtonChecked; }
-            set
-            {
-                SetProperty(
-                    ref _switchToRouteDtButtonChecked,
-                    value,
-                    nameof(SwitchToRouteDtButtonChecked));
-            }
-        }
-        #endregion
-
-        #region Commands
-
-        public ICommand MapScaleInCommand { get; }
-        public ICommand MapScaleOutCommand { get; }
-
-        /// <summary>
-        /// Команда переключения на режим добавления точек
-        /// </summary>
-        public DelegateCommand SwitchToPointDtCommand { get; }
-
-        /// <summary>
-        /// Команда переключения на режим рисования объектов точками
-        /// </summary>
-        public DelegateCommand SwitchToPreciseLsdtCommand { get; }
-
-        /// <summary>
-        /// Команда переключения на режим добавления трасс
-        /// </summary>
-        public DelegateCommand SwitchToRouteDtCommand { get; }
-
-        /// <summary>
-        /// Команда переключенияы на режим рисования объектов лассо
-        /// </summary>
-        public DelegateCommand SwitchToQuickLsdtCommand { get; }
-
-        /// <summary>
-        /// Команда переключения на режим измерения углов
-        /// </summary>
-        public DelegateCommand SwitchToAngleMeasurementToolCommand { get; }
-
-        /// <summary>
-        /// Команда переключения на режим добавления маяков
-        /// </summary>
-        public DelegateCommand SwitchToBeaconDtCommand { get; }
+		public double ScaleDenominator
+		{
+			get { return _scaleDenominator; }
+			set { SetProperty(ref _scaleDenominator, value, nameof(ScaleDenominator), OnScaleDenominatorChanged); }
+		}
         
-        /// <summary>
-        /// Команда переключения на режим измерения расстояний
-        /// </summary>
-        public DelegateCommand SwitchToDistanceMeasurementToolCommand { get; }
+		#endregion
 
-        /// <summary>
-        /// Команда переключения на режим измерения перепадов высот
-        /// </summary>
-        public DelegateCommand SwitchToHeightMeasurementToolCommand { get; }
+		#region Commands
 
-        /// <summary>
-        /// Команда включения режима масштабирования (слежения за танком)
-        /// </summary>
-        public DelegateCommand EnableScalingModeCommand { get; }
+		public ICommand MapScaleInCommand { get; }
+		public ICommand MapScaleOutCommand { get; }
 
-        #endregion
+		public ICommand MeasurementPressedCommand { get; }
+		public ICommand AddBadgeCommand { get; }
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public ViewModel()
-        {
-            MapScaleInCommand = new DelegateCommand(MapScaleIn, CanMapScaleIn);
-            MapScaleOutCommand = new DelegateCommand(MapScaleOut, CanMapScaleOut);
-            SwitchToPointDtCommand = new DelegateCommand(SwitchToPointDt);
-            SwitchToPreciseLsdtCommand = new DelegateCommand(SwitchToPreciseLsdt);
-            SwitchToRouteDtCommand = new DelegateCommand(SwitchToRouteDt);
-            SwitchToQuickLsdtCommand = new DelegateCommand(SwitchToQuickLsdt);
-            SwitchToBeaconDtCommand = new DelegateCommand(SwitchToBeaconDt);
-            SwitchToAngleMeasurementToolCommand = new DelegateCommand(SwitchToAngleMeasurementTool);
-            SwitchToDistanceMeasurementToolCommand = new DelegateCommand(SwitchToDistanceMeasurementTool);
-            SwitchToHeightMeasurementToolCommand = new DelegateCommand(SwitchToHeightMeasurementTool);
+		public ViewModel()
+		{
+			MapScaleInCommand = new DelegateCommand(MapScaleIn, CanMapScaleIn);
+			MapScaleOutCommand = new DelegateCommand(MapScaleOut, CanMapScaleOut);
+			MeasurementPressedCommand = new DelegateCommand(MeasurementPressed);
+			AddBadgeCommand = new DelegateCommand(AddBadge);
+		}
+		
+		private void MeasurementPressed()
+		{
+			IsPanelVisible = !IsPanelVisible;
+		}
 
-            //			ScaleDenominator = 1e7;
+		private void AddBadge()
+		{
+            IsPanelVisible = !IsPanelVisible;
         }
 
-        #endregion
+		#endregion
 
-        #region Commands' methods
-        private bool CanMapScaleIn()
-        {
-            return true;
-        }
+		#region Commands' methods
 
-        private void MapScaleIn()
-        {
-            //			ScaleDenominator *= Scale;
-        }
+		private bool CanMapScaleIn()
+		{
+			return true;
+		}
 
-        private bool CanMapScaleOut()
-        {
-            return true;
-        }
+		private void MapScaleIn()
+		{
+			//			ScaleDenominator *= Scale;
+		}
 
-        private void MapScaleOut()
-        {
-            //			ScaleDenominator /= Scale;
-        }
+		private bool CanMapScaleOut()
+		{
+			return true;
+		}
 
-        #endregion
+		private void MapScaleOut()
+		{
+			//			ScaleDenominator /= Scale;
+		}
 
-        #region Methods
+		IMapContainerViewModel IMeasurementsPanelViewModelParent.MapContainer => _mapContainer;
+		IMapContainerViewModel ILayoutPanelViewModelParent.MapContainer => _mapContainer;
+		IMapContainerViewModel IManualRoutePanelViewModelParent.MapContainer => _mapContainer;
+		IMapContainerViewModel AddGraphicSymbolsPanelViewModelParent.MapContainer => _mapContainer;
+		IMapContainerViewModel IBindingPanelViewModelParent.MapContainer => _mapContainer;
+		IMapContainerViewModel IMapPanelViewModelParent.MapContainer => _mapContainer;
+
+		#endregion
+
+		#region Methods
+
+		private void OnIsMiniMapEnabledChanged(bool oldValue, bool newValue)
+		{
+			if (_mapContainer != null)
+			{
+				_mapContainer?.SetMiniMap(newValue);
+			}
+		}
+
+		private void OnIsCenteringModeEnabledChanged(bool oldValue, bool newValue)
+		{
+			if (_mapContainer != null)
+			{
+				_mapContainer.SetCenteringMode(newValue);
+			}
+		}
+
+		private void OnScaleDenominatorChanged(double oldValue, double newValue)
+		{
+			if (_mapContainer != null)
+			{
+				_mapContainer.ScaleDenominator = newValue;
+			}
+		}
+
+		void IMapContainerViewModelParent.NotifyScaleDenominatorChanged(double oldValue, double newValue)
+		{
+			ScaleDenominator = newValue;
+		}
+
+		void IViewModelParent<IMapContainerViewModel>.Register(IMapContainerViewModel viewModel)
+		{
+			Debug.Assert(_mapContainer == null);
+			_mapContainer = viewModel;
+		}
+
+		void IViewModelParent<IMapContainerViewModel>.Unregister(IMapContainerViewModel viewModel)
+		{
+			Debug.Assert(_mapContainer == viewModel);
+			_mapContainer = null;
+		}
+
+
+		void IViewModelParent<IMeasurementsPanelViewModel>.Register(IMeasurementsPanelViewModel viewModel)
+		{
+			Debug.Assert(_measurementsPanel == null);
+			_measurementsPanel = viewModel;
+		}
+
+		void IViewModelParent<IMeasurementsPanelViewModel>.Unregister(IMeasurementsPanelViewModel viewModel)
+		{
+			Debug.Assert(_measurementsPanel == viewModel);
+			_measurementsPanel = null;
+		}
+
+
+		void IViewModelParent<ILayoutPanelViewModel>.Register(ILayoutPanelViewModel viewModel)
+		{
+			Debug.Assert(_layoutPanel == null);
+			_layoutPanel = viewModel;
+		}
+
+		void IViewModelParent<ILayoutPanelViewModel>.Unregister(ILayoutPanelViewModel viewModel)
+		{
+			Debug.Assert(_layoutPanel == viewModel);
+			_layoutPanel = null;
+		}
+
+		void IViewModelParent<IManualRoutePanelViewModel>.Register(IManualRoutePanelViewModel viewModel)
+		{
+			Debug.Assert(_manualRoutePanel == null);
+			_manualRoutePanel = viewModel;
+		}
+
+		void IViewModelParent<IManualRoutePanelViewModel>.Unregister(IManualRoutePanelViewModel viewModel)
+		{
+			Debug.Assert(_manualRoutePanel == viewModel);
+			_manualRoutePanel = null;
+		}
+
+
+		void IViewModelParent<IAddGraphicSymbolsPanelViewModel>.Register(IAddGraphicSymbolsPanelViewModel viewModel)
+		{
+			Debug.Assert(_addGraphicSymbolsPanel == null);
+			_addGraphicSymbolsPanel = viewModel;
+		}
+
+		void IViewModelParent<IAddGraphicSymbolsPanelViewModel>.Unregister(IAddGraphicSymbolsPanelViewModel viewModel)
+		{
+			Debug.Assert(_addGraphicSymbolsPanel == viewModel);
+			_addGraphicSymbolsPanel = null;
+		}
+
+		void IViewModelParent<IBindingPanelViewModel>.Register(IBindingPanelViewModel viewModel)
+		{
+			Debug.Assert(_bindingPanel == null);
+			_bindingPanel = viewModel;
+		}
+
+		void IViewModelParent<IBindingPanelViewModel>.Unregister(IBindingPanelViewModel viewModel)
+		{
+			Debug.Assert(_bindingPanel == viewModel);
+			_bindingPanel = null;
+		}
+
+
+		void IViewModelParent<IMapPanelViewModel>.Register(IMapPanelViewModel viewModel)
+		{
+			Debug.Assert(_mapPanel == null);
+			_mapPanel = viewModel;
+		}
+
+		void IViewModelParent<IMapPanelViewModel>.Unregister(IMapPanelViewModel viewModel)
+		{
+			Debug.Assert(_mapPanel == viewModel);
+			_mapPanel = null;
+		}
         
-        private void OnIsMiniMapEnabledChanged(bool oldValue, bool newValue)
-        {
-            if (_mapContainer != null)
-            {
-                _mapContainer?.SetMiniMap(newValue);
-            }
-        }
-
-        private void OnIsCenteringModeEnabledChanged(bool oldValue, bool newValue)
-        {
-            if (_mapContainer != null)
-            {
-                _mapContainer.SetCenteringMode(newValue);
-            }
-        }
-
-        private void OnScaleDenominatorChanged(double oldValue, double newValue)
-        {
-            if (_mapContainer != null)
-            {
-                _mapContainer.ScaleDenominator = newValue;
-            }
-        }
-
-        void IMapContainerViewModelParent.NotifyScaleDenominatorChanged(double oldValue, double newValue)
-        {
-            ScaleDenominator = newValue;
-        }
-
-        void IViewModelParent<IMapContainerViewModel>.Register(IMapContainerViewModel viewModel)
-        {
-            Debug.Assert(_mapContainer == null);
-            _mapContainer = viewModel;
-        }
-
-        void IViewModelParent<IMapContainerViewModel>.Unregister(IMapContainerViewModel viewModel)
-        {
-            Debug.Assert(_mapContainer == viewModel);
-            _mapContainer = null;
-        }
-
-        /// <summary>
-        /// Переключиться на режим измерения углов
-        /// </summary>
-        private void SwitchToAngleMeasurementTool()
-        {
-            if (SwitchToAngleMeasurementToolButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToAngleMeasurementTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент добавления маяков
-        /// </summary>
-        private void SwitchToBeaconDt()
-        {
-            if (SwitchToBeaconDtButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToBeaconDrawingTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на режим измерения расстояний
-        /// </summary>
-        private void SwitchToDistanceMeasurementTool()
-        {
-            if (SwitchToDistanceMeasurementToolButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToDistanceMeasurementTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на режим измерения перепадов высот
-        /// </summary>
-        private void SwitchToHeightMeasurementTool()
-        {
-            if (SwitchToHeightMeasurementToolButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToHeightMeasurementTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент добавления точек
-        /// </summary>
-        private void SwitchToPointDt()
-        {
-            if (SwitchToPointDtButtonChecked)
-            {
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToPointDrawingTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент рисования объектов точками
-        /// </summary>
-        private void SwitchToPreciseLsdt()
-        {
-            if (SwitchToPreciseLsdtButtonChecked)
-            {
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToPointDtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToPreciseLineStringDrawingTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент добавления трасс
-        /// </summary>
-        private void SwitchToRouteDt()
-        {
-            if (SwitchToRouteDtButtonChecked)
-            {
-                SwitchToPointDtButtonChecked = false;
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToQuickLsdtButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToRouteDrawingTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        /// <summary>
-        /// Переключиться на инструмент Лассо
-        /// </summary>
-        private void SwitchToQuickLsdt()
-        {
-            if (SwitchToQuickLsdtButtonChecked)
-            {
-                SwitchToBeaconDtButtonChecked = false;
-                SwitchToPointDtButtonChecked = false;
-                SwitchToPreciseLsdtButtonChecked = false;
-                SwitchToRouteDtButtonChecked = false;
-                SwitchToDistanceMeasurementToolButtonChecked = false;
-                SwitchToAngleMeasurementToolButtonChecked = false;
-                SwitchToHeightMeasurementToolButtonChecked = false;
-                _mapContainer?.SwitchToQuickLineStringDrawingTool();
-            }
-            else
-            {
-                _mapContainer?.SwitchToSimpleSelectionTool();
-            }
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

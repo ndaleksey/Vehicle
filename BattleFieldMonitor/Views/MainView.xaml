@@ -8,8 +8,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:Swsu.BattleFieldMonitor.Views"
     xmlns:viewModels="clr-namespace:Swsu.BattleFieldMonitor.ViewModels.Main"
+    xmlns:common="clr-namespace:Swsu.BattleFieldMonitor.Common"
+    xmlns:panel="clr-namespace:Swsu.BattleFieldMonitor.Views.Panel"
+    xmlns:converters1="clr-namespace:Swsu.BattleFieldMonitor.Converters1"
     mc:Ignorable="d"
-	Height="600" Width="800"
+	Height="950" Width="1024"
     WindowStartupLocation="CenterScreen"
 	WindowState="Maximized"
     Name="Root"
@@ -26,10 +29,119 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="../Resources/CommonResources.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
+			
+			<converters1:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 
-	<Grid Margin="5">
+    <DockPanel Background="Black">
+
+        <!--        Левая панель кнопок-->
+        <Grid DockPanel.Dock="Left"  HorizontalAlignment="Stretch">
+            <Border Padding="1,1,1,1">
+                <StackPanel Orientation="Vertical">
+                    <common:ToolToggleButton Content="Карта"
+                                             Margin="0.5cm,0.5cm,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="Слои"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="3D мир"
+                                             Margin="0.5cm,0,0.5cm,0.5cm" />
+                    
+                    <common:ToolToggleButton Content="Масштаб"
+                                             Margin="0.5cm,0,0.5cm,0.5cm" />
+                    
+                    <common:ToolToggleButton Content="Навигация"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="Ракурс" 
+                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="Привязка"
+                                             Margin="0.5cm,0,0.5cm,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
+<!--        Левая доп. панель-->
+        <StackPanel DockPanel.Dock="Left" Visibility="Visible">
+<!--            Карта-->
+            <panel:MapPanelView Visibility="Visible"
+                                dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--            Привязка-->
+            <panel:BindingPanelView Visibility="Hidden" 
+                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+        </StackPanel>
+        
+
+        <!--        Правая панель кнопок-->
+        <Grid  DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+            <Border Padding="1,1,1,1">
+                <StackPanel Orientation="Vertical">
+                    <common:ToolToggleButton x:Name="MeasurementButton" 
+											 Content="Измерения" 
+                                             Margin="0.5cm,0.5cm,0.5cm,0.5cm"
+											 Command="{Binding Path=MeasurementPressedCommand}"/>
+<!--                                             IsChecked="{Binding Path=SwitchToPointDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+                    
+                    <common:ToolToggleButton x:Name="RouteAutomat" 
+											 Content="Маршрут автомат"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                              Command="{Binding Path=AddBadgeCommand}"/>
+                    
+                    <common:ToolToggleButton Content="Маршрут ручной"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="Маршрут очистить"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="Разметка"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
+                    
+                    <common:ToolToggleButton Content="Движение по карте"
+                                             Margin="0.5cm,0,0.5cm,0.5cm" />
+                    
+                    <common:ToolToggleButton Command="{Binding Path=AddBadgeCommand}" 
+											 Content="Добавить УГО"
+                                             Margin="0.5cm,0,0.5cm,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+<!--        Правая доп. панель-->
+         <StackPanel DockPanel.Dock="Right" Visibility="{Binding Path=IsPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+             
+<!--Измерения-->
+            <panel:MeasurementsPanelView Visibility="{Binding IsChecked, ElementName=MeasurementButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                         dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Маршрут ручной-->
+            <panel:ManualRoutePanelView Visibility="Hidden"
+                                        dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Разметка-->
+            <panel:LayoutPanelView Visibility="Hidden" 
+                                   dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Добавить УГО-->
+            <panel:AddGraphicSymbolsPanelView Visibility="Hidden" 
+                                   dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+        </StackPanel>
+
+
+        <!--        Центральная панель отображения карты-->
+        <Grid>
+            <views:MapContainerView
+            Grid.Row="0" Grid.Column="0"
+            MinWidth="500" MinHeight="400"
+            Background="LightGray"
+            dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}" />
+        </Grid>
+    </DockPanel>
+    
+    
+    
+    
+
+<!--    	<Grid Margin="5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto" MinHeight="50"/>
@@ -48,8 +160,8 @@
 		<DockPanel VerticalAlignment="Bottom" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
 			<GroupBox DockPanel.Dock="Bottom" Header="Инструменты" Margin="5">
 				<StackPanel>
-					<!--<Button Content="Увеличть" Margin="5" Command="{Binding Path=MapScaleInCommand}"/>
-					<Button Content="Уменьшить" Margin="5" Command="{Binding Path=MapScaleOutCommand}"/>-->
+					~1~<Button Content="Увеличть" Margin="5" Command="{Binding Path=MapScaleInCommand}"/>
+					<Button Content="Уменьшить" Margin="5" Command="{Binding Path=MapScaleOutCommand}"/>@1@
 
                     <ToggleButton 
                         Content="Добавить точку" 
@@ -105,5 +217,5 @@
 				</StackPanel>
 			</GroupBox>
 		</DockPanel>
-	</Grid>
+	</Grid>-->
 </Window>

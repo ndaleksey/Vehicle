@@ -1,6 +1,145 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:epsg="http://www.swsu.ru/schemas/Maps">
+                    xmlns:epsg="http://www.swsu.ru/schemas/Maps"
+                    xmlns:common="clr-namespace:Swsu.BattleFieldMonitor.Common">
 	
 	<epsg:MicrosoftAccessEpsgDataProvider x:Key="EpsgDataProvider" DatabaseFileName="C:\EPSG\EPSG_v8_9.mdb" />
+
+
+
+    <SolidColorBrush x:Key="LightGreyBrush" >
+        <SolidColorBrush.Color>
+            <Color R="217" G="217" B="217" A="255"/>
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+
+    <SolidColorBrush x:Key="DarkGreyBrush" >
+        <SolidColorBrush.Color>
+            <Color R="64" G="64" B="64" A="255"/>
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+
+    <!--    Стиль для ToogleButton-->
+    <Style TargetType="{x:Type common:ToolToggleButton}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Width" Value="2cm"/>
+        <Setter Property="Height" Value="3cm"/>
+        <Setter Property="Background" Value="{StaticResource DarkGreyBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource LightGreyBrush}"/>
+
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type common:ToolToggleButton}">
+                    <Border x:Name="Border" 
+							CornerRadius="5" 
+							BorderThickness="2" Padding="0"
+							HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+							VerticalAlignment="{TemplateBinding VerticalAlignment}" 
+							Margin="{TemplateBinding Padding}"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding Foreground}">
+                        <DockPanel>
+                            <TextBlock x:Name="TextBlock" DockPanel.Dock="Bottom" 
+									   Text="{TemplateBinding Content}" 
+									   Foreground="{TemplateBinding Foreground}" 
+									   HorizontalAlignment="Center" VerticalAlignment="Center" 
+									   Margin="0, 5" TextWrapping="Wrap" TextAlignment="Center"/>
+
+                            <Control x:Name="Image" Template="{TemplateBinding ImageTemplate}">
+                                <Control.Resources>
+                                    <Style TargetType="Viewbox">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="Stretch" Value="Uniform"/>
+                                        <Setter Property="Width" Value="1.5cm"/>
+                                        <Setter Property="Height" Value="1.5cm"/>
+                                    </Style>
+
+                                    <Style TargetType="Path">
+                                        <Setter Property="Stroke" Value="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=common:ToolToggleButton}}"/>
+                                        <Setter Property="Fill" Value="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=common:ToolToggleButton}}"/>
+                                    </Style>
+                                </Control.Resources>
+                            </Control>
+                        </DockPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="{StaticResource LightGreyBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource DarkGreyBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--    Стиль для Button-->
+    <Style TargetType="{x:Type common:ToolButton}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Width" Value="2cm"/>
+        <Setter Property="Height" Value="3cm"/>
+        <Setter Property="Background" Value="{StaticResource DarkGreyBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource LightGreyBrush}"/>
+
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type common:ToolButton}">
+                    <Border x:Name="Border" 
+							CornerRadius="5" 
+							BorderThickness="2" Padding="0"
+							HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+							VerticalAlignment="{TemplateBinding VerticalAlignment}" 
+							Margin="{TemplateBinding Padding}"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding Foreground}">
+                        <DockPanel>
+                            <TextBlock x:Name="TextBlock" DockPanel.Dock="Bottom" 
+									   Text="{TemplateBinding Content}" 
+									   Foreground="{TemplateBinding Foreground}" 
+									   HorizontalAlignment="Center" VerticalAlignment="Center" 
+									   Margin="0, 5" TextWrapping="Wrap" TextAlignment="Center"/>
+
+                            <Control x:Name="Image" Template="{TemplateBinding ImageTemplate}">
+                                <Control.Resources>
+                                    <Style TargetType="Viewbox">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="Stretch" Value="Uniform"/>
+                                        <Setter Property="Width" Value="1.5cm"/>
+                                        <Setter Property="Height" Value="1.5cm"/>
+                                    </Style>
+
+                                    <Style TargetType="Path">
+                                        <Setter Property="Stroke" Value="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=common:ToolButton}}"/>
+                                        <Setter Property="Fill" Value="{Binding Path=Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=common:ToolButton}}"/>
+                                    </Style>
+                                </Control.Resources>
+                            </Control>
+                        </DockPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource LightGreyBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource DarkGreyBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

@@ -139,7 +139,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\ToolButton.cs" />
+    <Compile Include="Common\ToolToggleButton.cs" />
+    <Compile Include="Converters1\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters1\MeasuredEventArgsConverter.cs" />
+    <Compile Include="Converters1\ToolCheckedConverter.cs" />
     <Compile Include="DataAccess\UnmannedVehicleQueries.cs" />
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
     <Compile Include="Services\BeaconState.cs" />
@@ -172,6 +176,18 @@
     <Compile Include="Services\ObjectsAddedEventArgs.cs" />
     <Compile Include="Services\ObjectsRemovalReason.cs" />
     <Compile Include="Services\ObjectsRemovedEventArgs.cs" />
+    <Compile Include="ViewModelInterfaces\AddGraphicSymbolsPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IAddGraphicSymbolsPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IBindingPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IBindingPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\ILayoutPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\ILayoutPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IManualRoutePanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IManualRoutePanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IMapPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IMapPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IMeasurementsPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IMeasurementsPanelViewModelParent.cs" />
     <Compile Include="ViewModels\MapContainer\BeaconModel.cs" />
     <Compile Include="ViewModels\MapContainer\Coord.cs" />
     <Compile Include="ViewModels\MapContainer\Tools\AngleMeasurementTool.cs" />
@@ -193,8 +209,32 @@
     <Compile Include="ViewModels\MapContainer\UnmannedVehicleModel.cs" />
     <Compile Include="ViewModels\MapContainer\VehicleContainer.cs" />
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\AddGraphicSymbolsPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\BindingPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\LayoutPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\ManualRoutePanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\MapPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\MeasurementsPanelViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">
       <DependentUpon>MapContainerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\AddGraphicSymbolsPanelView.xaml.cs">
+      <DependentUpon>AddGraphicSymbolsPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\BindingPanelView.xaml.cs">
+      <DependentUpon>BindingPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\LayoutPanelView.xaml.cs">
+      <DependentUpon>LayoutPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\ManualRoutePanelView.xaml.cs">
+      <DependentUpon>ManualRoutePanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\MapPanelView.xaml.cs">
+      <DependentUpon>MapPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\MeasurementsPanelView.xaml.cs">
+      <DependentUpon>MeasurementsPanelView.xaml</DependentUpon>
     </Compile>
     <Page Include="Resources\CommonResources.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -213,6 +253,30 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\MapContainerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\AddGraphicSymbolsPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\BindingPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\LayoutPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\ManualRoutePanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\MapPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\MeasurementsPanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
