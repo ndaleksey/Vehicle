@@ -5,15 +5,12 @@ using Swsu.Geo.SimpleFeatures;
 
 namespace Swsu.BattleFieldMonitor.Models.Implementations
 {
-	/// <summary>
-	/// Класс модели "Препятствие"
-	/// </summary>
 	internal class Obstacle : IdentifiableObject, IObstacle
 	{
 		#region Constructors
 
-		public Obstacle(Guid id, string displayName, GeographicCoordinates minLocation, GeographicCoordinates maxLocation,
-			IGeometry geometry) : base(id)
+		public Obstacle(Guid id, string displayName, IGeometry geometry, GeographicCoordinates minLocation,
+			GeographicCoordinates maxLocation) : base(id)
 		{
 			DisplayName = displayName;
 			MinLocation = minLocation;
@@ -39,8 +36,8 @@ namespace Swsu.BattleFieldMonitor.Models.Implementations
 			Changed?.Invoke(this, e);
 		}
 
-		internal void Set(string displayName, GeographicCoordinates minLocation, GeographicCoordinates maxLocation,
-			IGeometry geometry)
+		internal void Set(string displayName, IGeometry geometry, GeographicCoordinates minLocation,
+			GeographicCoordinates maxLocation)
 		{
 			DisplayName = displayName;
 			MinLocation = minLocation;
@@ -56,7 +53,5 @@ namespace Swsu.BattleFieldMonitor.Models.Implementations
 		public event EventHandler Changed;
 
 		#endregion
-
-		
 	}
 }

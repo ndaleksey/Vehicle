@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace Swsu.BattleFieldMonitor.DataAccess
 {
@@ -12,6 +13,16 @@ namespace Swsu.BattleFieldMonitor.DataAccess
             command.Parameters.Add(parameter);
             return parameter;
         }
-        #endregion
-    }
+
+		public static DbParameter AddParameter(this DbCommand command, string name, DbType dbType, object value)
+		{
+			var param = command.CreateParameter();
+			param.ParameterName = name;
+			param.DbType = dbType;
+			param.Value = value;
+			command.Parameters.Add(param);
+			return param;
+		}
+		#endregion
+	}
 }
