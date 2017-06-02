@@ -75,11 +75,6 @@
         /// </summary>
         void SwitchToSimpleSelectionTool();
 
-        /// <summary>
-        /// Переключиться на инструмент измерения перепадов высот
-        /// </summary>
-        void SwitchToHeightMeasurementTool();
-
         #endregion
     }
 }
