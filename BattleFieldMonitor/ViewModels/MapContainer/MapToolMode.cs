@@ -55,6 +55,11 @@
         /// <summary>
         /// Измерение углов
         /// </summary>
-        AngleMeasurement
-    }
+        AngleMeasurement,
+
+        /// <summary>
+        /// Измерение перепадов высот
+        /// </summary>
+	    HeightMeasurement
+	}
 }

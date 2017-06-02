@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using DevExpress.Mvvm.UI;
 using Swsu.BattleFieldMonitor.Common;
-using Swsu.BattleFieldMonitor.Converters1.Parameters;
+using Swsu.BattleFieldMonitor.Converters.Parameters;
 using Swsu.Maps.Windows;
 using Swsu.Maps.Windows.Tools;
 
-namespace Swsu.BattleFieldMonitor.Converters1
+namespace Swsu.BattleFieldMonitor.Converters
 {
     class LineStringDrawnEventArgsConverter : EventArgsConverterBase<LineStringDrawnEventArgs>
     {

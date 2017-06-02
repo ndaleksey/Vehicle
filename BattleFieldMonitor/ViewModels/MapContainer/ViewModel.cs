@@ -465,6 +465,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToAngleMeasurementTool()
         {
             MapToolMode = MapToolMode.AngleMeasurement;
+            UnmannedVehicles[0].ShowCallout = false;
         }
 
         /// <summary>
@@ -481,6 +482,11 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToDistanceMeasurementTool()
         {
             MapToolMode = MapToolMode.DistanceMeasurement;
+        }
+
+        public void SwitchToHeightMeasurementTool()
+        {
+            MapToolMode = MapToolMode.HeightMeasurement;
         }
 
         /// <summary>
@@ -521,6 +527,7 @@ namespace Swsu.BattleFieldMonitor.ViewModels.MapContainer
         public void SwitchToSimpleSelectionTool()
         {
             MapToolMode = MapToolMode.SimpleSelection;
+            UnmannedVehicles[0].ShowCallout = true;
         }
 
         private void UpdateCentering()
