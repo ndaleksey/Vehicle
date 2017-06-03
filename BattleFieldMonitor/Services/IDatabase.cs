@@ -1,4 +1,6 @@
-﻿namespace Swsu.BattleFieldMonitor.Services
+﻿using Swsu.BattleFieldMonitor.Models;
+
+namespace Swsu.BattleFieldMonitor.Services
 {
     internal interface IDatabase
     {
@@ -14,6 +16,11 @@
         {
             get;
         }
-        #endregion
-    }
+
+		IRepository<IObstacle> Obstacles
+		{
+			get;
+		}
+		#endregion
+	}
 }

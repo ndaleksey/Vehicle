@@ -144,6 +144,7 @@
     <Compile Include="Converters1\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters1\MeasuredEventArgsConverter.cs" />
     <Compile Include="Converters1\ToolCheckedConverter.cs" />
+    <Compile Include="DataAccess\ObstacleQueries.cs" />
     <Compile Include="DataAccess\UnmannedVehicleQueries.cs" />
     <Compile Include="Infrastructure\UnityResolutionExtension.cs" />
     <Compile Include="Models\Implementations\Obstacle.cs" />
@@ -405,9 +406,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Icons\Engine.png" />
     <Resource Include="Resources\Icons\Globe.png" />

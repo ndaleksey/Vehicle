@@ -180,19 +180,19 @@
             <map:MapViewer.MapDefinition>
                 <!-- Будет заменено привязкой с конвертером. -->
 				
-                <!--<map:WmtsMapDefinition
+                <map:WmtsMapDefinition
                         Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
                         LayerIdentifier="world_web_merkator"
                         StyleIdentifier="DefaultStyle"
                         TileMatrixSetIdentifier="world_web_merkator_set"
-                        EpsgDataProvider="{StaticResource EpsgDataProvider}" />-->
-				<map:WmtsMapDefinition
+                        EpsgDataProvider="{StaticResource EpsgDataProvider}" />
+				<!--<map:WmtsMapDefinition
                          Uri="http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/WMTS/1.0.0/WMTSCapabilities.xml"
                          LayerIdentifier="USGSImageryTopo"
                          StyleIdentifier="default"
                          TileMatrixSetIdentifier="default028mm"
                          EpsgDataProvider="{StaticResource  
-EpsgDataProvider}" />
+EpsgDataProvider}" />-->
             </map:MapViewer.MapDefinition>
 
             <map:MapViewer.ContextMenu>
@@ -731,12 +731,20 @@ EpsgDataProvider}" />
 
                 <map:MapNavigatorViewer.MapDefinition>
                     <!-- Будет заменено привязкой с конвертером. -->
+
 					<map:WmtsMapDefinition
+                        Uri="http://10.6.7.179/world_web_merkator/wmts/1.0.0/WMTSCapabilities.xml"
+                        LayerIdentifier="world_web_merkator"
+                        StyleIdentifier="DefaultStyle"
+                        TileMatrixSetIdentifier="world_web_merkator_set"
+                        EpsgDataProvider="{StaticResource EpsgDataProvider}" />
+
+					<!--<map:WmtsMapDefinition
                          Uri="http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/WMTS/1.0.0/WMTSCapabilities.xml"
                          LayerIdentifier="USGSImageryTopo"
                          StyleIdentifier="default"
                          TileMatrixSetIdentifier="default028mm"
-                         EpsgDataProvider="{StaticResource EpsgDataProvider}" />
+                         EpsgDataProvider="{StaticResource EpsgDataProvider}" />-->
 				</map:MapNavigatorViewer.MapDefinition>
             </map:MapNavigatorViewer>
         </Border>
