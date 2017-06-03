@@ -8,6 +8,8 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Swsu.BattleFieldMonitor.Models;
+using Swsu.BattleFieldMonitor.Services.Implementations.Repositories;
 
 namespace Swsu.BattleFieldMonitor.Services.Implementations
 {
@@ -19,12 +21,14 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
 
         #region Fields
         private readonly UnmannedVehicleRepository _unmannedVehicles;
+        private readonly ObstacleRepository _obstacles;
         #endregion
 
         #region Constructors
         public Database()
         {
             _unmannedVehicles = new UnmannedVehicleRepository();
+			_obstacles = new ObstacleRepository();
 
             var thread = new Thread(LoadObjectsAndWaitForChanges);
             thread.IsBackground = true;
@@ -33,18 +37,17 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
         #endregion
 
         #region Properties
-        public IRepository<IUnmannedVehicle> UnmannedVehicles
-        {
-            get { return _unmannedVehicles; }
-        }
+        public IRepository<IUnmannedVehicle> UnmannedVehicles => _unmannedVehicles;
 
-        private IEnumerable<Repository> Repositories
+	    public IRepository<IObstacle> Obstacles => _obstacles;
+
+	    private IEnumerable<Repository> Repositories
         {
             get
             {
                 yield return _unmannedVehicles;
                 // yield return _beacons;
-                // yield return _obstacles;
+                 yield return _obstacles;
                 // ...
             }
         }
@@ -58,7 +61,10 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 case "unmanned_vehicle":
                     return _unmannedVehicles;
 
-                default:
+				case "obstacle":
+					return _obstacles;
+
+				default:
                     return null;
             }
         }
@@ -81,7 +87,7 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 {
                     // ожидаем извещений...
                     connection.Wait();
-
+					
                     while (Repositories.Any(r => r.HasDelta))
                     {
                         foreach (var r in Repositories)

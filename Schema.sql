@@ -178,5 +178,21 @@ ON unmanned_vehicle
 FOR EACH ROW
 EXECUTE PROCEDURE send_delete_notify();
 
+-- тригеры для таблицы Obstacle
+CREATE TRIGGER obstacle_ai AFTER INSERT
+ON obstacle
+FOR EACH ROW
+EXECUTE PROCEDURE send_insert_notify();
+
+CREATE TRIGGER obstacle_au AFTER UPDATE
+ON obstacle
+FOR EACH ROW
+EXECUTE PROCEDURE send_update_notify();
+
+CREATE TRIGGER obstacle_ad AFTER DELETE
+ON obstacle
+FOR EACH ROW
+EXECUTE PROCEDURE send_delete_notify();
+
 INSERT INTO unmanned_vehicle(id, display_name, address, x, y, heading, speed, state_flags) VALUES
   ('ff23b6ce-f2b7-4108-ad5a-039d4220ac7c', 'Танк №1', '123', 5, 65, 60, 3, 0);
