@@ -183,6 +183,8 @@
     <Compile Include="ViewModelInterfaces\IAddGraphicSymbolsPanelViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IBindingPanelViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IBindingPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\ILayersPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\ILayersPanelViewModelParent.cs" />
     <Compile Include="ViewModelInterfaces\ILayoutPanelViewModel.cs" />
     <Compile Include="ViewModelInterfaces\ILayoutPanelViewModelParent.cs" />
     <Compile Include="ViewModelInterfaces\IManualRoutePanelViewModel.cs" />
@@ -191,6 +193,20 @@
     <Compile Include="ViewModelInterfaces\IMapPanelViewModelParent.cs" />
     <Compile Include="ViewModelInterfaces\IMeasurementsPanelViewModel.cs" />
     <Compile Include="ViewModelInterfaces\IMeasurementsPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IMoveMapPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IMoveMapPanelViewModeParent.cs" />
+    <Compile Include="ViewModelInterfaces\INavigationPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\INavigationPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IRouteAutomatPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IRouteAutomatPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IRouteClearPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IRouteClearPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\IScalePanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\IScalePanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\ISightPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\ISightPanelViewModelParent.cs" />
+    <Compile Include="ViewModelInterfaces\ISpaceWorldPanelViewModel.cs" />
+    <Compile Include="ViewModelInterfaces\ISpaceWorldPanelViewModelParent.cs" />
     <Compile Include="ViewModels\MapContainer\BeaconModel.cs" />
     <Compile Include="ViewModels\MapContainer\Coord.cs" />
     <Compile Include="ViewModels\MapContainer\Tools\AngleMeasurementTool.cs" />
@@ -214,10 +230,18 @@
     <Compile Include="ViewModels\MapContainer\ViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel\AddGraphicSymbolsPanelViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel\BindingPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\LayersPanelViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel\LayoutPanelViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel\ManualRoutePanelViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel\MapPanelViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel\MeasurementsPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\MoveMapPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\NavigationPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\RouteAutomatPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\RouteClearPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\ScalePanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\SightPanelViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel\SpaceWorldPanelViewModel.cs" />
     <Compile Include="Views\MapContainerView.xaml.cs">
       <DependentUpon>MapContainerView.xaml</DependentUpon>
     </Compile>
@@ -226,6 +250,9 @@
     </Compile>
     <Compile Include="Views\Panel\BindingPanelView.xaml.cs">
       <DependentUpon>BindingPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\LayersPanelView.xaml.cs">
+      <DependentUpon>LayersPanelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Panel\LayoutPanelView.xaml.cs">
       <DependentUpon>LayoutPanelView.xaml</DependentUpon>
@@ -239,7 +266,32 @@
     <Compile Include="Views\Panel\MeasurementsPanelView.xaml.cs">
       <DependentUpon>MeasurementsPanelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Panel\MoveMapPanelView.xaml.cs">
+      <DependentUpon>MoveMapPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\NavigationPanelView.xaml.cs">
+      <DependentUpon>NavigationPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\RouteAutomatPanelView.xaml.cs">
+      <DependentUpon>RouteAutomatPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\RouteClearPanelView.xaml.cs">
+      <DependentUpon>RouteClearPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\ScalePanelView.xaml.cs">
+      <DependentUpon>ScalePanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\SightPanelView.xaml.cs">
+      <DependentUpon>SightPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panel\SpaceWorldPanelView.xaml.cs">
+      <DependentUpon>SpaceWorldPanelView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Resources\CommonResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons\Linejka.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -267,6 +319,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Panel\LayersPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Panel\LayoutPanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -280,6 +336,34 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Panel\MeasurementsPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\MoveMapPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\NavigationPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\RouteAutomatPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\RouteClearPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\ScalePanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\SightPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Panel\SpaceWorldPanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

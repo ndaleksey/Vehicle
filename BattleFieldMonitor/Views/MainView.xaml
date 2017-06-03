@@ -40,71 +40,126 @@
         <Grid DockPanel.Dock="Left"  HorizontalAlignment="Stretch">
             <Border Padding="1,1,1,1">
                 <StackPanel Orientation="Vertical">
-                    <common:ToolToggleButton Content="Карта"
-                                             Margin="0.5cm,0.5cm,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="Слои"
-                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="3D мир"
-                                             Margin="0.5cm,0,0.5cm,0.5cm" />
-                    
-                    <common:ToolToggleButton Content="Масштаб"
-                                             Margin="0.5cm,0,0.5cm,0.5cm" />
-                    
-                    <common:ToolToggleButton Content="Навигация"
-                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="Ракурс" 
-                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="Привязка"
-                                             Margin="0.5cm,0,0.5cm,0"/>
+                    <common:ToolToggleButton x:Name="MapButton"
+                                             Content="Карта"
+                                             Margin="0.5cm,0.5cm,0.5cm,0.5cm"
+                                             Command="{Binding Path=MapPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedMap, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="LayersButton"
+                                             Content="Слои"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=LayersPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedLayers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="SpaceWorldButton"
+                                             Content="3D мир"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=SpaceWorldPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedSpaceWorld, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="ScaleButton"
+                                             Content="Масштаб"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=ScalePressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedScale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="NavigationButton"
+                                             Content="Навигация"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=NavigationPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedNavigation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="SightButton"
+                                             Content="Ракурс" 
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=SightPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedSight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="BindingButton"
+                                             Content="Привязка"
+                                             Margin="0.5cm,0,0.5cm,0"
+                                             Command="{Binding Path=BindingPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedBinding, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Border>
         </Grid>
         
 <!--        Левая доп. панель-->
-        <StackPanel DockPanel.Dock="Left" Visibility="Visible">
-<!--            Карта-->
-            <panel:MapPanelView Visibility="Visible"
+        <StackPanel DockPanel.Dock="Left" Visibility="{Binding Path=IsPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+<!--Карта-->
+            <panel:MapPanelView Visibility="{Binding IsChecked, ElementName=MapButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
-<!--            Привязка-->
-            <panel:BindingPanelView Visibility="Hidden" 
+<!--Слои-->
+            <panel:LayersPanelView Visibility="{Binding IsChecked, ElementName=LayersButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--3D мир-->
+            <panel:SpaceWorldPanelView Visibility="{Binding IsChecked, ElementName=SpaceWorldButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Масштаб-->
+            <panel:ScalePanelView Visibility="{Binding IsChecked, ElementName=ScaleButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Навигация-->
+            <panel:NavigationPanelView Visibility="{Binding IsChecked, ElementName=NavigationButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Ракурс-->
+            <panel:SightPanelView Visibility="{Binding IsChecked, ElementName=SightButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Привязка-->
+            <panel:BindingPanelView Visibility="{Binding IsChecked, ElementName=BindingButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+
         </StackPanel>
         
 
         <!--        Правая панель кнопок-->
-        <Grid  DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+        <Grid  DockPanel.Dock="Right" 
+               HorizontalAlignment="Stretch">
             <Border Padding="1,1,1,1">
                 <StackPanel Orientation="Vertical">
+
                     <common:ToolToggleButton x:Name="MeasurementButton" 
+                                             ImageTemplate="{StaticResource Linejka}"
 											 Content="Измерения" 
                                              Margin="0.5cm,0.5cm,0.5cm,0.5cm"
-											 Command="{Binding Path=MeasurementPressedCommand}"/>
-<!--                                             IsChecked="{Binding Path=SwitchToPointDtButtonChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
-                    
-                    <common:ToolToggleButton x:Name="RouteAutomat" 
+											 Command="{Binding Path=MeasurementPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedMeasurements, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="RouteAutomatButton" 
 											 Content="Маршрут автомат"
                                              Margin="0.5cm,0,0.5cm,0.5cm"
-                                              Command="{Binding Path=AddBadgeCommand}"/>
-                    
-                    <common:ToolToggleButton Content="Маршрут ручной"
-                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="Маршрут очистить"
-                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="Разметка"
-                                             Margin="0.5cm,0,0.5cm,0.5cm"/>
-                    
-                    <common:ToolToggleButton Content="Движение по карте"
-                                             Margin="0.5cm,0,0.5cm,0.5cm" />
-                    
-                    <common:ToolToggleButton Command="{Binding Path=AddBadgeCommand}" 
+                                             Command="{Binding Path=RouteAutomatPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedRouteAutomatic, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="RouteManualButton"
+                                             Content="Маршрут ручной"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=RouteManualPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedRouteManual, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="RouteClearButton"
+                                             Content="Маршрут очистить"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=RouteClearPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedRouteClear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="LayoutButton"
+                                             Content="Разметка"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=LayoutPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedRouteLayout, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="MoveMapButton"
+                                             Content="Движение по карте"
+                                             Margin="0.5cm,0,0.5cm,0.5cm"
+                                             Command="{Binding Path=MoveMapPressedCommand}"
+                                             IsChecked="{Binding Path=IsCheckedMoveMap, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <common:ToolToggleButton x:Name="AddGraphicDesignationsButton"
+                                             Command="{Binding Path=AddGraphicDesignationsPressedCommand}" 
 											 Content="Добавить УГО"
-                                             Margin="0.5cm,0,0.5cm,0"/>
+                                             Margin="0.5cm,0,0.5cm,0"
+                                             IsChecked="{Binding Path=IsCheckedAddGraphicDesignations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Border>
         </Grid>
@@ -115,19 +170,29 @@
 <!--Измерения-->
             <panel:MeasurementsPanelView Visibility="{Binding IsChecked, ElementName=MeasurementButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                          dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Маршрут автомат-->
+            <panel:RouteAutomatPanelView Visibility="{Binding IsChecked, ElementName=RouteAutomatButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                         dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
 <!--Маршрут ручной-->
-            <panel:ManualRoutePanelView Visibility="Hidden"
+            <panel:ManualRoutePanelView Visibility="{Binding IsChecked, ElementName=RouteManualButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+ <!--Маршрут очистить-->
+            <panel:RouteClearPanelView Visibility="{Binding IsChecked, ElementName=RouteClearButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
 <!--Разметка-->
-            <panel:LayoutPanelView Visibility="Hidden" 
+            <panel:LayoutPanelView Visibility="{Binding IsChecked, ElementName=LayoutButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                    dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+<!--Движение по карте-->
+            <panel:MoveMapPanelView Visibility="{Binding IsChecked, ElementName=MoveMapButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
 <!--Добавить УГО-->
-            <panel:AddGraphicSymbolsPanelView Visibility="Hidden" 
-                                   dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
+            <panel:AddGraphicSymbolsPanelView Visibility="{Binding IsChecked, ElementName=AddGraphicDesignationsButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                              dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}"/>
         </StackPanel>
 
 
         <!--        Центральная панель отображения карты-->
+        
         <Grid>
             <views:MapContainerView
             Grid.Row="0" Grid.Column="0"
@@ -135,6 +200,7 @@
             Background="LightGray"
             dxmvvm:ViewModelExtensions.ParentViewModel="{Binding ElementName=Root, Path=DataContext}" />
         </Grid>
+        
     </DockPanel>
     
     

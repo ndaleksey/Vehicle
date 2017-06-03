@@ -5,8 +5,6 @@
 	
 	<epsg:MicrosoftAccessEpsgDataProvider x:Key="EpsgDataProvider" DatabaseFileName="C:\EPSG\EPSG_v8_9.mdb" />
 
-
-
     <SolidColorBrush x:Key="LightGreyBrush" >
         <SolidColorBrush.Color>
             <Color R="217" G="217" B="217" A="255"/>
@@ -142,4 +140,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Resources/Icons/Linejka.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
 </ResourceDictionary>
