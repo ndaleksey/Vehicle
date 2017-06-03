@@ -5,9 +5,9 @@
     <Setting Name="DatabaseConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Host=10.6.7.103;Database=nkb_vs;Username=postgres;Password=rjynbytyn&lt;/ConnectionString&gt;
+  &lt;ConnectionString&gt;Host=127.0.0.1;Database=nkb_vs;Username=postgres;Password=postgres&lt;/ConnectionString&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Host=10.6.7.103;Database=nkb_vs;Username=postgres;Password=rjynbytyn</Value>
+      <Value Profile="(Default)">Host=127.0.0.1;Database=nkb_vs;Username=postgres;Password=postgres</Value>
     </Setting>
   </Settings>
 </SettingsFile>

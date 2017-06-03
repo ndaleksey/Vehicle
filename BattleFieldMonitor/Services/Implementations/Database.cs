@@ -87,7 +87,7 @@ namespace Swsu.BattleFieldMonitor.Services.Implementations
                 {
                     // ожидаем извещений...
                     connection.Wait();
-
+					
                     while (Repositories.Any(r => r.HasDelta))
                     {
                         foreach (var r in Repositories)
